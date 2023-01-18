@@ -34,8 +34,9 @@
 		E22B5E9C29783EDB00836E92 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = E22B5E9B29783EDB00836E92 /* FirebaseStorage */; };
 		E22B5E9E29783EDB00836E92 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = E22B5E9D29783EDB00836E92 /* FirebaseStorageCombine-Community */; };
 		E22B5EA02978468500836E92 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E22B5E9F2978468500836E92 /* GoogleService-Info.plist */; };
-		E22B5EA2297847B400836E92 /* extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22B5EA1297847B400836E92 /* extensions.swift */; };
+		E22B5EA2297847B400836E92 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22B5EA1297847B400836E92 /* Extensions.swift */; };
 		E22B5EA42978480E00836E92 /* DeviceModels.json in Resources */ = {isa = PBXBuildFile; fileRef = E22B5EA32978480E00836E92 /* DeviceModels.json */; };
+		E22B5EA729784A6E00836E92 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E22B5EA629784A6E00836E92 /* Launch Screen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,8 +45,9 @@
 		E22B5E52297839D000836E92 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E22B5E57297839D000836E92 /* LynaFM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LynaFM.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E22B5E9F2978468500836E92 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		E22B5EA1297847B400836E92 /* extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extensions.swift; sourceTree = "<group>"; };
+		E22B5EA1297847B400836E92 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		E22B5EA32978480E00836E92 /* DeviceModels.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DeviceModels.json; sourceTree = "<group>"; };
+		E22B5EA629784A6E00836E92 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,10 +97,11 @@
 			children = (
 				E22B5E50297839CE00836E92 /* LynaFMApp.swift */,
 				E22B5E51297839CE00836E92 /* ContentView.swift */,
+				E22B5EA529784A2400836E92 /* System */,
 				E22B5E52297839D000836E92 /* Assets.xcassets */,
+				E22B5EA629784A6E00836E92 /* Launch Screen.storyboard */,
 				E22B5EA32978480E00836E92 /* DeviceModels.json */,
 				E22B5E9F2978468500836E92 /* GoogleService-Info.plist */,
-				E22B5EA1297847B400836E92 /* extensions.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -109,6 +112,14 @@
 				E22B5E57297839D000836E92 /* LynaFM.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		E22B5EA529784A2400836E92 /* System */ = {
+			isa = PBXGroup;
+			children = (
+				E22B5EA1297847B400836E92 /* Extensions.swift */,
+			);
+			path = System;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -199,6 +210,7 @@
 			files = (
 				E22B5E64297839D000836E92 /* Assets.xcassets in Resources */,
 				E22B5EA02978468500836E92 /* GoogleService-Info.plist in Resources */,
+				E22B5EA729784A6E00836E92 /* Launch Screen.storyboard in Resources */,
 				E22B5EA42978480E00836E92 /* DeviceModels.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -212,7 +224,7 @@
 			files = (
 				E22B5E62297839D000836E92 /* ContentView.swift in Sources */,
 				E22B5E60297839D000836E92 /* LynaFMApp.swift in Sources */,
-				E22B5EA2297847B400836E92 /* extensions.swift in Sources */,
+				E22B5EA2297847B400836E92 /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -338,9 +350,11 @@
 				DEVELOPMENT_TEAM = QD5349NP78;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Приложение использует фото камеру.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -369,9 +383,11 @@
 				DEVELOPMENT_TEAM = QD5349NP78;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Приложение использует фото камеру.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
