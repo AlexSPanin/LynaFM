@@ -52,8 +52,7 @@ struct LynaFMApp: App {
                 .onAppear {
                     print("System Parameters:")
                     print(Bundle.main.displayName)
-                    print(Bundle.main.appVersion)
-                    print(Bundle.main.appBuild)
+                    print(version)
                     print(UIDevice.current.systemVersion)
                     print(UIDevice.current.modelName)
                     print(UIScreen.main.scale)

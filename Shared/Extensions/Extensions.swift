@@ -61,3 +61,37 @@ extension UIDevice {
         return DeviceModel.all.first {$0.identifier == identifier }?.model ?? identifier
     }
 }
+
+// MARK: - Одиночная вибрация
+func NotificationFeedbackGenerator() {
+    let tapticFeedback = UINotificationFeedbackGenerator()
+    tapticFeedback.notificationOccurred(.success)
+}
+
+// приведение даты к российскому стандарту
+extension Date {
+    func rusDateShort() -> String {
+        let date = self.formatted(Date.FormatStyle()
+            .day(.twoDigits)
+            .month(.twoDigits)
+            .year(.twoDigits)
+            .locale(Locale(identifier: "ru_RU"))
+        )
+        return String(date)
+    }
+}
+
+// возвращает текст с разделенными тысячами и знаком рубля
+extension Float {
+    func getRusPrice() -> String {
+     
+            let numberForrmatter: NumberFormatter = NumberFormatter()
+            numberForrmatter.groupingSeparator = " "
+            numberForrmatter.groupingSize = 3
+            numberForrmatter.usesGroupingSeparator = true
+            numberForrmatter.decimalSeparator = "."
+            numberForrmatter.numberStyle = NumberFormatter.Style.decimal
+            guard let price = numberForrmatter.string(from: self as NSNumber) as String? else { return ""}
+            return price + String(" ₽")
+    }
+}

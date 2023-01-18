@@ -37,6 +37,10 @@
 		E22B5EA2297847B400836E92 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22B5EA1297847B400836E92 /* Extensions.swift */; };
 		E22B5EA42978480E00836E92 /* DeviceModels.json in Resources */ = {isa = PBXBuildFile; fileRef = E22B5EA32978480E00836E92 /* DeviceModels.json */; };
 		E22B5EA729784A6E00836E92 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E22B5EA629784A6E00836E92 /* Launch Screen.storyboard */; };
+		E22B5EA92978510D00836E92 /* ExtensionsUIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22B5EA82978510D00836E92 /* ExtensionsUIImage.swift */; };
+		E22B5EAB2978518200836E92 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22B5EAA2978518200836E92 /* Constants.swift */; };
+		E22B5EAE2978563800836E92 /* AuthUserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22B5EAD2978563800836E92 /* AuthUserManager.swift */; };
+		E22B5EB12978580600836E92 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22B5EB02978580600836E92 /* UserModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +52,10 @@
 		E22B5EA1297847B400836E92 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		E22B5EA32978480E00836E92 /* DeviceModels.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DeviceModels.json; sourceTree = "<group>"; };
 		E22B5EA629784A6E00836E92 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		E22B5EA82978510D00836E92 /* ExtensionsUIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionsUIImage.swift; sourceTree = "<group>"; };
+		E22B5EAA2978518200836E92 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		E22B5EAD2978563800836E92 /* AuthUserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUserManager.swift; sourceTree = "<group>"; };
+		E22B5EB02978580600836E92 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,7 +105,9 @@
 			children = (
 				E22B5E50297839CE00836E92 /* LynaFMApp.swift */,
 				E22B5E51297839CE00836E92 /* ContentView.swift */,
-				E22B5EA529784A2400836E92 /* System */,
+				E22B5EAF2978574900836E92 /* User */,
+				E22B5EAC2978558400836E92 /* Managers */,
+				E22B5EA529784A2400836E92 /* Extensions */,
 				E22B5E52297839D000836E92 /* Assets.xcassets */,
 				E22B5EA629784A6E00836E92 /* Launch Screen.storyboard */,
 				E22B5EA32978480E00836E92 /* DeviceModels.json */,
@@ -114,12 +124,30 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		E22B5EA529784A2400836E92 /* System */ = {
+		E22B5EA529784A2400836E92 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
 				E22B5EA1297847B400836E92 /* Extensions.swift */,
+				E22B5EA82978510D00836E92 /* ExtensionsUIImage.swift */,
+				E22B5EAA2978518200836E92 /* Constants.swift */,
 			);
-			path = System;
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		E22B5EAC2978558400836E92 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				E22B5EAD2978563800836E92 /* AuthUserManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		E22B5EAF2978574900836E92 /* User */ = {
+			isa = PBXGroup;
+			children = (
+				E22B5EB02978580600836E92 /* UserModel.swift */,
+			);
+			path = User;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -222,9 +250,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E22B5EAB2978518200836E92 /* Constants.swift in Sources */,
+				E22B5EB12978580600836E92 /* UserModel.swift in Sources */,
 				E22B5E62297839D000836E92 /* ContentView.swift in Sources */,
+				E22B5EAE2978563800836E92 /* AuthUserManager.swift in Sources */,
 				E22B5E60297839D000836E92 /* LynaFMApp.swift in Sources */,
 				E22B5EA2297847B400836E92 /* Extensions.swift in Sources */,
+				E22B5EA92978510D00836E92 /* ExtensionsUIImage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
