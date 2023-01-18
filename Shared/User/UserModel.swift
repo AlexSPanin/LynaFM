@@ -37,8 +37,8 @@ struct User: Identifiable, Codable {
     var name: String
     var surname: String
     
-    var urlImage = ""
-    var urlData = ""
+    var image = ""
+    var data = ""
     
     static func getUser(email: String, phone: String, name: String, surname: String) -> User {
        return  User(email: email, phone: phone, name: name, surname: surname)

@@ -14,6 +14,8 @@ let version = Bundle.main.appVersion + "." + Bundle.main.appBuild
 let scaleWidth = WIDTH / 320
 let scaleHeight = HEIGHT / 568
 
+let userDefaults = UserDefaults.standard
+
 // коофициент для пересчета элементов при малой ширине экрана
 let isSmallWIDTH: Bool = WIDTH < 340
 let isSmallHEIGHT: Bool = HEIGHT < 690
