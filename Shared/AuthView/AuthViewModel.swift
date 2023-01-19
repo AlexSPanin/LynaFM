@@ -39,6 +39,8 @@ class AuthViewModel: ObservableObject {
     deinit {
         print("CLOSE: AuthViewModel")
     }
+    
+    // проверка версии программы
     private func checkVersion() {
         NetworkManager.shared.fetchVersion { result in
             switch result {

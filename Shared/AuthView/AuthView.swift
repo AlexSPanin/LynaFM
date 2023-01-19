@@ -8,13 +8,19 @@
 import SwiftUI
 
 struct AuthView: View {
-@StateObject var viewModel = AuthViewModel()
+    @EnvironmentObject var navigation: NavigationViewModel
+    @StateObject var viewModel = AuthViewModel()
     var body: some View {
         ZStack {
-        Text(viewModel.isVersion ? /*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/ : "Loading")
+            Text(viewModel.isVersion ? /*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/ : "Loading")
+            
+            // отработка сообщений об ошибках
             if viewModel.errorOccured {
                 NotificationView(text: viewModel.errorText, button: "ОК") {
                     viewModel.errorOccured.toggle()
+                    if !viewModel.isVersion {
+                        navigation.view = .version
+                    }
                 }
             }
         }

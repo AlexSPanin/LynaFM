@@ -8,8 +8,18 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var navigation: NavigationViewModel
+    
     var body: some View {
-        AuthView()
+        
+        ZStack {
+            switch navigation.view {
+            case .auth:
+                AuthView()
+            case .version:
+                VersionValidateView()
+            }
+        }
     }
 }
 

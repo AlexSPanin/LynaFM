@@ -45,10 +45,13 @@ class AppState: ObservableObject {
 struct LynaFMApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
+    @StateObject var navigation = NavigationViewModel()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
            //     .preferredColorScheme(.dark)
+                .environmentObject(navigation)
                 .environmentObject(AppState())
                 .onAppear {
                     print("System Parameters:")
