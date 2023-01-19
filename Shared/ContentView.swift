@@ -16,8 +16,6 @@ struct ContentView: View {
             switch navigation.view {
             case .auth:
                 AuthView()
-            case .version:
-                VersionValidateView()
             case .role:
                 RoleUserView()
             }

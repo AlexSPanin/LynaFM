@@ -16,11 +16,13 @@ struct AuthView: View {
             case .auth:
                 LoginAuthView(viewModel: viewModel)
             case .edit:
-                ProfileUserView()
+                ProfileUserView(viewModel: viewModel)
             case .repair:
                 RecoveryUserView(viewModel: viewModel)
             case .version:
                 VersionValidateView()
+            case .starting:
+                StartingView(viewModel: viewModel)
             }
 
             // отработка сообщений об ошибках
@@ -33,5 +35,11 @@ struct AuthView: View {
                 }
             }
         }
+        .onChange(of: viewModel.isFinish) { newValue in
+            if newValue {
+                navigation.view = .role
+            }
+        }
+        
     }
 }

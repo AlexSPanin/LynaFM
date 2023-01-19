@@ -8,7 +8,7 @@
 import Foundation
 
 enum AuthViews {
-    case auth, edit, repair, version
+    case auth, edit, repair, version, starting
 }
 
 class AuthViewModel: ObservableObject {
@@ -27,12 +27,24 @@ class AuthViewModel: ObservableObject {
     
     
     // отвечает за показ активного окна
-    @Published var showView: AuthViews = .auth
+    @Published var showView: AuthViews = .starting
     
-    // признак проверки входа по паролю
+    // признак запуска методов
     @Published var isAuth = false {
         didSet {
             checkLogIn()
+        }
+    }
+    
+    @Published var isEdit = false {
+        didSet {
+            saveProfile()
+        }
+    }
+    
+    @Published var isExit = false {
+        didSet {
+            exitProfile()
         }
     }
     
@@ -42,9 +54,9 @@ class AuthViewModel: ObservableObject {
             sendRecoveryPassword()
         }
     }
-    // признак окончания загрузки пользователя
-    @Published var isFinishLoadUser = false
-
+    // признак окончания работы раздела авторизации
+    @Published var isFinish = false
+    
     // признак корректной версии программы
     @Published var isVersion = false
     
@@ -65,13 +77,55 @@ class AuthViewModel: ObservableObject {
         let key = StorageManager.shared.checkKey(type: TypeKey.app)
         if !key {
             showView = .auth
+        } else {
+            StorageManager.shared.fetchUserCurrent { result in
+                switch result {
+                case .success(let current):
+                    self.name = current.name
+                    self.surname = current.surname
+                    self.phone = current.phone
+                case .failure(_):
+                    self.errorText = "Ошибка загрузки профиля.\nАвторизируйтесь повторно."
+                    self.errorOccured.toggle()
+                    self.exitProfile()
+                }
+            }
         }
     }
     
+    // выйти из профиля
+    private func exitProfile() {
+        showView = .auth
+        email = ""
+        passwordEnter = ""
+        name = ""
+        surname = ""
+        phone = ""
+        image = Data()
+        let current = UserCurrent()
+        StorageManager.shared.saveUser(at: current)
+        StorageManager.shared.settingKey(to: TypeKey.app, key: false)
+    }
     
-    
-    
-    
+    // сохранить профиль
+    private func saveProfile() {
+        if name.isEmpty || surname.isEmpty || phone.isEmpty {
+            errorText = "Все поля должны\nбыть заполнены"
+            errorOccured.toggle()
+            return
+        } else {
+            if let id = AuthUserManager.shared.userSession?.uid, let email = AuthUserManager.shared.userSession?.email {
+                var user = User(email: email, phone: phone, name: name, surname: surname)
+                user.id = id
+                let current = StorageManager.shared.getUserToUserCurrent(user: user)
+                NetworkManager.shared.upLoadUser(user: user) {}
+                StorageManager.shared.saveUser(at: current)
+                StorageManager.shared.settingKey(to: TypeKey.app, key: true)
+                self.isFinish = true
+            }
+        }
+    }
+
     // проверка входа по паролю
     private func checkLogIn() {
         print("LoginUserViewModel: Начало входа по паролю")
@@ -89,18 +143,16 @@ class AuthViewModel: ObservableObject {
                     self.email = ""
                     return
                 } else {
-                    self.isFinishLoadUser = false
-                    if let name = AuthUserManager.shared.userSession?.uid, let email = AuthUserManager.shared.userSession?.email {
+                    if let name = AuthUserManager.shared.userSession?.uid {
                         NetworkManager.shared.loadUser(name: name) { result in
                             switch result {
                             case .success(let user):
                                 let userCurrent = StorageManager.shared.getUserToUserCurrent(user: user)
-                                self.isFinishLoadUser = true
                                 StorageManager.shared.saveUser(at: userCurrent)
                                 StorageManager.shared.settingKey(to: TypeKey.app, key: true)
+                                self.isFinish = true
                             case .failure(_):
                                 print("надо сформировать новый профиль")
-                                self.email = email
                                 self.showView = .edit
                             }
                         }
@@ -170,7 +222,6 @@ extension AuthViewModel {
             errorOccured.toggle()
             return
         }
-        
         AuthUserManager.shared.sendLinkForPasswordReset(with: email) { errorText, errorOccured in
             if errorOccured {
                 self.errorText = errorText

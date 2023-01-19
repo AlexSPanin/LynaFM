@@ -8,7 +8,6 @@
 import Foundation
 enum Navigation {
     case auth
-    case version
     case role
 }
 

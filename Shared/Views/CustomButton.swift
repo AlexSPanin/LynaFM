@@ -33,7 +33,7 @@ struct TextButton: View {
     
     let text: String
     let action: () -> Void
-    let size = CGSize(width: WIDTH * 0.3, height: WIDTH * 0.07)
+    let size = CGSize(width: WIDTH * 0.4, height: WIDTH * 0.07)
     
     var body: some View {
         Button {
@@ -42,7 +42,9 @@ struct TextButton: View {
             Text(text)
                 .font(.footnote)
                 .underline()
+                .minimumScaleFactor(0.9)
                 .frame(width: size.width, height: size.height, alignment: .center)
+                
         }
     }
 }
