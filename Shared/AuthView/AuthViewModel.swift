@@ -22,6 +22,9 @@ class AuthViewModel: ObservableObject {
     @Published var isFinishLoadUser = false
     // признак окна восстановления
     @Published var isShowRepair = false
+    // признак корректной версии программы
+    @Published var isVersion = false
+    
     // отработка экрана ошибки
     @Published var errorText = ""
     @Published var errorOccured = false
@@ -30,10 +33,30 @@ class AuthViewModel: ObservableObject {
     
     init() {
         print("START: AuthViewModel")
+        checkVersion()
+        
     }
     deinit {
         print("CLOSE: AuthViewModel")
     }
+    private func checkVersion() {
+        NetworkManager.shared.fetchVersion { result in
+            switch result {
+            case .success(let ver):
+                if ver == version {
+                    self.isVersion = true
+                } else {
+                    self.errorText = NotificationMessage.version.text
+                    self.errorOccured = true
+                }
+            case .failure(_):
+                print("ERROR: fetchVersion")
+            }
+        }
+    }
+    
+    
+    
     
     // проверка входа по паролю
     private func checkLogIn() {

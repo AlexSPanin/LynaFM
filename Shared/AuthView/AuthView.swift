@@ -10,6 +10,13 @@ import SwiftUI
 struct AuthView: View {
 @StateObject var viewModel = AuthViewModel()
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack {
+        Text(viewModel.isVersion ? /*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/ : "Loading")
+            if viewModel.errorOccured {
+                NotificationView(text: viewModel.errorText, button: "ОК") {
+                    viewModel.errorOccured.toggle()
+                }
+            }
+        }
     }
 }

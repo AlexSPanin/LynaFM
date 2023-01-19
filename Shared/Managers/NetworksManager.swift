@@ -11,6 +11,7 @@ import FirebaseStorage
 
 enum NetworkError: Error {
     case fetchUser
+    case fetchVersion
     case decodeUser
     case fetchAllUsers
     case upLoad
@@ -37,30 +38,29 @@ enum UploadType: String {
     }
 }
 
+struct System: Codable {
+    var ver = ""
+}
+
+
 class NetworkManager {
     static let shared = NetworkManager()
     private init() {}
-    
-    // получаем полный список пользователей
-    func fetchAllUsers(comletion: @escaping (Result<[User], NetworkError>) -> Void ) {
-        Firestore.firestore().collection("user").getDocuments { querySnapshot, error in
+    // получаем версию программы
+    func fetchVersion(completion: @escaping (Result<String, NetworkError>) -> Void) {
+        Firestore.firestore().collection("system").document("system").getDocument {document, error in
             if error != nil {
-                comletion(.failure(.fetchAllUsers))
+                completion(.failure(.fetchVersion))
             } else {
-                if let documents = querySnapshot?.documents {
-                    var users = [User]()
-                    for document in documents {
-                        if let user = try? document.data(as: User.self) {
-                            users.append(user)
-                        }
-                    }
-                    comletion(.success(users))
+                if let version = try? document?.data(as: System.self) {
+                    completion(.success(version.ver))
                 } else {
-                    comletion(.failure(.decodeUser))
+                    completion(.failure(.fetchVersion))
                 }
             }
         }
     }
+    
     
     // сохранение файла с автоматическим uuid - возвращает название файла
     func upLoadFile(type: UploadType, data: Data, completion: @escaping (Result<String,NetworkError>) -> Void) {
@@ -144,5 +144,25 @@ extension NetworkManager {
             return currentUid
         }
         return ""
+    }
+    // получаем полный список пользователей
+    func fetchAllUsers(comletion: @escaping (Result<[User], NetworkError>) -> Void ) {
+        Firestore.firestore().collection("user").getDocuments { querySnapshot, error in
+            if error != nil {
+                comletion(.failure(.fetchAllUsers))
+            } else {
+                if let documents = querySnapshot?.documents {
+                    var users = [User]()
+                    for document in documents {
+                        if let user = try? document.data(as: User.self) {
+                            users.append(user)
+                        }
+                    }
+                    comletion(.success(users))
+                } else {
+                    comletion(.failure(.decodeUser))
+                }
+            }
+        }
     }
 }
