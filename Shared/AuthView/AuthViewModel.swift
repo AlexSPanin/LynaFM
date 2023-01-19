@@ -22,6 +22,7 @@ class AuthViewModel: ObservableObject {
     @Published var surname = ""
     @Published var phone = ""
     @Published var image = Data()
+    var imageFile: String?
     
     
     
@@ -86,10 +87,22 @@ class AuthViewModel: ObservableObject {
                     self.name = current.name
                     self.surname = current.surname
                     self.phone = current.phone
+                    self.imageFile = current.image
                 case .failure(_):
                     self.errorText = "Ошибка загрузки профиля.\nАвторизируйтесь повторно."
                     self.errorOccured.toggle()
                     self.exitProfile()
+                }
+            }
+            if let imageFile = imageFile {
+                AuthUserManager.shared.updateUserSession()
+                NetworkManager.shared.loadFile(type: .user_image, name: imageFile) { result in
+                    switch result {
+                    case .success(let data):
+                        self.image = data
+                    case .failure(_):
+                        print("ERROR: load Image")
+                    }
                 }
             }
         }
@@ -104,6 +117,7 @@ class AuthViewModel: ObservableObject {
         surname = ""
         phone = ""
         image = Data()
+        imageFile = ""
         let current = UserCurrent()
         StorageManager.shared.saveUser(at: current)
         StorageManager.shared.settingKey(to: TypeKey.app, key: false)
@@ -116,15 +130,20 @@ class AuthViewModel: ObservableObject {
             errorOccured.toggle()
             return
         } else {
+            AuthUserManager.shared.updateUserSession()
             if let id = AuthUserManager.shared.userSession?.uid, let email = AuthUserManager.shared.userSession?.email {
                 var user = User(email: email, phone: phone, name: name, surname: surname)
-                user.id = id
-                let current = StorageManager.shared.getUserToUserCurrent(user: user)
-                NetworkManager.shared.upLoadUser(user: user) {}
-                StorageManager.shared.saveUser(at: current)
-                StorageManager.shared.settingKey(to: TypeKey.app, key: true)
-                self.isFinish = true
+                NetworkManager.shared.upLoadFile(to: self.imageFile, type: .user_image, data: image) { file in
+                    user.id = id
+                    user.image = file
+                    let current = StorageManager.shared.getUserToUserCurrent(user: user)
+                    NetworkManager.shared.upLoadUser(user: user) {}
+                    StorageManager.shared.saveUser(at: current)
+                    StorageManager.shared.settingKey(to: TypeKey.app, key: true)
+                    self.isFinish = true
+                }
             }
+            
         }
     }
 

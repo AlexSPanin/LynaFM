@@ -14,16 +14,17 @@ class AuthUserManager {
     
     static let shared = AuthUserManager()
     
-    init() { print("AuthUserViewModel: Init") }
+    init() { print("AuthUserManager: Init") }
     
-    deinit { print("AuthUserViewModel: DeInit") }
+    deinit { print("AuthUserManager: DeInit") }
     
-    func updateUserSession() -> Bool {
+    func updateUserSession(){
         //        print("AuthUserViewModel: Проверка интернет сесии Пользователя")
         userSession = Auth.auth().currentUser
         print("AuthUserViewModel:  userSession \(userSession?.uid ?? "Не авторизован")")
-        return userSession != nil
     }
+    
+    
     
     //MARK: - методы для работы с пользователями в базе данных
     

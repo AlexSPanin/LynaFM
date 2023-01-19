@@ -63,21 +63,17 @@ class NetworkManager {
     
     
     // сохранение файла с автоматическим uuid - возвращает название файла
-    func upLoadFile(type: UploadType, data: Data, completion: @escaping (Result<String,NetworkError>) -> Void) {
-        let uuid = UUID().uuidString
+    func upLoadFile(to name: String? = nil, type: UploadType, data: Data, completion: @escaping (String) -> Void) {
+        var uuid = UUID().uuidString
+        if let name = name { uuid = name }
         let storageRef = type.filePath.child(uuid)
         storageRef.putData(data, metadata: nil) { _, error in
             if error != nil {
-                completion(.failure(.upLoad))
+                print("ERROR: upLoad File")
+                completion("")
             } else {
-                completion(.success(uuid))
-                //                storageRef.downloadURL { url, error in
-                //                    if let url = url, error == nil {
-                //                        completion(.success(url.absoluteString))
-                //                    } else {
-                //                        completion(.failure(.invalidURL))
-                //                    }
-                //                }
+                print("FINISH: upLoad File ")
+                completion(uuid)
             }
         }
     }
