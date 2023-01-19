@@ -45,6 +45,11 @@
 		E22B5EB529786F9700836E92 /* StoradgeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22B5EB429786F9600836E92 /* StoradgeManager.swift */; };
 		E22B5EB82978703000836E92 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22B5EB72978703000836E92 /* AuthViewModel.swift */; };
 		E22B5EBA2978704300836E92 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22B5EB92978704300836E92 /* AuthView.swift */; };
+		E2B60E6529793D80001E710D /* TextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E6429793D80001E710D /* TextFieldView.swift */; };
+		E2B60E6729793FE4001E710D /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E6629793FE4001E710D /* CustomButton.swift */; };
+		E2B60E692979412D001E710D /* HorizontalDividerLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E682979412D001E710D /* HorizontalDividerLabelView.swift */; };
+		E2B60E6B29794BFA001E710D /* RoleUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E6A29794BFA001E710D /* RoleUserView.swift */; };
+		E2B60E6D29794C8F001E710D /* LoginAuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E6C29794C8F001E710D /* LoginAuthView.swift */; };
 		E2D906EB297924E2009C6B4B /* NotificationMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D906EA297924E2009C6B4B /* NotificationMessage.swift */; };
 		E2D906ED29792C02009C6B4B /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D906EC29792C02009C6B4B /* NotificationView.swift */; };
 		E2D906F029793417009C6B4B /* VersionValidateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D906EF29793417009C6B4B /* VersionValidateView.swift */; };
@@ -68,6 +73,11 @@
 		E22B5EB429786F9600836E92 /* StoradgeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoradgeManager.swift; sourceTree = "<group>"; };
 		E22B5EB72978703000836E92 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		E22B5EB92978704300836E92 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
+		E2B60E6429793D80001E710D /* TextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldView.swift; sourceTree = "<group>"; };
+		E2B60E6629793FE4001E710D /* CustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
+		E2B60E682979412D001E710D /* HorizontalDividerLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalDividerLabelView.swift; sourceTree = "<group>"; };
+		E2B60E6A29794BFA001E710D /* RoleUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleUserView.swift; sourceTree = "<group>"; };
+		E2B60E6C29794C8F001E710D /* LoginAuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginAuthView.swift; sourceTree = "<group>"; };
 		E2D906EA297924E2009C6B4B /* NotificationMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationMessage.swift; sourceTree = "<group>"; };
 		E2D906EC29792C02009C6B4B /* NotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		E2D906EF29793417009C6B4B /* VersionValidateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionValidateView.swift; sourceTree = "<group>"; };
@@ -176,6 +186,7 @@
 			isa = PBXGroup;
 			children = (
 				E22B5EB92978704300836E92 /* AuthView.swift */,
+				E2B60E6C29794C8F001E710D /* LoginAuthView.swift */,
 				E22B5EB72978703000836E92 /* AuthViewModel.swift */,
 			);
 			path = AuthView;
@@ -194,6 +205,10 @@
 			isa = PBXGroup;
 			children = (
 				E2D906EF29793417009C6B4B /* VersionValidateView.swift */,
+				E2B60E6429793D80001E710D /* TextFieldView.swift */,
+				E2B60E6629793FE4001E710D /* CustomButton.swift */,
+				E2B60E682979412D001E710D /* HorizontalDividerLabelView.swift */,
+				E2B60E6A29794BFA001E710D /* RoleUserView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -308,7 +323,9 @@
 			files = (
 				E22B5EB82978703000836E92 /* AuthViewModel.swift in Sources */,
 				E22B5EB329786F8300836E92 /* NetworksManager.swift in Sources */,
+				E2B60E6529793D80001E710D /* TextFieldView.swift in Sources */,
 				E22B5EAB2978518200836E92 /* Constants.swift in Sources */,
+				E2B60E6D29794C8F001E710D /* LoginAuthView.swift in Sources */,
 				E2D906F029793417009C6B4B /* VersionValidateView.swift in Sources */,
 				E2D906ED29792C02009C6B4B /* NotificationView.swift in Sources */,
 				E22B5EB12978580600836E92 /* UserModel.swift in Sources */,
@@ -318,6 +335,9 @@
 				E22B5E60297839D000836E92 /* LynaFMApp.swift in Sources */,
 				E22B5EA2297847B400836E92 /* Extensions.swift in Sources */,
 				E2D906EB297924E2009C6B4B /* NotificationMessage.swift in Sources */,
+				E2B60E6729793FE4001E710D /* CustomButton.swift in Sources */,
+				E2B60E692979412D001E710D /* HorizontalDividerLabelView.swift in Sources */,
+				E2B60E6B29794BFA001E710D /* RoleUserView.swift in Sources */,
 				E22B5EB529786F9700836E92 /* StoradgeManager.swift in Sources */,
 				E22B5EBA2978704300836E92 /* AuthView.swift in Sources */,
 				E22B5EA92978510D00836E92 /* ExtensionsUIImage.swift in Sources */,

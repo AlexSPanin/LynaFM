@@ -11,9 +11,7 @@ struct NotificationView: View {
     let text: String
     let button: String
     let action: (() -> Void)
-    
-    let font: Font = fontRegular14
-    
+
     init(text: String, button: String, action: @escaping (() -> Void)){
         self.text = text
         self.button = button
@@ -34,7 +32,7 @@ struct NotificationView: View {
                     .padding(.vertical, 20)
                 Text(text)
                     .multilineTextAlignment(.center)
-                    .font(font)
+                    .font(.footnote)
                     .minimumScaleFactor(0.9)
                     .lineLimit(3)
 
@@ -42,7 +40,7 @@ struct NotificationView: View {
                     action()
                 }, label: {
                     Text(button)
-                        .font(font)
+                        .font(.footnote)
                         .foregroundColor(.orange)
                 })
                 .frame(width: WIDTH * 0.25, height: WIDTH * 0.07)

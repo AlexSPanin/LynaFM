@@ -23,11 +23,9 @@ let scaleFactor = 0.9
 
 //MARK: - размеры элементов и отступов
 
-let hPaddingCard: CGFloat = 15 * scaleWidth
-let vPaddingAR: CGFloat = 10 * scaleWidth
-let widthSmallCard: CGFloat = WIDTH * 0.4
-let buttonSize: CGFloat = WIDTH * 0.14 * scaleWidth
-let buttonCorner: CGFloat = 8 * scaleWidth
+let hPadding: CGFloat = 15 * scaleWidth
+let vPadding: CGFloat = 15 * scaleHeight
+let buttonCorner: CGFloat = 5 * scaleWidth
 
 //MARK: - цвета для приложения
 

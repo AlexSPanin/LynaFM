@@ -12,7 +12,7 @@ struct VersionValidateView: View {
         VStack(alignment: .center, spacing: 40) {
             Text("Закройте приложение.\nСкачайте и установите\nновую версию!")
                 .multilineTextAlignment(.center)
-                .font(fontRegular14)
+                .font(.callout)
             Image("Lyna_1024")
                 .resizable()
                 .interpolation(.medium)

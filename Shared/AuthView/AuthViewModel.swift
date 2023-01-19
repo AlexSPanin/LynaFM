@@ -12,16 +12,22 @@ class AuthViewModel: ObservableObject {
     // переменные полей пользователя для входа по паролю
     @Published var email = ""
     @Published var passwordEnter: String = ""
+    // признак показа окон
+    @Published var isShowAuth = false
+    @Published var isShowRepair = false
+    
+    
+    
+    
     // признак проверки входа по паролю
-    @Published var logIn = false {
+    @Published var isAuth = false {
         didSet {
             checkLogIn()
         }
     }
     // признак окончания загрузки пользователя
     @Published var isFinishLoadUser = false
-    // признак окна восстановления
-    @Published var isShowRepair = false
+
     // признак корректной версии программы
     @Published var isVersion = false
     
@@ -34,28 +40,18 @@ class AuthViewModel: ObservableObject {
     init() {
         print("START: AuthViewModel")
         checkVersion()
-        
+        checkFirstKey()
     }
     deinit {
         print("CLOSE: AuthViewModel")
     }
-    
-    // проверка версии программы
-    private func checkVersion() {
-        NetworkManager.shared.fetchVersion { result in
-            switch result {
-            case .success(let ver):
-                if ver == version {
-                    self.isVersion = true
-                } else {
-                    self.errorText = NotificationMessage.version.text
-                    self.errorOccured = true
-                }
-            case .failure(_):
-                print("ERROR: fetchVersion")
-            }
+    private func checkFirstKey() {
+        let key = StorageManager.shared.checkKey(type: TypeKey.app)
+        if !key {
+            isShowAuth = true
         }
     }
+    
     
     
     
@@ -74,7 +70,6 @@ class AuthViewModel: ObservableObject {
                     self.errorText = text
                     self.errorOccured = error
                     self.passwordEnter = ""
-                    self.isFinishLoadUser = false
                     return
                 } else {
                     self.isFinishLoadUser = false
@@ -82,6 +77,7 @@ class AuthViewModel: ObservableObject {
                         NetworkManager.shared.loadUser(name: name) { result in
                             switch result {
                             case .success(let user):
+                                self.isFinishLoadUser = true
                                 self.user = user
                             case .failure(_):
                                 print("надо сформировать новый профиль")
@@ -89,6 +85,25 @@ class AuthViewModel: ObservableObject {
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+extension AuthViewModel {
+    // проверка версии программы
+    private func checkVersion() {
+        NetworkManager.shared.fetchVersion { result in
+            switch result {
+            case .success(let ver):
+                if ver == version {
+                    self.isVersion = true
+                } else {
+                    self.errorText = NotificationMessage.version.text
+                    self.errorOccured = true
+                }
+            case .failure(_):
+                print("ERROR: fetchVersion")
             }
         }
     }

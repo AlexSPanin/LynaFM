@@ -18,6 +18,8 @@ struct ContentView: View {
                 AuthView()
             case .version:
                 VersionValidateView()
+            case .role:
+                RoleUserView()
             }
         }
     }

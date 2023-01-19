@@ -12,7 +12,11 @@ struct AuthView: View {
     @StateObject var viewModel = AuthViewModel()
     var body: some View {
         ZStack {
-            Text(viewModel.isVersion ? /*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/ : "Loading")
+            //        Text(viewModel.isVersion ? /*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/ : "Loading")
+            // окно авторизации по паролю и почте
+            if viewModel.isShowAuth {
+                LoginAuthView(viewModel: viewModel)
+            }
             
             // отработка сообщений об ошибках
             if viewModel.errorOccured {
