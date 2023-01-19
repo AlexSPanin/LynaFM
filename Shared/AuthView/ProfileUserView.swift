@@ -9,6 +9,9 @@ import SwiftUI
 
 struct ProfileUserView: View {
     @ObservedObject var viewModel: AuthViewModel
+    private var image: UIImage? {
+       UIImage(data: viewModel.image)
+    }
     var body: some View {
         VStack(alignment: .center, spacing: 10) {
             Text("Заполните свой профиль")
@@ -16,6 +19,10 @@ struct ProfileUserView: View {
                 .lineLimit(1)
                 .minimumScaleFactor(scaleFactor)
                 .multilineTextAlignment(.leading)
+            CircleAvatarView(image: image, disable: false) {
+                viewModel.showAvatarPhotoView.toggle()
+            }
+  //          AvatarPhotoView(imageData: $viewModel.image, showAvatarPhotoView: $viewModel.showAvatarPhotoView)
             
             TextFieldView(subtitle: "Имя",
                           tipeTextField: .userName, text: $viewModel.name)
@@ -37,10 +44,13 @@ struct ProfileUserView: View {
         .padding(.all, hPadding)
         .frame(width: WIDTH * 0.95)
         .background(
-            Color.accentColor.opacity(0.2).cornerRadius(10)
+            Color.accentColor.opacity(0.1).cornerRadius(10)
                 .overlay(
                     RoundedRectangle(cornerRadius: 10).stroke(Color.accentColor, lineWidth: 1)
                 )
         )
+        .sheet(isPresented: $viewModel.showAvatarPhotoView) {
+            AvatarPhotoView(imageData: $viewModel.image, showAvatarPhotoView: $viewModel.showAvatarPhotoView)
+        }
     }
 }

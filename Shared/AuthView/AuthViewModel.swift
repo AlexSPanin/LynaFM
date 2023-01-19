@@ -29,6 +29,8 @@ class AuthViewModel: ObservableObject {
     // отвечает за показ активного окна
     @Published var showView: AuthViews = .starting
     
+    @Published var showAvatarPhotoView = false
+    
     // признак запуска методов
     @Published var isAuth = false {
         didSet {

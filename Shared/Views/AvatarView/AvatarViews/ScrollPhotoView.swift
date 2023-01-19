@@ -28,8 +28,8 @@ struct ScrollPhotoView: View {
                 ZStack {
                     Image(systemName: "camera.on.rectangle")
                         .resizable()
-                        .frame(width: scrollSize.width/3, height: scrollSize.width/3)
                         .aspectRatio(contentMode: .fill)
+                        .frame(width: scrollSize.width/3, height: scrollSize.width/3)
                         .foregroundColor(viewModel.colorButton)
                 }
             }
@@ -37,7 +37,7 @@ struct ScrollPhotoView: View {
         .frame(width: scrollSize.width, height: scrollSize.height)
         .background(Color.white)
         .overlay(
-            RoundedRectangle(cornerRadius: buttonCorner).stroke( viewModel.colorButton, lineWidth: 2)
+            RoundedRectangle(cornerRadius: buttonCorner).stroke( viewModel.colorButton, lineWidth: 1)
         )
         .sheet(isPresented: $viewModel.isImagePickerDisplay, onDismiss: chagePhoto) {
             ImagePickerView(selectedImage: self.$selectedImage, sourceType: viewModel.sourceType)

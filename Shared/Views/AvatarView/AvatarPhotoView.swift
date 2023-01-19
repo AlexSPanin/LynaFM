@@ -20,37 +20,39 @@ struct AvatarPhotoView: View {
     }
     
     var body: some View {
-        ZStack{
-            Color.white
-            VStack {
-                
-                HStack{
-                    Button {
-                        showAvatarPhotoView.toggle()
-                    } label: {
-                        Text("Отмена")
-                    }
-                    Spacer()
-                    Button {
-                        imageData = viewModel.savePhoto()
-                        showAvatarPhotoView.toggle()
-                    } label: {
-                        Text("Ок")
-                    }
-                }
-                .font(.title3)
-                .foregroundColor(.gray)
-                .padding()
-                
-                Spacer()
-                UpperButtonsPhotoView(viewModel: viewModel)
-                
-                ScrollPhotoView(viewModel: viewModel)
-                if viewModel.photo != nil {
-                    LowerButtonsPhotoView(viewModel: viewModel)
+        VStack {            
+            HStack{
+                Button {
+                    showAvatarPhotoView.toggle()
+                } label: {
+                    Text("Отмена")
+                        .foregroundColor(.orange).opacity(0.8)
                 }
                 Spacer()
+                Button {
+                    imageData = viewModel.savePhoto()
+                    showAvatarPhotoView.toggle()
+                } label: {
+                    Text("Добавить")
+                        .foregroundColor(.cyan).opacity(0.8)
+                }
             }
+            .font(.body)
+            .padding(.horizontal, hPadding)
+            .padding(.top, hPadding)
+            
+            Spacer()
+            
+            UpperButtonsPhotoView(viewModel: viewModel)
+            
+            ScrollPhotoView(viewModel: viewModel)
+            if viewModel.photo != nil {
+                LowerButtonsPhotoView(viewModel: viewModel)
+            }
+            Spacer()
+        }
+        .onAppear{
+            viewModel.photo = UIImage(data: imageData)
         }
     }
 }

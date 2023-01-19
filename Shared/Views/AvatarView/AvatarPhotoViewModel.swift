@@ -26,7 +26,7 @@ class AvatarPhotoViewModel: ObservableObject {
     @Published var isImagePickerDisplay = false
     
     @Published var colorButton = Color.accentColor
-    @Published var sizeButton: CGFloat = WIDTH * 0.1
+    @Published var sizeButton: CGFloat = WIDTH * 0.07
     
   //  @Published var didEditUserImage: Bool = false
     
