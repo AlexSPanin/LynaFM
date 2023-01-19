@@ -111,7 +111,7 @@ extension NetworkManager {
                     "name" : user.name,
                     "surname" : user.surname,
                     "image" : user.image,
-                    "data" : user.data,
+                    "profile" : user.profile,
                     "isActive" : user.isActive
         ] as [String : Any]
         Firestore.firestore().collection("user").document(name).setData(data)

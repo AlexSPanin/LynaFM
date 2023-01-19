@@ -12,18 +12,23 @@ struct AuthView: View {
     @StateObject var viewModel = AuthViewModel()
     var body: some View {
         ZStack {
-            //        Text(viewModel.isVersion ? /*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/ : "Loading")
-            // окно авторизации по паролю и почте
-            if viewModel.isShowAuth {
+            switch viewModel.showView {
+            case .auth:
                 LoginAuthView(viewModel: viewModel)
+            case .edit:
+                ProfileUserView()
+            case .repair:
+                RecoveryUserView(viewModel: viewModel)
+            case .version:
+                VersionValidateView()
             }
-            
+
             // отработка сообщений об ошибках
             if viewModel.errorOccured {
                 NotificationView(text: viewModel.errorText, button: "ОК") {
                     viewModel.errorOccured.toggle()
                     if !viewModel.isVersion {
-                        navigation.view = .version
+                        viewModel.showView = .version
                     }
                 }
             }

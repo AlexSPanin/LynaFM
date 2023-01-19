@@ -57,6 +57,8 @@ class AuthUserManager {
                 let errorOccured = true
                 var errorText = "Ошибка авторизации:\nКод ошибки \(error._code)"
                 switch error._code {
+                case 17008:
+                    errorText = "Ошибка ввода email:\nНеправильный почтовый адрес"
                 case 17009:
                     errorText = "Ошибка авторизации:\nНе корректный пароль"
                 case 17011:

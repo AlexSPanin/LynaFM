@@ -50,6 +50,17 @@
 		E2B60E692979412D001E710D /* HorizontalDividerLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E682979412D001E710D /* HorizontalDividerLabelView.swift */; };
 		E2B60E6B29794BFA001E710D /* RoleUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E6A29794BFA001E710D /* RoleUserView.swift */; };
 		E2B60E6D29794C8F001E710D /* LoginAuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E6C29794C8F001E710D /* LoginAuthView.swift */; };
+		E2B60E6F297961A6001E710D /* ProfileUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E6E297961A6001E710D /* ProfileUserView.swift */; };
+		E2B60E7129796226001E710D /* RecoveryUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E7029796226001E710D /* RecoveryUserView.swift */; };
+		E2B60E7D2979638F001E710D /* AvatarPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E732979638F001E710D /* AvatarPhotoView.swift */; };
+		E2B60E7E2979638F001E710D /* AvatarPhotoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E742979638F001E710D /* AvatarPhotoViewModel.swift */; };
+		E2B60E7F2979638F001E710D /* ButtonsPhotoDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E752979638F001E710D /* ButtonsPhotoDataManager.swift */; };
+		E2B60E802979638F001E710D /* UpperButtonsPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E772979638F001E710D /* UpperButtonsPhotoView.swift */; };
+		E2B60E812979638F001E710D /* ScrollPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E782979638F001E710D /* ScrollPhotoView.swift */; };
+		E2B60E822979638F001E710D /* ImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E792979638F001E710D /* ImagePickerView.swift */; };
+		E2B60E832979638F001E710D /* LowerButtonsPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E7A2979638F001E710D /* LowerButtonsPhotoView.swift */; };
+		E2B60E842979638F001E710D /* ImageScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E7B2979638F001E710D /* ImageScrollView.swift */; };
+		E2B60E852979638F001E710D /* ButtonsPhotoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E7C2979638F001E710D /* ButtonsPhotoModel.swift */; };
 		E2D906EB297924E2009C6B4B /* NotificationMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D906EA297924E2009C6B4B /* NotificationMessage.swift */; };
 		E2D906ED29792C02009C6B4B /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D906EC29792C02009C6B4B /* NotificationView.swift */; };
 		E2D906F029793417009C6B4B /* VersionValidateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D906EF29793417009C6B4B /* VersionValidateView.swift */; };
@@ -78,6 +89,17 @@
 		E2B60E682979412D001E710D /* HorizontalDividerLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalDividerLabelView.swift; sourceTree = "<group>"; };
 		E2B60E6A29794BFA001E710D /* RoleUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleUserView.swift; sourceTree = "<group>"; };
 		E2B60E6C29794C8F001E710D /* LoginAuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginAuthView.swift; sourceTree = "<group>"; };
+		E2B60E6E297961A6001E710D /* ProfileUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileUserView.swift; sourceTree = "<group>"; };
+		E2B60E7029796226001E710D /* RecoveryUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryUserView.swift; sourceTree = "<group>"; };
+		E2B60E732979638F001E710D /* AvatarPhotoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AvatarPhotoView.swift; sourceTree = "<group>"; };
+		E2B60E742979638F001E710D /* AvatarPhotoViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AvatarPhotoViewModel.swift; sourceTree = "<group>"; };
+		E2B60E752979638F001E710D /* ButtonsPhotoDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonsPhotoDataManager.swift; sourceTree = "<group>"; };
+		E2B60E772979638F001E710D /* UpperButtonsPhotoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpperButtonsPhotoView.swift; sourceTree = "<group>"; };
+		E2B60E782979638F001E710D /* ScrollPhotoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollPhotoView.swift; sourceTree = "<group>"; };
+		E2B60E792979638F001E710D /* ImagePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePickerView.swift; sourceTree = "<group>"; };
+		E2B60E7A2979638F001E710D /* LowerButtonsPhotoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LowerButtonsPhotoView.swift; sourceTree = "<group>"; };
+		E2B60E7B2979638F001E710D /* ImageScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageScrollView.swift; sourceTree = "<group>"; };
+		E2B60E7C2979638F001E710D /* ButtonsPhotoModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonsPhotoModel.swift; sourceTree = "<group>"; };
 		E2D906EA297924E2009C6B4B /* NotificationMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationMessage.swift; sourceTree = "<group>"; };
 		E2D906EC29792C02009C6B4B /* NotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		E2D906EF29793417009C6B4B /* VersionValidateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionValidateView.swift; sourceTree = "<group>"; };
@@ -187,9 +209,35 @@
 			children = (
 				E22B5EB92978704300836E92 /* AuthView.swift */,
 				E2B60E6C29794C8F001E710D /* LoginAuthView.swift */,
+				E2B60E7029796226001E710D /* RecoveryUserView.swift */,
 				E22B5EB72978703000836E92 /* AuthViewModel.swift */,
+				E2B60E6E297961A6001E710D /* ProfileUserView.swift */,
 			);
 			path = AuthView;
+			sourceTree = "<group>";
+		};
+		E2B60E722979638F001E710D /* AvatarView */ = {
+			isa = PBXGroup;
+			children = (
+				E2B60E732979638F001E710D /* AvatarPhotoView.swift */,
+				E2B60E742979638F001E710D /* AvatarPhotoViewModel.swift */,
+				E2B60E752979638F001E710D /* ButtonsPhotoDataManager.swift */,
+				E2B60E762979638F001E710D /* AvatarViews */,
+				E2B60E7C2979638F001E710D /* ButtonsPhotoModel.swift */,
+			);
+			path = AvatarView;
+			sourceTree = "<group>";
+		};
+		E2B60E762979638F001E710D /* AvatarViews */ = {
+			isa = PBXGroup;
+			children = (
+				E2B60E772979638F001E710D /* UpperButtonsPhotoView.swift */,
+				E2B60E782979638F001E710D /* ScrollPhotoView.swift */,
+				E2B60E792979638F001E710D /* ImagePickerView.swift */,
+				E2B60E7A2979638F001E710D /* LowerButtonsPhotoView.swift */,
+				E2B60E7B2979638F001E710D /* ImageScrollView.swift */,
+			);
+			path = AvatarViews;
 			sourceTree = "<group>";
 		};
 		E2D906E9297924B1009C6B4B /* Notification */ = {
@@ -204,6 +252,7 @@
 		E2D906EE297933DF009C6B4B /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				E2B60E722979638F001E710D /* AvatarView */,
 				E2D906EF29793417009C6B4B /* VersionValidateView.swift */,
 				E2B60E6429793D80001E710D /* TextFieldView.swift */,
 				E2B60E6629793FE4001E710D /* CustomButton.swift */,
@@ -325,20 +374,31 @@
 				E22B5EB329786F8300836E92 /* NetworksManager.swift in Sources */,
 				E2B60E6529793D80001E710D /* TextFieldView.swift in Sources */,
 				E22B5EAB2978518200836E92 /* Constants.swift in Sources */,
+				E2B60E822979638F001E710D /* ImagePickerView.swift in Sources */,
 				E2B60E6D29794C8F001E710D /* LoginAuthView.swift in Sources */,
+				E2B60E7D2979638F001E710D /* AvatarPhotoView.swift in Sources */,
 				E2D906F029793417009C6B4B /* VersionValidateView.swift in Sources */,
 				E2D906ED29792C02009C6B4B /* NotificationView.swift in Sources */,
+				E2B60E7129796226001E710D /* RecoveryUserView.swift in Sources */,
+				E2B60E852979638F001E710D /* ButtonsPhotoModel.swift in Sources */,
 				E22B5EB12978580600836E92 /* UserModel.swift in Sources */,
 				E2D906F329793568009C6B4B /* NavigationViewModel.swift in Sources */,
 				E22B5E62297839D000836E92 /* ContentView.swift in Sources */,
+				E2B60E7F2979638F001E710D /* ButtonsPhotoDataManager.swift in Sources */,
+				E2B60E832979638F001E710D /* LowerButtonsPhotoView.swift in Sources */,
 				E22B5EAE2978563800836E92 /* AuthUserManager.swift in Sources */,
+				E2B60E802979638F001E710D /* UpperButtonsPhotoView.swift in Sources */,
 				E22B5E60297839D000836E92 /* LynaFMApp.swift in Sources */,
+				E2B60E812979638F001E710D /* ScrollPhotoView.swift in Sources */,
 				E22B5EA2297847B400836E92 /* Extensions.swift in Sources */,
 				E2D906EB297924E2009C6B4B /* NotificationMessage.swift in Sources */,
 				E2B60E6729793FE4001E710D /* CustomButton.swift in Sources */,
 				E2B60E692979412D001E710D /* HorizontalDividerLabelView.swift in Sources */,
+				E2B60E7E2979638F001E710D /* AvatarPhotoViewModel.swift in Sources */,
 				E2B60E6B29794BFA001E710D /* RoleUserView.swift in Sources */,
 				E22B5EB529786F9700836E92 /* StoradgeManager.swift in Sources */,
+				E2B60E6F297961A6001E710D /* ProfileUserView.swift in Sources */,
+				E2B60E842979638F001E710D /* ImageScrollView.swift in Sources */,
 				E22B5EBA2978704300836E92 /* AuthView.swift in Sources */,
 				E22B5EA92978510D00836E92 /* ExtensionsUIImage.swift in Sources */,
 			);

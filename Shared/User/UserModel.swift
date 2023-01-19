@@ -38,7 +38,7 @@ struct User: Identifiable, Codable {
     var surname: String
     
     var image = ""
-    var data = ""
+    var profile = ""
     
     static func getUser(email: String, phone: String, name: String, surname: String) -> User {
        return  User(email: email, phone: phone, name: name, surname: surname)
@@ -63,6 +63,6 @@ struct UserCurrent: Codable {
     var name = ""
     var surname = ""
     
-    var image = Data()
-    var data = UserData()
+    var image = ""
+    var profile = ""
 }

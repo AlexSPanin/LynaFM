@@ -53,50 +53,47 @@ class StorageManager {
     }
     
     // запись в память модели пользователя
-    func saveUser(at user: UserCurrent) {
-        do {
-            let data = try JSONEncoder().encode(user)
-            userDefaults.set(data, forKey: TypeKey.user.key)
-        } catch {
-            print("ERROR: JSON - not save User")
+    func saveUser(at user: UserCurrent?) {
+        if let user = user {
+            do {
+                let data = try JSONEncoder().encode(user)
+                userDefaults.set(data, forKey: TypeKey.user.key)
+            } catch {
+                print("ERROR: JSON - not save User")
+            }
         }
     }
 }
 
-////MARK: - coding and decoding User Model
-//extension StorageManager {
-//    
-//    // coding User to JSON standart UserCurrent
-//    private func getUserToUserCurrent(user: User) -> UserCurrent {
-//        var userCurrent = UserCurrent()
-//        userCurrent.id = user.id
-//        userCurrent.isStudy = user.isStudy
-//        userCurrent.isAdmin = user.isAdmin
-//        userCurrent.email = user.email
-//        userCurrent.fullName = user.fullName
-//        userCurrent.date = user.date
-//        userCurrent.scoreAll = user.scoreAll
-//        userCurrent.ratingAll = user.ratingAll
-//        userCurrent.scoreMonth = user.scoreMonth
-//        userCurrent.ratingMonth = user.ratingMonth
-//        userCurrent.profileUrl = user.profileUrl
-//        return userCurrent
-//    }
-//    // encoding JSON standart UserCurrent to User
-//    private func getUserCurrentToUser(userCurrent: UserCurrent) -> User {
-//        var user = User.getUser()
-//        user.id = userCurrent.id
-//        user.isStudy = userCurrent.isStudy
-//        user.isAdmin = userCurrent.isAdmin
-//        user.email = userCurrent.email
-//        user.fullName = userCurrent.fullName
-//        user.date = userCurrent.date
-//        user.scoreAll = userCurrent.scoreAll
-//        user.ratingAll = userCurrent.ratingAll
-//        user.scoreMonth = userCurrent.scoreMonth
-//        user.ratingMonth = userCurrent.ratingMonth
-//        user.profileUrl = userCurrent.profileUrl
-//        return user
-//    }
-//    
-//}
+//MARK: - coding and decoding User Model
+extension StorageManager {
+    
+    // coding User to JSON standart UserCurrent
+    func getUserToUserCurrent(user: User) -> UserCurrent {
+        var current = UserCurrent()
+        current.id = user.id
+        current.date = user.date
+        current.isActive = user.isActive
+        current.email = user.email
+        current.phone = user.phone
+        current.name = user.name
+        current.surname = user.surname
+        current.image = user.image
+        current.profile = user.profile
+        return current
+    }
+    // encoding JSON standart UserCurrent to User
+    func getUserCurrentToUser(current: UserCurrent) -> User {
+        var user = User.getUser(email: current.email,
+                                phone: current.phone,
+                                name: current.name,
+                                surname: current.surname)
+        user.id = current.id
+        user.isActive = current.isActive
+        user.date = current.date
+        user.image = current.image
+        user.profile = current.profile
+        return user
+    }
+    
+}
