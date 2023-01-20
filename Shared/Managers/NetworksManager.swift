@@ -38,7 +38,7 @@ enum UploadType: String {
     }
 }
 
-struct System: Codable {
+struct SystemApp: Codable {
     var ver = ""
 }
 
@@ -52,7 +52,7 @@ class NetworkManager {
             if error != nil {
                 completion(.failure(.fetchVersion))
             } else {
-                if let version = try? document?.data(as: System.self) {
+                if let version = try? document?.data(as: SystemApp.self) {
                     completion(.success(version.ver))
                 } else {
                     completion(.failure(.fetchVersion))

@@ -83,15 +83,6 @@ class AvatarPhotoViewModel: ObservableObject {
         }
         if let dataImage = photo.jpegData(compressionQuality: 0.5) {
             imageData = dataImage
-            //  StorageManager.shared.save(at: dataImage)
-//            NetworkManager.shared.editUserImage(imageData: dataImage) {result in
-//                switch result {
-//                case .success(_):
-//                    self.didEditUserImage = true
-//                case .failure(_):
-//                    do {}
-//                }
-//            }
         }
         self.photo = photo
         self.isChange = true

@@ -71,7 +71,7 @@ class AuthViewModel: ObservableObject {
     init() {
         print("START: AuthViewModel")
         checkVersion()
-        checkFirstKey()
+        
     }
     deinit {
         print("CLOSE: AuthViewModel")
@@ -225,10 +225,9 @@ extension AuthViewModel {
             switch result {
             case .success(let ver):
                 if ver == version {
-                    self.isVersion = true
+                    self.checkFirstKey()
                 } else {
-                    self.errorText = NotificationMessage.version.text
-                    self.errorOccured = true
+                    self.showView = .version
                 }
             case .failure(_):
                 print("ERROR: fetchVersion")

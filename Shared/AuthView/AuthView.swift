@@ -29,9 +29,6 @@ struct AuthView: View {
             if viewModel.errorOccured {
                 NotificationView(text: viewModel.errorText, button: "ОК") {
                     viewModel.errorOccured.toggle()
-                    if !viewModel.isVersion {
-                        viewModel.showView = .version
-                    }
                 }
             }
         }
