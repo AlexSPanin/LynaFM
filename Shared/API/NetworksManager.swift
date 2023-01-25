@@ -24,8 +24,16 @@ enum NetworkError: Error {
 }
 
 enum UploadType: String {
-    case user_data = "/user/data/"
-    case user_image = "/user/image/"
+    case system = "/system/"
+    case user = "/user/"
+    case product = "/product/"
+    case material = "/material/"
+    case bundle = "/bundle/"
+    case group = "/group/"
+    case parameter = "/parameter/"
+    case stage = "/stage/"
+    
+    case order = "/order/"
     
     var filePath: StorageReference {
         return Storage.storage().reference(withPath: self.rawValue)
@@ -34,15 +42,16 @@ enum UploadType: String {
 
 // базы данных
 enum NetworkCollection: String {
-    case vendor = "vendor"
     case system = "system"
     case user = "user"
     case product = "product"
-    case model = "model"
-    case order = "order"
-    case category = "category"
+    case material = "material"
+    case bundle = "bundle"
     case group = "group"
-    case propriety = "propriety"
+    case parameter = "parameter"
+    case stage = "stage"
+    
+    case order = "order"
     
     var collection: String {
         return self.rawValue
@@ -51,6 +60,13 @@ enum NetworkCollection: String {
 
 struct SystemApp: Codable {
     var ver = ""
+    var user = ""
+    var product = ""
+    var material = ""
+    var bundle = ""
+    var group = ""
+    var parameter = ""
+    var stage = ""
 }
 
 

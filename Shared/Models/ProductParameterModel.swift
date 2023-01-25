@@ -1,13 +1,14 @@
 //
-//  ProductionStageModel.swift
+//  ProductParameterModel.swift
 //  LynaFM (iOS)
 //
 //  Created by Александр Панин on 25.01.2023.
-//  Справочник производственных этапов cloud fb
+//
+//  Справочник параметров товара cloud fb
 
 import Foundation
 
-struct ProductionStage: Codable {
+struct ProductParameter: Codable {
     var id: String = ""
     var date: String = ""
     var idUser: String = ""
@@ -17,4 +18,5 @@ struct ProductionStage: Codable {
     var sort: String = ""
     var name: String = ""
     var label: String = ""
+    var file: String = ""
 }

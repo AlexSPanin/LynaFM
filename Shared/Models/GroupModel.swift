@@ -1,13 +1,14 @@
 //
-//  ProductionStageModel.swift
+//  GroupModel.swift
 //  LynaFM (iOS)
 //
 //  Created by Александр Панин on 25.01.2023.
-//  Справочник производственных этапов cloud fb
+//
+//  Справочник групп для продуктов cloud fb
 
 import Foundation
 
-struct ProductionStage: Codable {
+struct Group: Codable {
     var id: String = ""
     var date: String = ""
     var idUser: String = ""
@@ -17,4 +18,5 @@ struct ProductionStage: Codable {
     var sort: String = ""
     var name: String = ""
     var label: String = ""
+    var file: String = ""
 }

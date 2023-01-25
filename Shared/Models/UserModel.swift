@@ -9,18 +9,20 @@ import Foundation
 import FirebaseFirestoreSwift
 // роли пользователей
 enum UserRole: Codable {
-    case owner, adminApp, adminOrder, adminStage
+    case owner, app, order, stage, admin
     
     var role: String {
         switch self {
         case .owner:
             return "owner"
-        case .adminApp:
-            return "adminApp"
-        case .adminOrder:
-            return "adminOrder"
-        case .adminStage:
-            return "adminStage"
+        case .app:
+            return "app"
+        case .order:
+            return "order"
+        case .stage:
+            return "stage"
+        case .admin:
+            return "admin"
         }
     }
 }
