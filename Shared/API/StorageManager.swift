@@ -28,38 +28,35 @@ class StorageManager {
 
     private init() {}
     
-    // проверка и установка Bool ключей
+    // MARK: - проверка и установка Bool ключей
     func checkKey(type: TypeKey) -> Bool {
         return userDefaults.bool(forKey: type.key)
     }
-    
     func settingKey(to type: TypeKey, key: Bool) {
         userDefaults.set(key, forKey: type.key)
     }
     
-    // получение из памяти модели пользователя
-    func fetchUserCurrent(complition: @escaping(Result<UserCurrent, NetworkError>) -> Void) {
-        if let data = userDefaults.object(forKey: TypeKey.user.key) as? Data {
+    // MARK: - запись и чтение по ключу и по типу модели (для кодирования)
+    func load<T: Decodable>(type: TypeKey, model: T.Type, completion: @escaping(Result<T, NetworkError>) -> Void) {
+        if let data = userDefaults.object(forKey: type.key) as? Data {
             do {
-                let userCurrent = try JSONDecoder().decode(UserCurrent.self, from: data)
-                complition(.success(userCurrent))
+                let decoder = try JSONDecoder().decode(T.self, from: data)
+                completion(.success(decoder))
             } catch {
-                print("ERROR - Decode Fetch UserCurrent")
-                complition(.failure(.decodeUser))
+                completion(.failure(.decodeStorage))
             }
         } else {
-            complition(.failure(.fetchUser))
+            completion(.failure(.loadStorage))
         }
     }
-    
-    // запись в память модели пользователя
-    func saveUser(at user: UserCurrent?) {
-        if let user = user {
+
+    func save<T: Encodable>(type: TypeKey, model: T.Type, collection: Any ) {
+        if let collection = collection as? T {
             do {
-                let data = try JSONEncoder().encode(user)
-                userDefaults.set(data, forKey: TypeKey.user.key)
+                let data = try JSONEncoder().encode(collection)
+                userDefaults.set(data, forKey: type.key)
             } catch {
-                print("ERROR: JSON - not save User")
+                print("ERROR: Save File to Storage Manager")
             }
         }
     }

@@ -15,6 +15,7 @@ let scaleWidth = WIDTH / 320
 let scaleHeight = HEIGHT / 568
 
 let userDefaults = UserDefaults.standard
+let fileManager = FileManager.default
 
 // коофициент для пересчета элементов при малой ширине экрана
 let isSmallWIDTH: Bool = WIDTH < 340

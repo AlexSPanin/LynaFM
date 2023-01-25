@@ -70,14 +70,10 @@ func NotificationFeedbackGenerator() {
 
 // приведение даты к российскому стандарту
 extension Date {
-    func rusDateShort() -> String {
-        let date = self.formatted(Date.FormatStyle()
-            .day(.twoDigits)
-            .month(.twoDigits)
-            .year(.twoDigits)
-            .locale(Locale(identifier: "ru_RU"))
-        )
-        return String(date)
+    func timeStamp() -> String {
+        let date = DateFormatter()
+        date.dateFormat = "yyyy-MM-dd hh:mm:ss:ms"
+        return date.string(from: self)
     }
 }
 

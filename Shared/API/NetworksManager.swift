@@ -10,23 +10,17 @@ import Firebase
 import FirebaseStorage
 
 enum NetworkError: Error {
-    case fetchUser
     case fetchVersion
-    case decodeUser
-    case fetchAllUsers
-    case upLoad
-    case invalidURL
+    case fetchUser
+    case fetchCollection
+    case fetchElement
     
-    case downloadURL
-    case noData
-    case noMetadata
-    case decodingError
-    case uploadDataError
-    case removeFileError
-    case loadFileError
-    case uploadError
-    case userError
-    case errorLoadProfile
+    case loadFile
+    case loadStorage
+    
+    case decodeCollection
+    case decodeStorage
+    case decodeFile
 }
 
 enum UploadType: String {
@@ -35,6 +29,23 @@ enum UploadType: String {
     
     var filePath: StorageReference {
         return Storage.storage().reference(withPath: self.rawValue)
+    }
+}
+
+// базы данных
+enum NetworkCollection: String {
+    case vendor = "vendor"
+    case system = "system"
+    case user = "user"
+    case product = "product"
+    case model = "model"
+    case order = "order"
+    case category = "category"
+    case group = "group"
+    case propriety = "propriety"
+    
+    var collection: String {
+        return self.rawValue
     }
 }
 
@@ -85,7 +96,7 @@ class NetworkManager {
         storageRef.getData(maxSize: 5 * 1024 * 1024 ) { data, error in
             if let error = error {
                 print("NetworkManager ERROR: loadFile  type \(type)", error.localizedDescription)
-                completion(.failure(.loadFileError))
+                completion(.failure(.loadFile))
             } else {
                 guard let dataFile = data else { return }
                 completion(.success(dataFile))
@@ -141,24 +152,61 @@ extension NetworkManager {
         }
         return ""
     }
-    // получаем полный список пользователей
-    func fetchAllUsers(comletion: @escaping (Result<[User], NetworkError>) -> Void ) {
-        Firestore.firestore().collection("user").getDocuments { querySnapshot, error in
+    // MARK: - работа с коллекцией
+    // получить весь список из коллекции ввиде [QueryDocumentSnapshot]
+    func fetchFullCollection<T: Decodable>(to collection: NetworkCollection, model: T.Type, comletion: @escaping (Result<[T], NetworkError>) -> Void ) {
+        Firestore.firestore().collection(collection.collection).getDocuments { querySnapshot, error in
             if error != nil {
-                comletion(.failure(.fetchAllUsers))
+                comletion(.failure(.fetchCollection))
             } else {
                 if let documents = querySnapshot?.documents {
-                    var users = [User]()
+                    var datas = [T]()
                     for document in documents {
-                        if let user = try? document.data(as: User.self) {
-                            users.append(user)
+                        do {
+                            let data = try? document.data(as: T.self)
+                            if let data = data {
+                                datas.append(data)
+                            } else {
+                                print("ERROR: Decode Network data")
+                            }
                         }
                     }
-                    comletion(.success(users))
+                    comletion(.success(datas))
                 } else {
-                    comletion(.failure(.decodeUser))
+                    comletion(.failure(.fetchCollection))
                 }
             }
         }
+    }
+    
+    // получить элемент коллекции DocumentSnapshot
+    func fetchElementCollection<T: Decodable>(to collection: NetworkCollection, doc: String, model: T.Type, comletion: @escaping (Result<T, NetworkError>) -> Void ) {
+        Firestore.firestore().collection(collection.collection).document(doc).getDocument {document, error in
+            if let document = document {
+                do {
+                    let data = try? document.data(as: T.self)
+                    if let data = data {
+                        comletion(.success(data))
+                    }
+                }
+            } else {
+                comletion(.failure(.fetchElement))
+            }
+        }
+    }
+    
+    // записать элемент коллекции [String: Any]
+    func upLoadElementCollection(to collection: NetworkCollection, name: String, data: [String : Any]) {
+        let collection = collection.collection
+        Firestore.firestore().collection(collection).document(name).setData(data)
+        let time = Date().timeStamp()
+        let doc = NetworkCollection.system.collection
+        updateValueElement(to: .system, document: doc, key: collection, value: time)
+    }
+    
+    // изменить значение поля элемента в коллекции
+    func updateValueElement(to collection: NetworkCollection, document: String, key: String, value: Any) {
+        let collection = collection.collection
+        Firestore.firestore().collection(collection).document(document).updateData([key : value])
     }
 }

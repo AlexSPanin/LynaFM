@@ -28,7 +28,7 @@ enum UserRole: Codable {
 // модель пользователя для внешнего хранения
 struct User: Identifiable, Codable {
     @DocumentID var id: String?
-    var date = Date().rusDateShort()
+    var date = Date().timeStamp()
     
     var isActive = true
    

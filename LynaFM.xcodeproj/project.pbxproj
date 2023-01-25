@@ -42,9 +42,11 @@
 		E22B5EAE2978563800836E92 /* AuthUserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22B5EAD2978563800836E92 /* AuthUserManager.swift */; };
 		E22B5EB12978580600836E92 /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22B5EB02978580600836E92 /* UserModel.swift */; };
 		E22B5EB329786F8300836E92 /* NetworksManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22B5EB229786F8300836E92 /* NetworksManager.swift */; };
-		E22B5EB529786F9700836E92 /* StoradgeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22B5EB429786F9600836E92 /* StoradgeManager.swift */; };
+		E22B5EB529786F9700836E92 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22B5EB429786F9600836E92 /* StorageManager.swift */; };
 		E22B5EB82978703000836E92 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22B5EB72978703000836E92 /* AuthViewModel.swift */; };
 		E22B5EBA2978704300836E92 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22B5EB92978704300836E92 /* AuthView.swift */; };
+		E23278EA298147DC0099642C /* ProductionStageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23278E9298147DC0099642C /* ProductionStageModel.swift */; };
+		E23278ED2981522E0099642C /* FileAppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23278EC2981522E0099642C /* FileAppManager.swift */; };
 		E2B60E6529793D80001E710D /* TextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E6429793D80001E710D /* TextFieldView.swift */; };
 		E2B60E6729793FE4001E710D /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E6629793FE4001E710D /* CustomButton.swift */; };
 		E2B60E692979412D001E710D /* HorizontalDividerLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E682979412D001E710D /* HorizontalDividerLabelView.swift */; };
@@ -83,9 +85,11 @@
 		E22B5EAD2978563800836E92 /* AuthUserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUserManager.swift; sourceTree = "<group>"; };
 		E22B5EB02978580600836E92 /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		E22B5EB229786F8300836E92 /* NetworksManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworksManager.swift; sourceTree = "<group>"; };
-		E22B5EB429786F9600836E92 /* StoradgeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoradgeManager.swift; sourceTree = "<group>"; };
+		E22B5EB429786F9600836E92 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
 		E22B5EB72978703000836E92 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		E22B5EB92978704300836E92 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
+		E23278E9298147DC0099642C /* ProductionStageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductionStageModel.swift; sourceTree = "<group>"; };
+		E23278EC2981522E0099642C /* FileAppManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileAppManager.swift; sourceTree = "<group>"; };
 		E2B60E6429793D80001E710D /* TextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldView.swift; sourceTree = "<group>"; };
 		E2B60E6629793FE4001E710D /* CustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
 		E2B60E682979412D001E710D /* HorizontalDividerLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalDividerLabelView.swift; sourceTree = "<group>"; };
@@ -157,12 +161,14 @@
 			children = (
 				E22B5E50297839CE00836E92 /* LynaFMApp.swift */,
 				E22B5E51297839CE00836E92 /* ContentView.swift */,
+				E22B5EAC2978558400836E92 /* API */,
 				E2D906F129793549009C6B4B /* Navigation */,
+				E23278EB298149BD0099642C /* Models */,
 				E22B5EB629786FF700836E92 /* AuthView */,
 				E22B5EAF2978574900836E92 /* User */,
-				E22B5EAC2978558400836E92 /* Managers */,
 				E2D906E9297924B1009C6B4B /* Notification */,
 				E2D906EE297933DF009C6B4B /* Views */,
+				E23278E8298147A80099642C /* ProductionStage */,
 				E22B5EA529784A2400836E92 /* Extensions */,
 				E22B5E52297839D000836E92 /* Assets.xcassets */,
 				E22B5EA629784A6E00836E92 /* Launch Screen.storyboard */,
@@ -190,20 +196,20 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		E22B5EAC2978558400836E92 /* Managers */ = {
+		E22B5EAC2978558400836E92 /* API */ = {
 			isa = PBXGroup;
 			children = (
 				E22B5EAD2978563800836E92 /* AuthUserManager.swift */,
 				E22B5EB229786F8300836E92 /* NetworksManager.swift */,
-				E22B5EB429786F9600836E92 /* StoradgeManager.swift */,
+				E22B5EB429786F9600836E92 /* StorageManager.swift */,
+				E23278EC2981522E0099642C /* FileAppManager.swift */,
 			);
-			path = Managers;
+			path = API;
 			sourceTree = "<group>";
 		};
 		E22B5EAF2978574900836E92 /* User */ = {
 			isa = PBXGroup;
 			children = (
-				E22B5EB02978580600836E92 /* UserModel.swift */,
 			);
 			path = User;
 			sourceTree = "<group>";
@@ -219,6 +225,22 @@
 				E22B5EB72978703000836E92 /* AuthViewModel.swift */,
 			);
 			path = AuthView;
+			sourceTree = "<group>";
+		};
+		E23278E8298147A80099642C /* ProductionStage */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ProductionStage;
+			sourceTree = "<group>";
+		};
+		E23278EB298149BD0099642C /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				E22B5EB02978580600836E92 /* UserModel.swift */,
+				E23278E9298147DC0099642C /* ProductionStageModel.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		E2B60E722979638F001E710D /* AvatarView */ = {
@@ -389,6 +411,7 @@
 				E2B60E7129796226001E710D /* RecoveryUserView.swift in Sources */,
 				E2B60E852979638F001E710D /* ButtonsPhotoModel.swift in Sources */,
 				E22B5EB12978580600836E92 /* UserModel.swift in Sources */,
+				E23278EA298147DC0099642C /* ProductionStageModel.swift in Sources */,
 				E2D906F329793568009C6B4B /* NavigationViewModel.swift in Sources */,
 				E22B5E62297839D000836E92 /* ContentView.swift in Sources */,
 				E2B60E7F2979638F001E710D /* ButtonsPhotoDataManager.swift in Sources */,
@@ -404,11 +427,12 @@
 				E2B60E692979412D001E710D /* HorizontalDividerLabelView.swift in Sources */,
 				E2B60E7E2979638F001E710D /* AvatarPhotoViewModel.swift in Sources */,
 				E2B60E6B29794BFA001E710D /* RoleUserView.swift in Sources */,
-				E22B5EB529786F9700836E92 /* StoradgeManager.swift in Sources */,
+				E22B5EB529786F9700836E92 /* StorageManager.swift in Sources */,
 				E2B60E6F297961A6001E710D /* ProfileUserView.swift in Sources */,
 				E2B60E842979638F001E710D /* ImageScrollView.swift in Sources */,
 				E22B5EBA2978704300836E92 /* AuthView.swift in Sources */,
 				E22B5EA92978510D00836E92 /* ExtensionsUIImage.swift in Sources */,
+				E23278ED2981522E0099642C /* FileAppManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

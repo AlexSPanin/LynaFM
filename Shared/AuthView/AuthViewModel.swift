@@ -81,7 +81,7 @@ class AuthViewModel: ObservableObject {
         if !key {
             showView = .auth
         } else {
-            StorageManager.shared.fetchUserCurrent { result in
+            StorageManager.shared.load(type: .user, model: UserCurrent.self){ result in
                 switch result {
                 case .success(let current):
                     self.name = current.name
@@ -119,7 +119,7 @@ class AuthViewModel: ObservableObject {
         image = Data()
         imageFile = ""
         let current = UserCurrent()
-        StorageManager.shared.saveUser(at: current)
+        StorageManager.shared.save(type: .user, model: UserCurrent.self, collection: current)
         StorageManager.shared.settingKey(to: TypeKey.app, key: false)
     }
     
@@ -138,7 +138,8 @@ class AuthViewModel: ObservableObject {
                     user.image = file
                     let current = StorageManager.shared.getUserToUserCurrent(user: user)
                     NetworkManager.shared.upLoadUser(user: user) {}
-                    StorageManager.shared.saveUser(at: current)
+                    StorageManager.shared.save(type: .user, model: UserCurrent.self, collection: current)
+
                     StorageManager.shared.settingKey(to: TypeKey.app, key: true)
                     self.isFinish = true
                 }
@@ -169,7 +170,7 @@ class AuthViewModel: ObservableObject {
                             switch result {
                             case .success(let user):
                                 let userCurrent = StorageManager.shared.getUserToUserCurrent(user: user)
-                                StorageManager.shared.saveUser(at: userCurrent)
+                                StorageManager.shared.save(type: .user, model: UserCurrent.self, collection: userCurrent)
                                 StorageManager.shared.settingKey(to: TypeKey.app, key: true)
                                 self.isFinish = true
                             case .failure(_):
