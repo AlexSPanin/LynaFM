@@ -16,7 +16,7 @@ struct StartingView: View {
         viewModel.surname
     }
     private var image: UIImage? {
-       UIImage(data: viewModel.image)
+       UIImage(data: viewModel.imageData)
     }
     
     var body: some View {

@@ -10,7 +10,7 @@ import SwiftUI
 struct ProfileUserView: View {
     @ObservedObject var viewModel: AuthViewModel
     private var image: UIImage? {
-       UIImage(data: viewModel.image)
+       UIImage(data: viewModel.imageData)
     }
     var body: some View {
         VStack(alignment: .center, spacing: 10) {
@@ -22,8 +22,6 @@ struct ProfileUserView: View {
             CircleAvatarView(image: image, disable: false) {
                 viewModel.showAvatarPhotoView.toggle()
             }
-  //          AvatarPhotoView(imageData: $viewModel.image, showAvatarPhotoView: $viewModel.showAvatarPhotoView)
-            
             TextFieldView(subtitle: "Имя",
                           tipeTextField: .userName, text: $viewModel.name)
             TextFieldView(subtitle: "Фамилия",
@@ -50,7 +48,7 @@ struct ProfileUserView: View {
                 )
         )
         .sheet(isPresented: $viewModel.showAvatarPhotoView) {
-            AvatarPhotoView(imageData: $viewModel.image, showAvatarPhotoView: $viewModel.showAvatarPhotoView)
+            AvatarPhotoView(imageData: $viewModel.imageData, showAvatarPhotoView: $viewModel.showAvatarPhotoView)
         }
     }
 }

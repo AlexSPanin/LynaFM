@@ -7,6 +7,7 @@
 
 import Foundation
 import FirebaseFirestoreSwift
+
 // роли пользователей
 enum UserRole: Codable {
     case owner, app, order, stage, admin
@@ -45,6 +46,10 @@ struct User: Identifiable, Codable {
     static func getUser(email: String, phone: String, name: String, surname: String) -> User {
        return  User(email: email, phone: phone, name: name, surname: surname)
     }
+    
+    static func getEmptyUser() -> User {
+       return  User(email: "", phone: "", name: "", surname: "")
+    }
 }
 
 // набор ролей и привязанных этапов пользователя
@@ -53,18 +58,18 @@ struct UserData: Codable {
     var stages: [String] = []
 }
 
-// модель пользователя для UserDefaults
-struct UserCurrent: Codable {
-    var id: String?
-    var date = ""
-    
-    var isActive = true
-    
-    var email = ""
-    var phone = ""
-    var name = ""
-    var surname = ""
-    
-    var image = ""
-    var profile = ""
-}
+//// модель пользователя для UserDefaults
+//struct UserCurrent: Codable {
+//    var id: String?
+//    var date = ""
+//    
+//    var isActive = true
+//    
+//    var email = ""
+//    var phone = ""
+//    var name = ""
+//    var surname = ""
+//    
+//    var image = ""
+//    var profile = ""
+//}

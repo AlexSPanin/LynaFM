@@ -18,6 +18,12 @@ struct ContentView: View {
                 AuthView()
             case .role:
                 RoleUserView()
+            case .load:
+                LoadDataBaseView(label: navigation.labelBase)
+            case .error:
+                ErrorView()
+            case .version:
+                VersionValidateView()
             }
         }
     }

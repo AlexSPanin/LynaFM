@@ -8,15 +8,15 @@
 import Foundation
 
 enum TypeKey: Codable {
-    case app, user, exit
+    case system, users, user
     var key: String {
         switch self {
-        case .app:
-            return "keyApp"
+        case .system:
+            return "keySystem"
+        case .users:
+            return "keyUsers"
         case .user:
-            return "keyUser"
-        case .exit:
-            return "keyExit"
+            return "keyCurrent"
         }
     }
 }
@@ -62,35 +62,35 @@ class StorageManager {
     }
 }
 
-//MARK: - coding and decoding User Model
-extension StorageManager {
-    
-    // coding User to JSON standart UserCurrent
-    func getUserToUserCurrent(user: User) -> UserCurrent {
-        var current = UserCurrent()
-        current.id = user.id
-        current.date = user.date
-        current.isActive = user.isActive
-        current.email = user.email
-        current.phone = user.phone
-        current.name = user.name
-        current.surname = user.surname
-        current.image = user.image
-        current.profile = user.profile
-        return current
-    }
-    // encoding JSON standart UserCurrent to User
-    func getUserCurrentToUser(current: UserCurrent) -> User {
-        var user = User.getUser(email: current.email,
-                                phone: current.phone,
-                                name: current.name,
-                                surname: current.surname)
-        user.id = current.id
-        user.isActive = current.isActive
-        user.date = current.date
-        user.image = current.image
-        user.profile = current.profile
-        return user
-    }
-    
-}
+////MARK: - coding and decoding User Model
+//extension StorageManager {
+//    
+//    // coding User to JSON standart UserCurrent
+//    func getUserToUserCurrent(user: User) -> UserCurrent {
+//        var current = UserCurrent()
+//        current.id = user.id
+//        current.date = user.date
+//        current.isActive = user.isActive
+//        current.email = user.email
+//        current.phone = user.phone
+//        current.name = user.name
+//        current.surname = user.surname
+//        current.image = user.image
+//        current.profile = user.profile
+//        return current
+//    }
+//    // encoding JSON standart UserCurrent to User
+//    func getUserCurrentToUser(current: UserCurrent) -> User {
+//        var user = User.getUser(email: current.email,
+//                                phone: current.phone,
+//                                name: current.name,
+//                                surname: current.surname)
+//        user.id = current.id
+//        user.isActive = current.isActive
+//        user.date = current.date
+//        user.image = current.image
+//        user.profile = current.profile
+//        return user
+//    }
+//    
+//}

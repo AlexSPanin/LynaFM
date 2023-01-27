@@ -19,10 +19,12 @@ struct AuthView: View {
                 ProfileUserView(viewModel: viewModel)
             case .repair:
                 RecoveryUserView(viewModel: viewModel)
-            case .version:
-                VersionValidateView()
+            case .error:
+                ErrorView()
             case .starting:
                 StartingView(viewModel: viewModel)
+            case .exit:
+                ExitView()
             }
 
             // отработка сообщений об ошибках

@@ -8,7 +8,7 @@
 import Foundation
 
 enum AuthViews {
-    case auth, edit, repair, version, starting
+    case auth, edit, repair, error, starting, exit
 }
 
 class AuthViewModel: ObservableObject {
@@ -21,14 +21,11 @@ class AuthViewModel: ObservableObject {
     @Published var name = ""
     @Published var surname = ""
     @Published var phone = ""
-    @Published var image = Data()
-    var imageFile: String?
-    
-    
-    
-    
+    @Published var imageData = Data()
+    var image: String?
+
     // отвечает за показ активного окна
-    @Published var showView: AuthViews = .starting
+    @Published var showView: AuthViews = .error
     
     @Published var showAvatarPhotoView = false
     
@@ -70,36 +67,24 @@ class AuthViewModel: ObservableObject {
     
     init() {
         print("START: AuthViewModel")
-        checkVersion()
-        
+      
+        checkCurrentUser()
     }
     deinit {
         print("CLOSE: AuthViewModel")
     }
-    private func checkFirstKey() {
-        let key = StorageManager.shared.checkKey(type: TypeKey.app)
-        if !key {
-            showView = .auth
-        } else {
-            StorageManager.shared.load(type: .user, model: UserCurrent.self){ result in
-                switch result {
-                case .success(let current):
-                    self.name = current.name
-                    self.surname = current.surname
-                    self.phone = current.phone
-                    self.imageFile = current.image
-                case .failure(_):
-                    self.errorText = "Ошибка загрузки профиля.\nАвторизируйтесь повторно."
-                    self.errorOccured.toggle()
-                    self.exitProfile()
-                }
-            }
-            if let imageFile = imageFile {
-                AuthUserManager.shared.updateUserSession()
-                NetworkManager.shared.loadFile(type: .user_image, name: imageFile) { result in
+    //MARK: - загрузка фото пользователя
+    private func loadImage(to file: String) {
+        FileAppManager.shared.loadFileData(to: file, type: .temp) { result in
+            switch result {
+            case .success(let data):
+                self.imageData = data
+            case .failure(_):
+                NetworkManager.shared.loadFile(type: .user, name: file) { result in
                     switch result {
                     case .success(let data):
-                        self.image = data
+                        FileAppManager.shared.saveFileData(to: file, type: .temp, data: data)
+                        self.imageData = data
                     case .failure(_):
                         print("ERROR: load Image")
                     }
@@ -108,20 +93,37 @@ class AuthViewModel: ObservableObject {
         }
     }
     
-    // выйти из профиля
-    private func exitProfile() {
-        showView = .auth
-        email = ""
-        passwordEnter = ""
-        name = ""
-        surname = ""
-        phone = ""
-        image = Data()
-        imageFile = ""
-        let current = UserCurrent()
-        StorageManager.shared.save(type: .user, model: UserCurrent.self, collection: current)
-        StorageManager.shared.settingKey(to: TypeKey.app, key: false)
+    //MARK: - проверка наличия коллекции пользователей на устройстве
+    private func checkCurrentUser() {
+        AuthUserManager.shared.updateUserSession()
+        if let id = AuthUserManager.shared.userSession?.uid {
+            StorageManager.shared.load(type: .users, model: [User].self){ result in
+                switch result {
+                case .success(let users):
+                    if let user = users.first(where: {$0.id == id }) {
+                        self.name = user.name
+                        self.surname = user.surname
+                        self.phone = user.phone
+                        self.loadImage(to: user.image)
+                        self.image = user.image
+                        StorageManager.shared.save(type: .user, model: User.self, collection: user)
+                        self.showView = .starting
+                    } else {
+                        self.errorText = "Ошибка: нет Карточки.\nОбратитесь к администратору."
+                        self.errorOccured.toggle()
+                        self.exitProfile()
+                    }
+                case .failure(_):
+                    // если в памяти нет коллекции отправляем в окно аторизации
+                    self.showView = .auth
+                }
+            }
+        } else {
+            showView = .error
+        }
     }
+    
+    
     
     // сохранить профиль
     private func saveProfile() {
@@ -132,19 +134,17 @@ class AuthViewModel: ObservableObject {
         } else {
             AuthUserManager.shared.updateUserSession()
             if let id = AuthUserManager.shared.userSession?.uid, let email = AuthUserManager.shared.userSession?.email {
-                var user = User(email: email, phone: phone, name: name, surname: surname)
-                NetworkManager.shared.upLoadFile(to: self.imageFile, type: .user_image, data: image) { file in
+                var user = User(email: email, phone: self.phone, name: self.name, surname: self.surname)
+                NetworkManager.shared.upLoadFile(to: image, type: .user, data: self.imageData) { file in
                     user.id = id
                     user.image = file
-                    let current = StorageManager.shared.getUserToUserCurrent(user: user)
                     NetworkManager.shared.upLoadUser(user: user) {}
-                    StorageManager.shared.save(type: .user, model: UserCurrent.self, collection: current)
-
-                    StorageManager.shared.settingKey(to: TypeKey.app, key: true)
+                    StorageManager.shared.save(type: .user, model: User.self, collection: user)
+                    FileAppManager.shared.saveFileData(to: file, type: .temp, data: self.imageData)
                     self.isFinish = true
                 }
+                user.id = id
             }
-            
         }
     }
 
@@ -166,12 +166,10 @@ class AuthViewModel: ObservableObject {
                     return
                 } else {
                     if let name = AuthUserManager.shared.userSession?.uid {
-                        NetworkManager.shared.loadUser(name: name) { result in
+                        NetworkManager.shared.fetchElementCollection(to: .user, doc: name, model: User.self) { result in
                             switch result {
                             case .success(let user):
-                                let userCurrent = StorageManager.shared.getUserToUserCurrent(user: user)
-                                StorageManager.shared.save(type: .user, model: UserCurrent.self, collection: userCurrent)
-                                StorageManager.shared.settingKey(to: TypeKey.app, key: true)
+                                StorageManager.shared.save(type: .user, model: User.self, collection: user)
                                 self.isFinish = true
                             case .failure(_):
                                 print("надо сформировать новый профиль")
@@ -183,59 +181,10 @@ class AuthViewModel: ObservableObject {
             }
         }
     }
-    
-//    // загрузка фото пользователя
-//    private func loadUserImage(user: User, completion: @escaping () -> Void) {
-//        NetworkManager.shared.loadFile(type: .user_image, name: user.image) { result in
-//            switch result {
-//            case .success(let image):
-//                self.userCurrent?.image = image
-//                completion()
-//            case .failure(_):
-//                print("ERROR: Load User Image")
-//                completion()
-//            }
-//        }
-//    }
-//
-//    // загрузка профиля пользователя
-//    private func loadUserData(user: User, completion: @escaping () -> Void) {
-//        NetworkManager.shared.loadFile(type: .user_data, name: user.profile) { result in
-//            switch result {
-//            case .success(let data):
-//                do {
-//                    let userData = try JSONDecoder().decode(UserData.self, from: data)
-//                    self.userCurrent?.profile = userData
-//                    completion()
-//                } catch {
-//                    print("ERROR: Decode User Profile")
-//                    completion()
-//                }
-//            case .failure(_):
-//                print("ERROR: Load User Profile")
-//                completion()
-//            }
-//        }
-//    }
 }
 
 extension AuthViewModel {
-    // проверка версии программы
-    private func checkVersion() {
-        NetworkManager.shared.fetchVersion { result in
-            switch result {
-            case .success(let ver):
-                if ver == version {
-                    self.checkFirstKey()
-                } else {
-                    self.showView = .version
-                }
-            case .failure(_):
-                print("ERROR: fetchVersion")
-            }
-        }
-    }
-    
+
     // метод отправки сообщения на восстановление на указанную почту
     private func sendRecoveryPassword() {
         if email.isEmpty {
@@ -253,5 +202,19 @@ extension AuthViewModel {
                 self.errorOccured = !errorOccured
             }
         }
+    }
+    
+    //MARK: -  очищаем профиль, скидываем системные данные и отправляем на окно закрытия программы
+    private func exitProfile() {
+        showView = .auth
+        email = ""
+        passwordEnter = ""
+        name = ""
+        surname = ""
+        phone = ""
+        imageData = Data()
+        image = nil
+        StorageManager.shared.settingKey(to: .system, key: false)
+        showView = .exit
     }
 }

@@ -13,11 +13,11 @@ struct VersionValidateView: View {
             Text("Закройте приложение.\nСкачайте и установите\nновую версию!")
                 .multilineTextAlignment(.center)
                 .font(.callout)
-            Image("Lyna_1024")
+            Image(nameLogo)
                 .resizable()
                 .interpolation(.medium)
                 .aspectRatio(contentMode: .fit)
-                .frame(width: WIDTH * 0.5)
+                .frame(width: WIDTH * 0.3)
         }
     }
 }

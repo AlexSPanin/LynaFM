@@ -73,23 +73,33 @@ struct SystemApp: Codable {
 class NetworkManager {
     static let shared = NetworkManager()
     private init() {}
-    // получаем версию программы
-    func fetchVersion(completion: @escaping (Result<String, NetworkError>) -> Void) {
-        Firestore.firestore().collection("system").document("system").getDocument {document, error in
-            if error != nil {
-                completion(.failure(.fetchVersion))
-            } else {
-                if let version = try? document?.data(as: SystemApp.self) {
-                    completion(.success(version.ver))
-                } else {
-                    completion(.failure(.fetchVersion))
-                }
-            }
+
+    //MARK: - методы работы с пользователем USER
+    // получаем uid пользователя
+    private func getUserUid() -> String {
+        if let currentUid = AuthUserManager.shared.userSession?.uid {
+            print("Current Uid \(currentUid)")
+            return currentUid
         }
+        return ""
     }
-    
-    
-    // сохранение файла с автоматическим uuid - возвращает название файла
+    // сохранение пользователя
+    func upLoadUser(user: User?, completion: @escaping () -> Void) {
+        let name = getUserUid()
+        guard let user = user else { return }
+        let data = ["date" : user.date,
+                    "email" : user.email,
+                    "phone" : user.phone,
+                    "name" : user.name,
+                    "surname" : user.surname,
+                    "image" : user.image,
+                    "profile" : user.profile,
+                    "isActive" : user.isActive
+        ] as [String : Any]
+        upLoadElementCollection(to: .user, name: name, data: data)
+    }
+    // MARK: -  работа с хранилищем загрузка и выгрузка файлов ввиде Data
+    // сохранение файла с автоматическим uuid - возвращает путь к файлу
     func upLoadFile(to name: String? = nil, type: UploadType, data: Data, completion: @escaping (String) -> Void) {
         var uuid = UUID().uuidString
         if let name = name { uuid = name }
@@ -104,7 +114,6 @@ class NetworkManager {
             }
         }
     }
-    
     // загрузка файла по названию и типу
     func loadFile(type: UploadType, name: String, completion: @escaping (Result<Data, NetworkError>) -> Void) {
         
@@ -119,55 +128,7 @@ class NetworkManager {
             }
         }
     }
-}
-
-
-//MARK: - методы работы с пользователем
-extension NetworkManager {
-    // сохранение пользователя
-    func upLoadUser(user: User?, completion: @escaping () -> Void) {
-        let name = getUserUid()
-        guard let user = user else { return }
-        let data = ["date" : user.date,
-                    "email" : user.email,
-                    "phone" : user.phone,
-                    "name" : user.name,
-                    "surname" : user.surname,
-                    "image" : user.image,
-                    "profile" : user.profile,
-                    "isActive" : user.isActive
-        ] as [String : Any]
-        Firestore.firestore().collection("user").document(name).setData(data)
-    }
     
-    // загрузка пользователя
-    func loadUser(name: String, completion: @escaping (Result<User, NetworkError>) -> Void) {
-        print("NetworkManager: loadUser: \(name)")
-        Firestore.firestore().collection("user").document(name).getDocument { document, error in
-            if error != nil {
-                print("NetworkManager ERROR: getDocument")
-                completion(.failure(.fetchUser))
-            }
-            if let user = try? document?.data(as: User.self) {
-                print("NetworkManager: Пользователь загружен из сети")
-                completion(.success(user))
-            } else {
-                print("NetworkManager ERROR: loadUser try getDocument")
-                completion(.failure(.fetchUser))
-            }
-        }
-    }
-}
-
-extension NetworkManager {
-    // получаем uid пользователя
-    private func getUserUid() -> String {
-        if let currentUid = AuthUserManager.shared.userSession?.uid {
-            print("Current Uid \(currentUid)")
-            return currentUid
-        }
-        return ""
-    }
     // MARK: - работа с коллекцией
     // получить весь список из коллекции ввиде [QueryDocumentSnapshot]
     func fetchFullCollection<T: Decodable>(to collection: NetworkCollection, model: T.Type, comletion: @escaping (Result<[T], NetworkError>) -> Void ) {
@@ -197,15 +158,11 @@ extension NetworkManager {
     
     // получить элемент коллекции DocumentSnapshot
     func fetchElementCollection<T: Decodable>(to collection: NetworkCollection, doc: String, model: T.Type, comletion: @escaping (Result<T, NetworkError>) -> Void ) {
-        Firestore.firestore().collection(collection.collection).document(doc).getDocument {document, error in
-            if let document = document {
-                do {
-                    let data = try? document.data(as: T.self)
-                    if let data = data {
-                        comletion(.success(data))
-                    }
-                }
-            } else {
+        Firestore.firestore().collection(collection.collection).document(doc).getDocument(as: T.self) {result in
+            switch result {
+            case .success(let element):
+                comletion(.success(element))
+            case .failure(_):
                 comletion(.failure(.fetchElement))
             }
         }
@@ -214,10 +171,10 @@ extension NetworkManager {
     // записать элемент коллекции [String: Any]
     func upLoadElementCollection(to collection: NetworkCollection, name: String, data: [String : Any]) {
         let collection = collection.collection
-        Firestore.firestore().collection(collection).document(name).setData(data)
         let time = Date().timeStamp()
-        let doc = NetworkCollection.system.collection
-        updateValueElement(to: .system, document: doc, key: collection, value: time)
+        let system = NetworkCollection.system.collection
+        Firestore.firestore().collection(collection).document(name).setData(data)
+        updateValueElement(to: .system, document: system, key: collection, value: time)
     }
     
     // изменить значение поля элемента в коллекции
