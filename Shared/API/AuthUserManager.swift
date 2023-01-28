@@ -6,24 +6,29 @@
 //
 
 import Foundation
-import Firebase
+import FirebaseAuth
 
 class AuthUserManager {
-    
-    var userSession: FirebaseAuth.User?
-    
+
     static let shared = AuthUserManager()
     
-    init() { print("AuthUserManager: Init") }
+    private init() {}
     
-    deinit { print("AuthUserManager: DeInit") }
-    
-    func updateUserSession(){
-        //        print("AuthUserViewModel: Проверка интернет сесии Пользователя")
-        userSession = Auth.auth().currentUser
-        print("AuthUserViewModel:  userSession \(userSession?.uid ?? "Не авторизован")")
+    func currentUserID() -> String {
+        if let id = Auth.auth().currentUser?.uid {
+            return id
+        } else {
+            return ""
+        }
     }
     
+    func currentUserEmail() -> String {
+        if let email = Auth.auth().currentUser?.email {
+            return email
+        } else {
+            return ""
+        }
+    }
     
     
     //MARK: - методы для работы с пользователями в базе данных
@@ -44,8 +49,6 @@ class AuthUserManager {
                 completion(errorText, errorOccured)
                 return
             }
-            guard let user = result?.user else { return }
-            self.userSession = user
             completion("", false)
         }
     }
@@ -70,8 +73,6 @@ class AuthUserManager {
                 completion(errorText, errorOccured)
                 return
             }
-            guard let user = result?.user else { return }
-            self.userSession = user
             completion("", false)
         }
     }

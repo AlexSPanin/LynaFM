@@ -28,37 +28,16 @@ struct CheckLine: Codable {
 class NavigationViewModel: ObservableObject {
     
     @Published var view = Navigation.load
-    @Published var labelBase: String = ""
+    @Published var label: String = ""
+    @Published var checkList: [NetworkCollection: CheckLine] = [:]
     
     // системные файлы из облака и локальный
     var systemStorage: SystemApp?
     var systemServer: SystemApp?
-    // словарь чек лист
-    var checkList: [NetworkCollection: CheckLine] = [:]
-    // признак проверки чек листа
-    var isCheck: Bool = false {
-        didSet {
-            let check = checkList.contains(where: {$0.value.isLoading == true })
-            print("checkList enable True: \(check)")
-            isFinishLoad = !check
-        }
-    }
-    // признак окончания загрузки
-    var isFinishLoad: Bool = false {
-        didSet {
-            if isFinishLoad {
-                view = .auth
-            }
-        }
-    }
-    // нет интернета - нет возможности загрузить чек лист
-    var notNetwork: Bool = false
-    
     
     init() {
         print("START: NavigationViewModel")
         fetchSystemApp()
-        checkDataBase()
     }
     deinit {
         print("CLOSE: NavigationViewModel")
@@ -87,7 +66,8 @@ class NavigationViewModel: ObservableObject {
                 self.checkVersionApp()
             case .failure(_):
                 print("ERROR: fetchSystemAppNetwork")
-                self.notNetwork = true
+                self.label = "ERROR: Not Network"
+                self.view = .error
             }
         }
     }
@@ -120,52 +100,8 @@ class NavigationViewModel: ObservableObject {
         }
         if let ver = checkList[.system]?.isLoading, ver {
             view = .version
-        }
-    }
-    
-    private func checkDataBase() {
-        let myGroup = DispatchGroup()
-        myGroup.enter()
-        checkUser {
-            self.isCheck.toggle()
-            myGroup.leave()
-        }
-        
-        myGroup.notify(queue: .main) {
-            self.isCheck.toggle()
-        }
-        
-    }
-    
-    private func checkUser(completion: @escaping() -> Void) {
-        // проверяем базу категорий
-        if let isLoading = checkList[.user]?.isLoading, isLoading {
-            labelBase = "Loading ProductPropriety Base"
-            NetworkManager.shared.fetchFullCollection(to: .user, model: User.self) { result in
-                switch result {
-                case .success(let collection):
-                    print("Collection Users is Enable", collection)
-                    let collection = collection as Any
-                    StorageManager.shared.save(type: .users, model: [User].self, collection: collection)
-                    self.checkList[.user] = CheckLine(app: self.systemServer?.user, server: self.systemServer?.user)
-                    completion()
-                case .failure(_):
-                    // если не смогли загрузить то пытаемся проверить локальную, если нет то ошибка
-                    print("ERROR: network fetch ProductPropriety")
-                    StorageManager.shared.load(type: .users, model: [User].self) { result in
-                        switch result {
-                        case .success(_):
-                            self.checkList[.user] = CheckLine(app: self.systemStorage?.user, server: self.systemStorage?.user)
-                            completion()
-                        case .failure(_):
-                            print("ERROR: storage load ProductPropriety")
-                            self.view = .error
-                        }
-                    }
-                }
-            }
         } else {
-            completion()
+            view = .auth
         }
     }
 }

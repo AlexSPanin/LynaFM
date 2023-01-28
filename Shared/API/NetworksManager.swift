@@ -8,6 +8,7 @@
 import Foundation
 import Firebase
 import FirebaseStorage
+import FirebaseFirestoreSwift
 
 enum NetworkError: Error {
     case fetchVersion
@@ -75,17 +76,9 @@ class NetworkManager {
     private init() {}
 
     //MARK: - методы работы с пользователем USER
-    // получаем uid пользователя
-    private func getUserUid() -> String {
-        if let currentUid = AuthUserManager.shared.userSession?.uid {
-            print("Current Uid \(currentUid)")
-            return currentUid
-        }
-        return ""
-    }
     // сохранение пользователя
     func upLoadUser(user: User?, completion: @escaping () -> Void) {
-        let name = getUserUid()
+        let name = AuthUserManager.shared.currentUserID()
         guard let user = user else { return }
         let data = ["date" : user.date,
                     "email" : user.email,
@@ -109,7 +102,7 @@ class NetworkManager {
                 print("ERROR: upLoad File")
                 completion("")
             } else {
-                print("FINISH: upLoad File ")
+                print("FINISH: upLoad File")
                 completion(uuid)
             }
         }
@@ -145,6 +138,7 @@ class NetworkManager {
                                 datas.append(data)
                             } else {
                                 print("ERROR: Decode Network data")
+                                comletion(.failure(.decodeCollection))
                             }
                         }
                     }

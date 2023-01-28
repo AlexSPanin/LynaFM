@@ -29,8 +29,8 @@ enum UserRole: Codable {
 }
 
 // модель пользователя для внешнего хранения
-struct User: Identifiable, Codable {
-    @DocumentID var id: String?
+struct User: Identifiable,  Codable {
+  @DocumentID var id: String?
     var date = Date().timeStamp()
     
     var isActive = true
@@ -52,24 +52,27 @@ struct User: Identifiable, Codable {
     }
 }
 
+// модель пользователя для внешнего хранения
+struct UserAPP: Codable {
+    var id: String?
+    var date = ""
+    
+    var isActive = true
+   
+    var email = ""
+    var phone = ""
+    var name = ""
+    var surname = ""
+    
+    var image = ""
+    var profile = ""
+    
+
+}
+
 // набор ролей и привязанных этапов пользователя
 struct UserData: Codable {
     var roles: [UserRole] = []
     var stages: [String] = []
 }
 
-//// модель пользователя для UserDefaults
-//struct UserCurrent: Codable {
-//    var id: String?
-//    var date = ""
-//    
-//    var isActive = true
-//    
-//    var email = ""
-//    var phone = ""
-//    var name = ""
-//    var surname = ""
-//    
-//    var image = ""
-//    var profile = ""
-//}

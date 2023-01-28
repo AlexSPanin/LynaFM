@@ -10,6 +10,7 @@ import SwiftUI
 struct AuthView: View {
     @EnvironmentObject var navigation: NavigationViewModel
     @StateObject var viewModel = AuthViewModel()
+    let checkList: [NetworkCollection: CheckLine]
     var body: some View {
         ZStack {
             switch viewModel.showView {
@@ -20,11 +21,11 @@ struct AuthView: View {
             case .repair:
                 RecoveryUserView(viewModel: viewModel)
             case .error:
-                ErrorView()
+                ErrorView(label: viewModel.label)
             case .starting:
                 StartingView(viewModel: viewModel)
             case .exit:
-                ExitView()
+                ErrorView(label: viewModel.label)
             }
 
             // отработка сообщений об ошибках
@@ -33,6 +34,10 @@ struct AuthView: View {
                     viewModel.errorOccured.toggle()
                 }
             }
+        }
+        .onAppear {
+            viewModel.checkList = checkList
+            viewModel.isStart.toggle()
         }
         .onChange(of: viewModel.isFinish) { newValue in
             if newValue {

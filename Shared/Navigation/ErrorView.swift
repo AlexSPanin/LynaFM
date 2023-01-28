@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ErrorView: View {
+    let label: String
     var body: some View {
         VStack {
             Spacer()
@@ -16,7 +17,7 @@ struct ErrorView: View {
                 .interpolation(.medium)
                 .aspectRatio(contentMode: .fit)
                 .frame(width: WIDTH * 0.3)
-            Text("Ошибка загрузки Базы Данных")
+            Text(label)
                 .font(.callout)
                 .lineLimit(1)
                 .minimumScaleFactor(scaleFactor)

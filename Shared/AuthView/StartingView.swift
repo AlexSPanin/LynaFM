@@ -41,7 +41,7 @@ struct StartingView: View {
                     TextButton(text: "Сменить пользователя") {
                         viewModel.isExit.toggle()
                     }
-                    TextButton(text: "Редактировать профиль") {
+                    TextButton(text: "Редактировать") {
                         viewModel.showView = .edit
                     }
                 }
