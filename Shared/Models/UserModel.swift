@@ -9,7 +9,7 @@ import Foundation
 import FirebaseFirestoreSwift
 
 // роли пользователей
-enum UserRole: Codable {
+enum UserRole: CaseIterable, Codable {
     case owner, app, order, stage, admin
     
     var role: String {
@@ -24,6 +24,36 @@ enum UserRole: Codable {
             return "stage"
         case .admin:
             return "admin"
+        }
+    }
+    
+    var sort: String {
+        switch self {
+        case .owner:
+            return "B"
+        case .app:
+            return "C"
+        case .order:
+            return "D"
+        case .stage:
+            return "E"
+        case .admin:
+            return "A"
+        }
+    }
+    
+    var label: String {
+        switch self {
+        case .owner:
+            return "Владелец"
+        case .app:
+            return "Администратор Приложения"
+        case .order:
+            return "Администратор Заказов"
+        case .stage:
+            return "Администратор Участка"
+        case .admin:
+            return "Администратор"
         }
     }
 }
@@ -64,15 +94,15 @@ struct UserAPP: Codable {
     var name = ""
     var surname = ""
     
-    var image = ""
-    var profile = ""
+    var image = Data()
+    var profile = UserData()
     
 
 }
 
 // набор ролей и привязанных этапов пользователя
 struct UserData: Codable {
-    var roles: [UserRole] = []
+    var roles: [UserRole: Bool] = [:]
     var stages: [String] = []
 }
 

@@ -97,8 +97,8 @@ extension StorageManager {
         current.phone = user.phone
         current.name = user.name
         current.surname = user.surname
-        current.image = user.image
-        current.profile = user.profile
+//        current.image = user.image
+//        current.profile = user.profile
         return current
     }
     // encoding JSON standart UserCurrent to User
@@ -110,8 +110,8 @@ extension StorageManager {
         user.id = userAPP.id
         user.isActive = userAPP.isActive
         user.date = userAPP.date
-        user.image = userAPP.image
-        user.profile = userAPP.profile
+//        user.image = userAPP.image
+//        user.profile = userAPP.profile
         return user
     }
     

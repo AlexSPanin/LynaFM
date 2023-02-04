@@ -8,43 +8,42 @@
 import Foundation
 
 enum AuthViews {
-    case auth, edit, repair, error, starting, exit
+    case auth, edit, repair, error, starting, create, exit
 }
 
 final class AuthViewModel: ObservableObject {
     // сообщение для окон ошибки
     @Published var label = ""
     
-    
+    @Published var userAPP = UserAPP()
     // переменные полей пользователя для входа по паролю
-    @Published var email = ""
+ //   @Published var email = ""
     @Published var passwordEnter = ""
-    
-    // поля пользователя для регистрации
-    @Published var name = ""
-    @Published var surname = ""
-    @Published var phone = ""
-    @Published var imageData = Data()
-    var image: String?
 
     // отвечает за показ активного окна
     @Published var showView: AuthViews = .error
-    
+    // признак показа окна работы с аватаром пользователя
     @Published var showAvatarPhotoView = false
     
-    // признак запуска методов
+    // авторизация пользователя по логину и паролю
     @Published var isAuth = false {
         didSet {
             checkLogIn()
         }
     }
-    
+    // редактирование профиля пользователя
     @Published var isEdit = false {
         didSet {
             saveProfile()
         }
     }
-    
+    // создание новой карточки профиля пользователя
+    @Published var isCreate = false {
+        didSet {
+            createProfile()
+        }
+    }
+    // выход из текущего профиля
     @Published var isExit = false {
         didSet {
             exitProfile()
@@ -77,6 +76,7 @@ final class AuthViewModel: ObservableObject {
     var userID = ""
     var systemAPP: SystemApp?
     var checkList: [NetworkCollection: CheckLine]?
+    // признак окончания загрузки базы данных
     var finishLoadDB = false {
         didSet {
             if finishLoadDB {
@@ -123,18 +123,17 @@ final class AuthViewModel: ObservableObject {
             }
         }
     
-    //MARK: - проверка наличия коллекции пользователей на устройстве
+    //MARK: - проверка пользователя
     private func checkCurrentUser() {
         print("Начало проверки пользователя")
         StorageManager.shared.load(type: .user, model: UserAPP.self){ result in
             switch result {
             case .success(let user):
                 print("Карточка пользователя в памяти")
-                self.name = user.name
-                self.surname = user.surname
-                self.phone = user.phone
-                self.loadImage(to: user.image)
-                self.image = user.image
+                self.userAPP.name = user.name
+                self.userAPP.surname = user.surname
+                self.userAPP.phone = user.phone
+                self.userAPP.image = user.image
                 self.showView = .starting
             case .failure(_):
                 print("Если карточки нет в памяти то это первый запуск и авторизация")
@@ -143,23 +142,34 @@ final class AuthViewModel: ObservableObject {
         }
     }
  
-    // сохранить профиль
+    //MARK: - сохранить профиль после редактирования
     private func saveProfile() {
-        if name.isEmpty || surname.isEmpty || phone.isEmpty {
+        if userAPP.name.isEmpty || userAPP.surname.isEmpty || userAPP.phone.isEmpty {
             errorText = "Все поля должны\nбыть заполнены"
             errorOccured.toggle()
             return
         } else {
             let email = AuthUserManager.shared.currentUserEmail()
-            let id = userID
-            var user = User(email: email, phone: self.phone, name: self.name, surname: self.surname)
-            NetworkManager.shared.upLoadFile(to: image, type: .user, data: self.imageData) { file in
-                user.id = id
-                user.image = file
-                let userAPP = StorageManager.shared.convertToUserAPP(user: user)
-                NetworkManager.shared.upLoadUser(user: user) {}
-                StorageManager.shared.save(type: .user, model: UserAPP.self, collection: userAPP)
-                FileAppManager.shared.saveFileData(to: file, type: .temp, data: self.imageData)
+            userAPP.email = email
+            UserDataManager.shared.updateUser(to: userAPP)
+            let collection = userAPP as Any
+            StorageManager.shared.save(type: .user, model: UserAPP.self, collection: collection)
+            isFinish = true
+        }
+    }
+    
+    //MARK: - сохранить новый профиль
+    private func createProfile() {
+        if userAPP.name.isEmpty || userAPP.surname.isEmpty || userAPP.phone.isEmpty {
+            errorText = "Все поля должны\nбыть заполнены"
+            errorOccured.toggle()
+            return
+        } else {
+            let email = AuthUserManager.shared.currentUserEmail()
+            userAPP.email = email
+            UserDataManager.shared.createNewUser(name: userAPP.name, surname: userAPP.surname, phone: userAPP.phone, email: userAPP.email) { user in
+                let collection = user as Any
+                StorageManager.shared.save(type: .user, model: UserAPP.self, collection: collection)
                 self.isFinish = true
             }
         }
@@ -168,37 +178,33 @@ final class AuthViewModel: ObservableObject {
     //MARK: - проверка входа по паролю
     private func checkLogIn() {
         print("LoginUserViewModel: Начало входа по паролю")
-        if email.isEmpty || passwordEnter.isEmpty {
+        if userAPP.email.isEmpty || passwordEnter.isEmpty {
             errorText = "Все поля должны\nбыть заполнены"
             errorOccured.toggle()
             return
         } else {
            
-            AuthUserManager.shared.login(email: email, password: passwordEnter) { text, error in
+            AuthUserManager.shared.login(email: userAPP.email, password: passwordEnter) { text, error in
                 if error {
                     self.errorText = text
                     self.errorOccured = error
                     self.passwordEnter = ""
-                    self.email = ""
+                    self.userAPP.email = ""
                     return
                 } else {
-                        print("Загрузка из сети если в памяти нет карточки пользователя")
-                    NetworkManager.shared.fetchElementCollection(to: .user, doc: self.userID, model: User.self) { result in
-                            switch result {
-                            case .success(let user):
-                                self.name = user.name
-                                self.surname = user.surname
-                                self.phone = user.phone
-                                self.loadImage(to: user.image)
-                                self.image = user.image
-                                let userAPP = StorageManager.shared.convertToUserAPP(user: user)
-                                StorageManager.shared.save(type: .user, model: UserAPP.self, collection: userAPP)
-                                self.showView = .starting
-                            case .failure(_):
-                                print("Если карточки нет - надо сформировать новый профиль")
-                                self.showView = .edit
-                            }
+                    print("Загрузка из сети если в памяти нет карточки пользователя")
+                    UserDataManager.shared.loadUser(to: self.userID) { result in
+                        switch result {
+                        case .success(let user):
+                            self.userAPP = user
+                            let collection = user as Any
+                            StorageManager.shared.save(type: .user, model: UserAPP.self, collection: collection)
+                            self.showView = .starting
+                        case .failure(_):
+                            print("Если карточки нет - надо сформировать новый профиль")
+                            self.showView = .create
                         }
+                    }
                 }
             }
         }
@@ -208,25 +214,25 @@ final class AuthViewModel: ObservableObject {
 extension AuthViewModel {
     //MARK: - проверка чек листа
     private func updateCheckList() {
-        print("Проверка Чек листа")
+  //      print("Проверка Чек листа")
         if let checkList = checkList {
             finishLoadDB = !checkList.contains(where: {$0.value.isLoading})
-            print("finishLoadDB \(finishLoadDB)")
+  //          print("finishLoadDB \(finishLoadDB)")
         }
     }
 
     //MARK: - метод отправки сообщения на восстановление на указанную почту
     private func sendRecoveryPassword() {
-        if email.isEmpty {
+        if userAPP.email.isEmpty {
             errorText = "Укажите электронную почту"
             errorOccured.toggle()
             return
         }
-        AuthUserManager.shared.sendLinkForPasswordReset(with: email) { errorText, errorOccured in
+        AuthUserManager.shared.sendLinkForPasswordReset(with: userAPP.email) { errorText, errorOccured in
             if errorOccured {
                 self.errorText = errorText
                 self.errorOccured = errorOccured
-                self.email = ""
+                self.userAPP.email = ""
             } else {
                 self.errorText = errorText
                 self.errorOccured = !errorOccured
@@ -236,13 +242,8 @@ extension AuthViewModel {
     //MARK: -  очищаем профиль, скидываем системные данные и отправляем на окно закрытия программы
     private func exitProfile() {
         showView = .auth
-        email = ""
         passwordEnter = ""
-        name = ""
-        surname = ""
-        phone = ""
-        imageData = Data()
-        image = nil
+        userAPP = UserAPP()
         StorageManager.shared.remove(type: .system)
         StorageManager.shared.remove(type: .user)
         StorageManager.shared.remove(type: .users)
@@ -252,25 +253,7 @@ extension AuthViewModel {
         label = "Теперь Вы можете закрыть приложение."
         showView = .exit
     }
-    //MARK: - загрузка фото пользователя
-    private func loadImage(to file: String) {
-        FileAppManager.shared.loadFileData(to: file, type: .temp) { result in
-            switch result {
-            case .success(let data):
-                self.imageData = data
-            case .failure(_):
-                NetworkManager.shared.loadFile(type: .user, name: file) { result in
-                    switch result {
-                    case .success(let data):
-                        FileAppManager.shared.saveFileData(to: file, type: .temp, data: data)
-                        self.imageData = data
-                    case .failure(_):
-                        print("ERROR: load Image")
-                    }
-                }
-            }
-        }
-    }
+    
     //MARK: - загрузка системного файла
     private func loadSystemAPP() {
         StorageManager.shared.load(type: .system, model: SystemApp.self) { result in
@@ -286,15 +269,16 @@ extension AuthViewModel {
     
     //MARK: - проверка и обновление коллекции пользователей
     private func checkUsersCollection(completion: @escaping() -> Void) {
-        print("проверяем базу коллекции")
+        print("проверяем базу коллекции Пользователей")
         if let checkList = checkList, let isLoading = checkList[.user]?.isLoading, isLoading {
             print("Начало загрузки из сети Users Collection Base")
             NetworkManager.shared.fetchFullCollection(to: .user, model: User.self) { result in
                 switch result {
-                case .success(let collection):
-                    print("Коллекция из сети загружена Users Collection")
-                    let usersAPP = StorageManager.shared.convertToUsersApp(users: collection)
-                    StorageManager.shared.save(type: .users, model: [UserAPP].self, collection: usersAPP)
+                case .success(let users):
+                   print("Коллекция из сети загружена Users Collection")
+                    let usersAPP = StorageManager.shared.convertToUsersApp(users: users)
+                    let collection = usersAPP as Any
+                    StorageManager.shared.save(type: .users, model: [UserAPP].self, collection: collection)
                     self.checkList?[.user] = CheckLine(app: self.systemAPP?.user, server: self.systemAPP?.user)
                     completion()
                 case .failure(_):

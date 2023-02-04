@@ -77,8 +77,11 @@ class NetworkManager {
 
     //MARK: - методы работы с пользователем USER
     // сохранение пользователя
-    func upLoadUser(user: User?, completion: @escaping () -> Void) {
-        let name = AuthUserManager.shared.currentUserID()
+    func upLoadUser(to id: String?, user: User?) {
+        var name = AuthUserManager.shared.currentUserID()
+        if let id = id {
+            name = id
+        }
         guard let user = user else { return }
         let data = ["date" : user.date,
                     "email" : user.email,
@@ -168,6 +171,7 @@ class NetworkManager {
         let time = Date().timeStamp()
         let system = NetworkCollection.system.collection
         Firestore.firestore().collection(collection).document(name).setData(data)
+        // обновление даты базы
         updateValueElement(to: .system, document: system, key: collection, value: time)
     }
     
@@ -175,5 +179,49 @@ class NetworkManager {
     func updateValueElement(to collection: NetworkCollection, document: String, key: String, value: Any) {
         let collection = collection.collection
         Firestore.firestore().collection(collection).document(document).updateData([key : value])
+    }
+    
+    // MARK: -  работа с хранилищем кодирование и декодирование загрузка и выгрузка файлов ввиде Data
+    // сохранение файла с автоматическим uuid - возвращает путь к файлу
+    func upLoadFile<T: Encodable>(to name: String? = nil, type: UploadType, model: T.Type, collection: Any, completion: @escaping (String) -> Void) {
+        var uuid = UUID().uuidString
+        if let name = name { uuid = name }
+        let storageRef = type.filePath.child(uuid)
+        if let collection = collection as? T {
+            do {
+                let data = try JSONEncoder().encode(collection)
+                storageRef.putData(data, metadata: nil) { _, error in
+                    if error != nil {
+                        print("ERROR: upLoad File")
+                        completion("")
+                    } else {
+                        print("FINISH: upLoad File")
+                        completion(uuid)
+                    }
+                }
+            } catch {
+                print("Ошибка кодирования файла перед сохранением")
+            }
+        }
+    }
+    // загрузка файла по названию и типу
+    func loadFile<T: Decodable>(type: UploadType, name: String, model: T.Type, completion: @escaping (Result<T, NetworkError>) -> Void) {
+        
+        let storageRef = type.filePath.child(name)
+        storageRef.getData(maxSize: 5 * 1024 * 1024 ) { data, error in
+            if let error = error {
+                print("NetworkManager ERROR: loadFile  type \(type)", error.localizedDescription)
+                completion(.failure(.loadFile))
+            } else {
+                if let data = data {
+                    do {
+                        let decoder = try JSONDecoder().decode(T.self, from: data)
+                        completion(.success(decoder))
+                    } catch {
+                        completion(.failure(.decodeStorage))
+                    }
+                }
+            }
+        }
     }
 }

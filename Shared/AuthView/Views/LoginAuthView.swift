@@ -1,5 +1,5 @@
 //
-//  RecoveryUser.swift
+//  LoginAuthView.swift
 //  LynaFM (iOS)
 //
 //  Created by Александр Панин on 19.01.2023.
@@ -7,29 +7,32 @@
 
 import SwiftUI
 
-struct RecoveryUserView: View {
+struct LoginAuthView: View {
     @ObservedObject var viewModel: AuthViewModel
     
     var body: some View {
         VStack(alignment: .center, spacing: 10) {
-            Text("Введите email")
+            Text("Введите email и пароль")
                 .font(.body)
                 .lineLimit(1)
                 .minimumScaleFactor(scaleFactor)
                 .multilineTextAlignment(.leading)
             
             TextFieldView(subtitle: "Email",
-                          tipeTextField: .login, text: $viewModel.email)
+                          tipeTextField: .login, text: $viewModel.userAPP.email)
+            TextFieldView(subtitle: "Введите пароль",
+                          tipeTextField: .password, text: $viewModel.passwordEnter)
             
             VStack {
-                CustomButton(text: "Отправить") {
-                    viewModel.isSendRecovery.toggle()
+                CustomButton(text: "Войти", width: WIDTH * 0.4) {
+                    viewModel.isAuth.toggle()
                 }
                 HorizontalDividerLabelView(label: "или")
-                TextButton(text: "Выйти") {
-                    viewModel.showView = .auth
+                TextButton(text: "Забыли пароль") {
+                    viewModel.showView = .repair
                 }
             }
+            .padding(.top, hPadding)
         }
         .padding(.all, hPadding)
         .frame(width: WIDTH * 0.95)

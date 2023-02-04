@@ -1,16 +1,16 @@
 //
-//  ProfileUserView.swift
+//  CreteUserView.swift
 //  LynaFM (iOS)
 //
-//  Created by Александр Панин on 19.01.2023.
+//  Created by Александр Панин on 28.01.2023.
 //
 
 import SwiftUI
 
-struct ProfileUserView: View {
+struct CreteUserView: View {
     @ObservedObject var viewModel: AuthViewModel
     private var image: UIImage? {
-       UIImage(data: viewModel.imageData)
+        UIImage(data: viewModel.userAPP.image)
     }
     var body: some View {
         VStack(alignment: .center, spacing: 10) {
@@ -23,21 +23,22 @@ struct ProfileUserView: View {
                 viewModel.showAvatarPhotoView.toggle()
             }
             TextFieldView(subtitle: "Имя",
-                          tipeTextField: .userName, text: $viewModel.name)
+                          tipeTextField: .userName, text: $viewModel.userAPP.name)
             TextFieldView(subtitle: "Фамилия",
-                          tipeTextField: .userName, text: $viewModel.surname)
+                          tipeTextField: .userName, text: $viewModel.userAPP.surname)
             TextFieldView(subtitle: "Телефон",
-                          tipeTextField: .userName, text: $viewModel.phone)
+                          tipeTextField: .userName, text: $viewModel.userAPP.phone)
             
             VStack {
-                CustomButton(text: "Сохранить") {
-                    viewModel.isEdit.toggle()
+                CustomButton(text: "Сохранить", width: WIDTH * 0.4) {
+                    viewModel.isCreate.toggle()
                 }
                 HorizontalDividerLabelView(label: "или")
                 TextButton(text: "Закрыть") {
                     viewModel.showView = .auth
                 }
             }
+            .padding(.top, hPadding)
         }
         .padding(.all, hPadding)
         .frame(width: WIDTH * 0.95)
@@ -48,7 +49,8 @@ struct ProfileUserView: View {
                 )
         )
         .sheet(isPresented: $viewModel.showAvatarPhotoView) {
-            AvatarPhotoView(imageData: $viewModel.imageData, showAvatarPhotoView: $viewModel.showAvatarPhotoView)
+            AvatarPhotoView(imageData: $viewModel.userAPP.image, showAvatarPhotoView: $viewModel.showAvatarPhotoView)
         }
     }
 }
+

@@ -9,7 +9,7 @@ import Foundation
 
 enum Navigation {
     case load, auth, role
-    case error, version
+    case error
 }
 
 // структура для проверки
@@ -76,7 +76,7 @@ class NavigationViewModel: ObservableObject {
     private func checkVersionApp() {
         if let systemServer = systemServer {
             if let systemStorage = systemStorage {
-                print("systemStorage - enable")
+  //              print("systemStorage - enable")
                 checkList[.system] = CheckLine(app: systemStorage.ver, server: systemServer.ver)
                 checkList[.user] = CheckLine(app: systemStorage.user, server: systemServer.user)
                 checkList[.product] = CheckLine(app: systemStorage.product, server: systemServer.product)
@@ -86,7 +86,7 @@ class NavigationViewModel: ObservableObject {
                 checkList[.parameter] = CheckLine(app: systemStorage.parameter, server: systemServer.parameter)
                 checkList[.stage] = CheckLine(app: systemStorage.stage, server: systemServer.stage)
             } else {
-                print("systemStorage - is enable")
+  //              print("systemStorage - is enable")
                 checkList[.system] = CheckLine(app: version, server: systemServer.ver)
                 checkList[.user] = CheckLine(app: "", server: systemServer.user)
                 checkList[.product] = CheckLine(app: "", server: systemServer.product)
@@ -99,7 +99,8 @@ class NavigationViewModel: ObservableObject {
             }
         }
         if let ver = checkList[.system]?.isLoading, ver {
-            view = .version
+            label = "Закройте приложение.\nСкачайте и установите\nновую версию!"
+            view = .error
         } else {
             view = .auth
         }

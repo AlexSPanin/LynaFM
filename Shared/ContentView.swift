@@ -17,13 +17,11 @@ struct ContentView: View {
             case .auth:
                 AuthView(checkList: navigation.checkList)
             case .role:
-                RoleUserView()
+                AdminAppView()
             case .load:
-                LoadDataBaseView(label: navigation.label)
+                LoadView(label: navigation.label)
             case .error:
                 ErrorView(label: navigation.label)
-            case .version:
-                VersionValidateView()
             }
         }
     }

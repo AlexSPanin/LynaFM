@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct LoadDataBaseView: View {
+struct LoadView: View {
     let label: String
     var body: some View {
         VStack {

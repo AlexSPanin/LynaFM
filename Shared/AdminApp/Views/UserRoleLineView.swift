@@ -1,0 +1,35 @@
+//
+//  UserRoleLineView.swift
+//  LynaFM (iOS)
+//
+//  Created by Александр Панин on 28.01.2023.
+//
+
+import SwiftUI
+
+struct UserRoleLineView: View {
+    let status: Bool
+    let role: UserRole
+    var body: some View {
+        VStack(spacing: 1) {
+            HStack(spacing: hPadding) {
+                Image(systemName: "circle.fill")
+                    .resizable()
+                    .interpolation(.medium)
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: WIDTH * 0.03, alignment: .center)
+                    .foregroundColor(status ? .green : .red)
+                Text("\(role.label)")
+                    .minimumScaleFactor(0.9)
+                    .lineLimit(1)
+                Spacer()
+            }
+            .font(.callout)
+            Divider()
+                .frame(width: WIDTH * 0.95, height: 1, alignment: .leading)
+        }
+        .padding(.horizontal, hPadding)
+        .frame(width: WIDTH * 0.95, height: WIDTH * 0.09, alignment: .leading)
+    }
+}
+

@@ -35,7 +35,7 @@ class AuthUserManager {
     
     // Регистрация по паролю
     func registrationPassword(email: String, password: String, completion: @escaping (String, Bool) -> Void) {
-              print("AuthUserViewModel: Регистрация по паролю")
+        print("AuthUserViewModel: Регистрация по паролю")
         Auth.auth().createUser(withEmail: email, password: password) { result, error in
             if let error = error {
                 var errorText = "Ошибка регистрации:\nКод ошибки \(error._code)"
@@ -49,7 +49,9 @@ class AuthUserManager {
                 completion(errorText, errorOccured)
                 return
             }
-            completion("", false)
+            if let user = result?.user {
+                completion(user.uid, false)
+            }
         }
     }
     

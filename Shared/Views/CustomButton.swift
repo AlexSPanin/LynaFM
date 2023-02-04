@@ -10,19 +10,32 @@ import SwiftUI
 struct CustomButton: View {
     
     let text: String
+    let width: CGFloat
     let action: () -> Void
-    let size = CGSize(width: WIDTH * 0.3, height: WIDTH * 0.07)
-
+    var height: CGFloat {
+        return width * 0.25
+    }
+    var font: Font {
+        switch width {
+        case 0..<WIDTH * 0.3:
+            return .footnote
+        case WIDTH * 0.3..<WIDTH * 0.5:
+            return .callout
+        default:
+            return .body
+        }
+    }
+    
     var body: some View {
         Button {
             action()
         } label: {
             RoundedRectangle(cornerRadius: buttonCorner)
                 .foregroundColor(.accentColor).opacity(0.8)
-                .frame(width: size.width, height: size.height)
+                .frame(width: width, height: height)
                 .overlay(
                     Text(text)
-                        .font(.footnote)
+                        .font(font)
                         .foregroundColor(.black)
                 )
         }
@@ -42,6 +55,7 @@ struct TextButton: View {
             Text(text)
                 .font(.footnote)
                 .underline()
+                .lineLimit(2)
                 .minimumScaleFactor(0.9)
                 .frame(width: size.width, height: size.height, alignment: .center)
                 

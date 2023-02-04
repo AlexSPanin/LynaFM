@@ -10,13 +10,13 @@ import SwiftUI
 struct StartingView: View {
     @ObservedObject var viewModel: AuthViewModel
     private var name: String {
-        viewModel.name
+        viewModel.userAPP.name
     }
     private var surname: String {
-        viewModel.surname
+        viewModel.userAPP.surname
     }
     private var image: UIImage? {
-       UIImage(data: viewModel.imageData)
+        UIImage(data: viewModel.userAPP.image)
     }
     
     var body: some View {
@@ -33,7 +33,7 @@ struct StartingView: View {
                 .padding(.bottom, 10)
 
             VStack {
-                CustomButton(text: "Продолжить") {
+                CustomButton(text: "Продолжить", width: WIDTH * 0.4) {
                     viewModel.isFinish.toggle()
                 }
                 HorizontalDividerLabelView(label: "или")
@@ -47,6 +47,7 @@ struct StartingView: View {
                 }
                 
             }
+            .padding(.top, hPadding)
         }
         .padding(.all, hPadding)
         .frame(width: WIDTH * 0.95)
