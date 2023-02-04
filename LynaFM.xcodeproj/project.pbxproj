@@ -85,7 +85,7 @@
 		E2ECEAEA2984FCC300261A33 /* UsersAdminAppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2ECEAE92984FCC300261A33 /* UsersAdminAppViewModel.swift */; };
 		E2ECEAEC2984FFE000261A33 /* CreateUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2ECEAEB2984FFE000261A33 /* CreateUserView.swift */; };
 		E2ECEAEE2985295D00261A33 /* UserLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2ECEAED2985295D00261A33 /* UserLineView.swift */; };
-		E2ECEAF029853EA100261A33 /* UserRoleLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2ECEAEF29853EA100261A33 /* UserRoleLineView.swift */; };
+		E2ECEAF029853EA100261A33 /* UserRoleLineStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2ECEAEF29853EA100261A33 /* UserRoleLineStatusView.swift */; };
 		E2ECEAF229854A3B00261A33 /* EditUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2ECEAF129854A3B00261A33 /* EditUserView.swift */; };
 		E2ECEAF429856D9D00261A33 /* UpdateUserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2ECEAF329856D9D00261A33 /* UpdateUserView.swift */; };
 /* End PBXBuildFile section */
@@ -147,7 +147,7 @@
 		E2ECEAE92984FCC300261A33 /* UsersAdminAppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersAdminAppViewModel.swift; sourceTree = "<group>"; };
 		E2ECEAEB2984FFE000261A33 /* CreateUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUserView.swift; sourceTree = "<group>"; };
 		E2ECEAED2985295D00261A33 /* UserLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserLineView.swift; sourceTree = "<group>"; };
-		E2ECEAEF29853EA100261A33 /* UserRoleLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRoleLineView.swift; sourceTree = "<group>"; };
+		E2ECEAEF29853EA100261A33 /* UserRoleLineStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRoleLineStatusView.swift; sourceTree = "<group>"; };
 		E2ECEAF129854A3B00261A33 /* EditUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditUserView.swift; sourceTree = "<group>"; };
 		E2ECEAF329856D9D00261A33 /* UpdateUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateUserView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -348,7 +348,7 @@
 			isa = PBXGroup;
 			children = (
 				E2ECEAED2985295D00261A33 /* UserLineView.swift */,
-				E2ECEAEF29853EA100261A33 /* UserRoleLineView.swift */,
+				E2ECEAEF29853EA100261A33 /* UserRoleLineStatusView.swift */,
 				E2ECEAE62984F66500261A33 /* TopLabelView.swift */,
 				E2DD94D4298EA38A00308D10 /* UserRoleView.swift */,
 			);
@@ -517,7 +517,7 @@
 				E22B5EA2297847B400836E92 /* Extensions.swift in Sources */,
 				E2D906EB297924E2009C6B4B /* NotificationMessage.swift in Sources */,
 				E2B60E6729793FE4001E710D /* CustomButton.swift in Sources */,
-				E2ECEAF029853EA100261A33 /* UserRoleLineView.swift in Sources */,
+				E2ECEAF029853EA100261A33 /* UserRoleLineStatusView.swift in Sources */,
 				E2B60E692979412D001E710D /* HorizontalDividerLabelView.swift in Sources */,
 				E2ECEAE52984F05E00261A33 /* StartAdminAppView.swift in Sources */,
 				E2111107298161FA002552C7 /* SystemDictionaries.swift in Sources */,

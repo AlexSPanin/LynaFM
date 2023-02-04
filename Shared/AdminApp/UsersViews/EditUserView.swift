@@ -36,7 +36,7 @@ struct EditUserView: View {
                             Button {
                                 viewModel.user.profile.roles[key]?.toggle()
                             } label: {
-                                UserRoleLineView(status: value, role: key)
+                                UserRoleLineStatusView(status: value, role: key)
                             }
                         }
                     }

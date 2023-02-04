@@ -27,14 +27,8 @@ struct UserRoleView: View {
                         role = key
                         select.toggle()
                     } label: {
-                        UserRoleLineView(status: value, role: key)
+                        UserRoleLineSelectView(status: role == key, role: key)
                     }
-                    .background(
-                        Color.accentColor.opacity(role == key ? 0.1 : 0).cornerRadius(10)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10).stroke(Color.accentColor.opacity(role == key ? 1 : 0), lineWidth: 1)
-                            )
-                    )
                 }
             }
         }

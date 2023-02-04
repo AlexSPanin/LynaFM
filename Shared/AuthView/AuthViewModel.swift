@@ -48,12 +48,14 @@ final class AuthViewModel: ObservableObject {
     @Published var isEdit = false {
         didSet {
             saveProfile()
+            showView = .starting
         }
     }
     // создание новой карточки профиля пользователя
     @Published var isCreate = false {
         didSet {
             createProfile()
+            showView = .starting
         }
     }
     // выход из текущего профиля
@@ -79,7 +81,13 @@ final class AuthViewModel: ObservableObject {
     }
     
     // окончание работы экранов авторизации
-    @Published var isFinish = false
+    @Published var isFinish = false {
+        didSet {
+            if isFinish {
+            saveProfile()
+            }
+        }
+    }
     
     // признак корректной версии программы
     @Published var isVersion = false
@@ -165,7 +173,6 @@ final class AuthViewModel: ObservableObject {
                 if status {
                     let collection = self.userAPP as Any
                     StorageManager.shared.save(type: .user, model: UserAPP.self, collection: collection)
-                    self.isFinish = true
                 }
             }
         }
@@ -184,7 +191,6 @@ final class AuthViewModel: ObservableObject {
             UserDataManager.shared.createNewUser(to: userAPP) { status in
                 let collection = self.userAPP as Any
                 StorageManager.shared.save(type: .user, model: UserAPP.self, collection: collection)
-                self.isFinish = true
             }
         }
     }

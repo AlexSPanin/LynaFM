@@ -81,6 +81,7 @@ struct StartingView: View {
                 case .admin:
                     navigation.view = .admin
                 }
+                
             }
         }
     }
