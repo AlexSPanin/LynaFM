@@ -21,7 +21,20 @@ final class AuthViewModel: ObservableObject {
     @Published var passwordEnter = ""
 
     // отвечает за показ активного окна
-    @Published var showView: AuthViews = .error
+    @Published var showView: AuthViews = .error {
+        didSet {
+            if showView == .starting {
+                StorageManager.shared.load(type: .user, model: UserAPP.self) { result in
+                    switch result {
+                    case .success(let user):
+                        self.userAPP = user
+                    case .failure(_):
+                        print("Ошибка загрузки авторизованного пользователя из памяти")
+                    }
+                }
+            }
+        }
+    }
     // признак показа окна работы с аватаром пользователя
     @Published var showAvatarPhotoView = false
     
@@ -130,10 +143,7 @@ final class AuthViewModel: ObservableObject {
             switch result {
             case .success(let user):
                 print("Карточка пользователя в памяти")
-                self.userAPP.name = user.name
-                self.userAPP.surname = user.surname
-                self.userAPP.phone = user.phone
-                self.userAPP.image = user.image
+                self.userAPP = user
                 self.showView = .starting
             case .failure(_):
                 print("Если карточки нет в памяти то это первый запуск и авторизация")
@@ -246,17 +256,11 @@ extension AuthViewModel {
     }
     //MARK: -  очищаем профиль, скидываем системные данные и отправляем на окно закрытия программы
     private func exitProfile() {
-        showView = .auth
         passwordEnter = ""
         userAPP = UserAPP()
-        StorageManager.shared.remove(type: .system)
         StorageManager.shared.remove(type: .user)
-        StorageManager.shared.remove(type: .users)
-        AuthUserManager.shared.exitingUser { _, _ in
-            do {}
-        }
-        label = "Теперь Вы можете закрыть приложение."
-        showView = .exit
+        checkAutchUser()
+        
     }
     
     //MARK: - загрузка системного файла

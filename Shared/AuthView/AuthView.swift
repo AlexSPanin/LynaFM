@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AuthView: View {
-    @EnvironmentObject var navigation: NavigationViewModel
+    
     @StateObject var viewModel = AuthViewModel()
     let checkList: [NetworkCollection: CheckLine]
     var body: some View {
@@ -41,11 +41,5 @@ struct AuthView: View {
             viewModel.checkList = checkList
             viewModel.isStart.toggle()
         }
-        .onChange(of: viewModel.isFinish) { newValue in
-            if newValue {
-                navigation.view = .role
-            }
-        }
-        
     }
 }

@@ -51,7 +51,7 @@ class StorageManager {
     }
     
     func save<T: Encodable>(type: TypeKey, model: T.Type, collection: Any ) {
-        print("Начало сохранения коллекции в память \(type.key)")
+  //          print("Начало сохранения коллекции в память \(type.key)")
         if let collection = collection as? T {
             do {
                 let data = try JSONEncoder().encode(collection)

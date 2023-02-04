@@ -128,7 +128,8 @@ class UserDataManager {
     func createUserData() -> UserData {
         var userData = UserData()
         UserRole.allCases.forEach { role in
-            userData.roles[role] = false
+            // ВНИМАНИЕ потом заменить на false
+            userData.roles[role] = true
         }
         return userData
     }
@@ -140,6 +141,7 @@ class UserDataManager {
         current.id = user.id
         current.date = user.date
         current.isActive = user.isActive
+        
         current.email = user.email
         current.phone = user.phone
         current.name = user.name
@@ -181,7 +183,7 @@ class UserDataManager {
         user.isActive = userAPP.isActive
         
         user.email = userAPP.email
-        user.email = userAPP.email
+        user.phone = userAPP.phone
         user.name = userAPP.name
         user.surname = userAPP.surname
 

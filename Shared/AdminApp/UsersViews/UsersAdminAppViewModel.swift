@@ -7,36 +7,29 @@
 
 import Foundation
 
-enum TapButtonUsers: Codable {
-    case no, addUser, editUser
-}
-
 class UsersAdminAppViewModel: ObservableObject {
     @Published var label = "Справочник пользователей"
     @Published var users = [UserAPP]()
-    @Published var user = UserAPP() {
+    @Published var user = UserAPP()
+    @Published var password = ""
+    
+
+    @Published var isAddUser = false {
         didSet {
-            print(user.id ?? "")
-            print(user.name)
-            print(user.surname)
+            if isAddUser {
+                addUser()
+            }
         }
     }
     
-    @Published var password = ""
-    @Published var index = 0
-    
-    @Published var press: TapButtonUsers = .no {
+    @Published var isEditUser = false {
         didSet {
-            switch press {
-            case .no:
-                do {}
-            case .addUser:
-                addUser()
-            case .editUser:
+            if isEditUser {
                 editUser()
             }
         }
     }
+    
     @Published var showAddUser = false {
         didSet {
             if showAddUser {
@@ -46,6 +39,8 @@ class UsersAdminAppViewModel: ObservableObject {
                 password = ""
             } else {
                 label = "Справочник пользователей"
+                isAddUser = false
+                fethUsersAPP()
             }
         }
     }
@@ -56,6 +51,8 @@ class UsersAdminAppViewModel: ObservableObject {
                 label = "Изменить данные пользователя"
             } else {
                 label = "Справочник пользователей"
+                isEditUser = false
+                fethUsersAPP()
             }
         }
     }
@@ -93,7 +90,12 @@ class UsersAdminAppViewModel: ObservableObject {
         print("Сохранение изменений профиля")
         UserDataManager.shared.updateUser(to: user) { status in
             if status {
-                self.fethUsersAPP()
+                let currentID = AuthUserManager.shared.currentUserID()
+                if let userID = self.user.id, currentID == userID {
+                    print("Сохранение изменений авторизированного профиля")
+                    let collection = self.user as Any
+                    StorageManager.shared.save(type: .user, model: UserAPP.self, collection: collection)
+                }
                 self.showEditUser.toggle()
             }
         }
@@ -112,9 +114,7 @@ class UsersAdminAppViewModel: ObservableObject {
             } else {
                 self.user.id = text
                 UserDataManager.shared.createNewUser(to: self.user) { status in
-                    self.fethUsersAPP()
                     self.showAddUser.toggle()
-                    
                 }
             }
         }

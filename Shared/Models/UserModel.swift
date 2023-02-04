@@ -102,6 +102,7 @@ struct UserAPP: Codable {
 
 // набор ролей и привязанных этапов пользователя
 struct UserData: Codable {
+    var prefer: UserRole = .admin
     var roles: [UserRole: Bool] = [:]
     var stages: [String] = []
 }

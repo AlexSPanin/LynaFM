@@ -8,7 +8,7 @@
 import Foundation
 
 enum Navigation {
-    case load, auth, role
+    case load, auth, admin, order, stage
     case error
 }
 

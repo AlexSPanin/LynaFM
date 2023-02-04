@@ -15,12 +15,16 @@ struct ContentView: View {
         ZStack {
             switch navigation.view {
             case .auth:
-                AuthView(checkList: navigation.checkList)
-            case .role:
-                AdminAppView()
+                AuthView(checkList: navigation.checkList) 
             case .load:
                 LoadView(label: navigation.label)
             case .error:
+                ErrorView(label: navigation.label)
+            case .admin:
+                AdminAppView()
+            case .order:
+                ErrorView(label: navigation.label)
+            case .stage:
                 ErrorView(label: navigation.label)
             }
         }

@@ -44,9 +44,9 @@ struct UsersAdminAppView: View {
                         TextButton(text: "Вернуться") {
                             viewModelAdmin.showView = .start
                         }
-                        TextButton(text: "Добавить пользователя") {
-                            viewModel.showAddUser.toggle()
-                        }
+//                        TextButton(text: "Добавить пользователя") {
+//                            viewModel.showAddUser.toggle()
+//                        }
                     }
                 }
                 .padding(.top, hPadding)

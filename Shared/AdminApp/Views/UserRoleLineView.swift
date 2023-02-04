@@ -25,11 +25,9 @@ struct UserRoleLineView: View {
                 Spacer()
             }
             .font(.callout)
-            Divider()
-                .frame(width: WIDTH * 0.95, height: 1, alignment: .leading)
         }
         .padding(.horizontal, hPadding)
-        .frame(width: WIDTH * 0.95, height: WIDTH * 0.09, alignment: .leading)
+        .frame(width: WIDTH * 0.9, height: WIDTH * 0.09, alignment: .center)
     }
 }
 

@@ -47,7 +47,7 @@ struct CreateUserView: View {
 
                     VStack {
                         CustomButton(text: "Сохранить", width: WIDTH * 0.4) {
-                            viewModel.press = .addUser
+                            viewModel.isAddUser.toggle()
                         }
                         HorizontalDividerLabelView(label: "или")
                         TextButton(text: "Закрыть") {

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct StartAdminAppView: View {
+    @EnvironmentObject var navigation: NavigationViewModel
     @ObservedObject var viewModel: AdminAppViewModel
     var body: some View {
         ZStack {
@@ -29,10 +30,15 @@ struct StartAdminAppView: View {
                     TextButton(text: "Сменить профиль") {
                         viewModel.isExit.toggle()
                     }
-                    TextButton(text: "Настройки") {
+                    TextButton(text: "Общие справочники") {
                         viewModel.showView = .property
                     }
                 }
+            }
+        }
+        .onChange(of: viewModel.isExit) { newValue in
+            if newValue {
+                navigation.view = .auth
             }
         }
     }

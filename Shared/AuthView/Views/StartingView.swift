@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct StartingView: View {
+    @EnvironmentObject var navigation: NavigationViewModel
     @ObservedObject var viewModel: AuthViewModel
     private var name: String {
         viewModel.userAPP.name
@@ -17,6 +18,9 @@ struct StartingView: View {
     }
     private var image: UIImage? {
         UIImage(data: viewModel.userAPP.image)
+    }
+    private var roles: [UserRole: Bool] {
+       return viewModel.userAPP.profile.roles.filter({$0.value})
     }
     
     var body: some View {
@@ -32,7 +36,13 @@ struct StartingView: View {
                 .multilineTextAlignment(.leading)
                 .padding(.bottom, 10)
 
-            VStack {
+            VStack(alignment: .center, spacing: 5) {
+                if roles.count > 1 {
+                UserRoleView(role: $viewModel.userAPP.profile.prefer,
+                             select: $viewModel.isFinish,
+                             roles: roles)
+                }
+                
                 CustomButton(text: "Продолжить", width: WIDTH * 0.4) {
                     viewModel.isFinish.toggle()
                 }
@@ -57,6 +67,22 @@ struct StartingView: View {
                     RoundedRectangle(cornerRadius: 10).stroke(Color.accentColor, lineWidth: 1)
                 )
         )
+        .onChange(of: viewModel.isFinish) { newValue in
+            if newValue {
+                switch viewModel.userAPP.profile.prefer {
+                case .owner:
+                    navigation.view = .error
+                case .app:
+                    navigation.view = .admin
+                case .order:
+                    navigation.view = .error
+                case .stage:
+                    navigation.view = .error
+                case .admin:
+                    navigation.view = .admin
+                }
+            }
+        }
     }
 }
 
