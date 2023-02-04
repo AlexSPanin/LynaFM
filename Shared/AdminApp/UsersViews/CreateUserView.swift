@@ -17,13 +17,13 @@ struct CreateUserView: View {
                 }
                 VStack {
                     TextFieldView(subtitle: "Имя",
-                                  tipeTextField: .userName, text: $viewModel.name)
+                                  tipeTextField: .userName, text: $viewModel.user.name)
                     TextFieldView(subtitle: "Фамилия",
-                                  tipeTextField: .userName, text: $viewModel.surname)
+                                  tipeTextField: .userName, text: $viewModel.user.surname)
                     TextFieldView(subtitle: "Телефон",
-                                  tipeTextField: .userName, text: $viewModel.phone)
+                                  tipeTextField: .userName, text: $viewModel.user.phone)
                     TextFieldView(subtitle: "Email",
-                                  tipeTextField: .userName, text: $viewModel.email)
+                                  tipeTextField: .userName, text: $viewModel.user.email)
                     TextFieldView(subtitle: "Пароль",
                                   tipeTextField: .password, text: $viewModel.password)
                     
@@ -36,9 +36,9 @@ struct CreateUserView: View {
                         Spacer()
                     }
                     VStack(alignment: .leading, spacing: 2) {
-                        ForEach(viewModel.userData.roles.sorted(by: {$0.key.sort < $1.key.sort}), id: \.key.sort) { key, value in
+                        ForEach(viewModel.user.profile.roles.sorted(by: {$0.key.sort < $1.key.sort}), id: \.key.sort) { key, value in
                             Button {
-                                viewModel.userData.roles[key]?.toggle()
+                                viewModel.user.profile.roles[key]?.toggle()
                             } label: {
                                 UserRoleLineView(status: value, role: key)
                             }
@@ -58,6 +58,13 @@ struct CreateUserView: View {
                 }
                 .padding(.top, 100)
                 .padding(.horizontal, hPadding)
+                
+                // отработка сообщений об ошибках
+                if viewModel.errorOccured {
+                    NotificationView(text: viewModel.errorText, button: "ОК") {
+                        viewModel.errorOccured.toggle()
+                    }
+                }
             }
         }
     }

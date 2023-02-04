@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct UserLineView: View {
-    let user: User
+    let user: UserAPP
     var body: some View {
         VStack(spacing: 1) {
             HStack(spacing: hPadding) {

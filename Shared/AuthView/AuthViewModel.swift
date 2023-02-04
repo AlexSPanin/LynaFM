@@ -64,6 +64,8 @@ final class AuthViewModel: ObservableObject {
             }
         }
     }
+    
+    // окончание работы экранов авторизации
     @Published var isFinish = false
     
     // признак корректной версии программы
@@ -73,7 +75,6 @@ final class AuthViewModel: ObservableObject {
     @Published var errorText = ""
     @Published var errorOccured = false
     
-    var userID = ""
     var systemAPP: SystemApp?
     var checkList: [NetworkCollection: CheckLine]?
     // признак окончания загрузки базы данных
@@ -96,10 +97,9 @@ final class AuthViewModel: ObservableObject {
     
     //MARK: - проверка и загрузка баз данных
     private func checkAutchUser() {
-        userID = AuthUserManager.shared.currentUserID()
-        print("ID Пользователя \(userID)")
-        if !userID.isEmpty {
-            print("Пользователь Авторизован отправляем на загрузку базы данных")
+        userAPP.id = AuthUserManager.shared.currentUserID()
+        if let id = userAPP.id, !id.isEmpty {
+            print("Пользователь Авторизован отправляем на загрузку базы данных \(id)")
             loadDataBase()
         } else {
             print("пытаемся авторизоваться")
@@ -151,10 +151,13 @@ final class AuthViewModel: ObservableObject {
         } else {
             let email = AuthUserManager.shared.currentUserEmail()
             userAPP.email = email
-            UserDataManager.shared.updateUser(to: userAPP)
-            let collection = userAPP as Any
-            StorageManager.shared.save(type: .user, model: UserAPP.self, collection: collection)
-            isFinish = true
+            UserDataManager.shared.updateUser(to: userAPP) { status in
+                if status {
+                    let collection = self.userAPP as Any
+                    StorageManager.shared.save(type: .user, model: UserAPP.self, collection: collection)
+                    self.isFinish = true
+                }
+            }
         }
     }
     
@@ -167,13 +170,15 @@ final class AuthViewModel: ObservableObject {
         } else {
             let email = AuthUserManager.shared.currentUserEmail()
             userAPP.email = email
-            UserDataManager.shared.createNewUser(name: userAPP.name, surname: userAPP.surname, phone: userAPP.phone, email: userAPP.email) { user in
-                let collection = user as Any
+            userAPP.profile = UserDataManager.shared.createUserData()
+            UserDataManager.shared.createNewUser(to: userAPP) { status in
+                let collection = self.userAPP as Any
                 StorageManager.shared.save(type: .user, model: UserAPP.self, collection: collection)
                 self.isFinish = true
             }
         }
     }
+
 
     //MARK: - проверка входа по паролю
     private func checkLogIn() {
@@ -193,7 +198,7 @@ final class AuthViewModel: ObservableObject {
                     return
                 } else {
                     print("Загрузка из сети если в памяти нет карточки пользователя")
-                    UserDataManager.shared.loadUser(to: self.userID) { result in
+                    UserDataManager.shared.loadUser(to: self.userAPP.id) { result in
                         switch result {
                         case .success(let user):
                             self.userAPP = user
@@ -272,11 +277,9 @@ extension AuthViewModel {
         print("проверяем базу коллекции Пользователей")
         if let checkList = checkList, let isLoading = checkList[.user]?.isLoading, isLoading {
             print("Начало загрузки из сети Users Collection Base")
-            NetworkManager.shared.fetchFullCollection(to: .user, model: User.self) { result in
+            UserDataManager.shared.loadUsers { result in
                 switch result {
-                case .success(let users):
-                   print("Коллекция из сети загружена Users Collection")
-                    let usersAPP = StorageManager.shared.convertToUsersApp(users: users)
+                case .success(let usersAPP):
                     let collection = usersAPP as Any
                     StorageManager.shared.save(type: .users, model: [UserAPP].self, collection: collection)
                     self.checkList?[.user] = CheckLine(app: self.systemAPP?.user, server: self.systemAPP?.user)

@@ -35,7 +35,7 @@ class AuthUserManager {
     
     // Регистрация по паролю
     func registrationPassword(email: String, password: String, completion: @escaping (String, Bool) -> Void) {
-        print("AuthUserViewModel: Регистрация по паролю")
+        print("AuthUserViewModel: Регистрация по паролю \(email)")
         Auth.auth().createUser(withEmail: email, password: password) { result, error in
             if let error = error {
                 var errorText = "Ошибка регистрации:\nКод ошибки \(error._code)"
@@ -44,7 +44,7 @@ class AuthUserManager {
                 case 17007:
                     errorText = "Ошибка регистрации:\nАккаунт уже существует."
                 default:
-                    break
+                    errorText = "Ошибка регистрации:\nПрочие ошибки"
                 }
                 completion(errorText, errorOccured)
                 return

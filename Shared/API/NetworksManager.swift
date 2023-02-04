@@ -83,7 +83,8 @@ class NetworkManager {
             name = id
         }
         guard let user = user else { return }
-        let data = ["date" : user.date,
+        let data = ["id:" : name,
+                    "date" : user.date,
                     "email" : user.email,
                     "phone" : user.phone,
                     "name" : user.name,

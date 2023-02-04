@@ -45,7 +45,7 @@ struct TopLabelButtonView: View {
                         .resizable()
                         .interpolation(.medium)
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: WIDTH * 0.1, alignment: .center)
+                        .frame(width: WIDTH * 0.05, alignment: .center)
                         .foregroundColor(.accentColor)
                 })
             }

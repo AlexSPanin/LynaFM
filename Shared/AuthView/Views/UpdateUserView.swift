@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CreteUserView: View {
+struct UpdateUserView: View {
     @ObservedObject var viewModel: AuthViewModel
     private var image: UIImage? {
         UIImage(data: viewModel.userAPP.image)

@@ -27,7 +27,7 @@ struct AuthView: View {
             case .exit:
                 ErrorView(label: viewModel.label)
             case .create:
-                CreteUserView(viewModel: viewModel)
+                UpdateUserView(viewModel: viewModel)
             }
 
             // отработка сообщений об ошибках
