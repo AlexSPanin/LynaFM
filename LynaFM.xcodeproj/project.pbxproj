@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E202EFF9298FC78500CADCF2 /* StageDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E202EFF8298FC78500CADCF2 /* StageDataManager.swift */; };
+		E202EFFB298FD6A400CADCF2 /* ParameterDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E202EFFA298FD6A400CADCF2 /* ParameterDataManager.swift */; };
 		E211110529816176002552C7 /* ProductParameterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E211110429816176002552C7 /* ProductParameterModel.swift */; };
 		E2111107298161FA002552C7 /* SystemDictionaries.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2111106298161FA002552C7 /* SystemDictionaries.swift */; };
 		E2111109298163B3002552C7 /* MaterialModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2111108298163B3002552C7 /* MaterialModel.swift */; };
@@ -91,6 +93,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E202EFF8298FC78500CADCF2 /* StageDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StageDataManager.swift; sourceTree = "<group>"; };
+		E202EFFA298FD6A400CADCF2 /* ParameterDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterDataManager.swift; sourceTree = "<group>"; };
 		E211110429816176002552C7 /* ProductParameterModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductParameterModel.swift; sourceTree = "<group>"; };
 		E2111106298161FA002552C7 /* SystemDictionaries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemDictionaries.swift; sourceTree = "<group>"; };
 		E2111108298163B3002552C7 /* MaterialModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialModel.swift; sourceTree = "<group>"; };
@@ -248,6 +252,8 @@
 				E22B5EB429786F9600836E92 /* StorageManager.swift */,
 				E23278EC2981522E0099642C /* FileAppManager.swift */,
 				E2DD94CF298E4CBC00308D10 /* UserDataManager.swift */,
+				E202EFF8298FC78500CADCF2 /* StageDataManager.swift */,
+				E202EFFA298FD6A400CADCF2 /* ParameterDataManager.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -516,12 +522,14 @@
 				E22B5EAE2978563800836E92 /* AuthUserManager.swift in Sources */,
 				E2B60E802979638F001E710D /* UpperButtonsPhotoView.swift in Sources */,
 				E2111109298163B3002552C7 /* MaterialModel.swift in Sources */,
+				E202EFFB298FD6A400CADCF2 /* ParameterDataManager.swift in Sources */,
 				E22B5E60297839D000836E92 /* LynaFMApp.swift in Sources */,
 				E211110B298164A8002552C7 /* ProductModel.swift in Sources */,
 				E2111111298173DF002552C7 /* ErrorView.swift in Sources */,
 				E2ECEAE72984F66500261A33 /* TopLabelView.swift in Sources */,
 				E2B60E812979638F001E710D /* ScrollPhotoView.swift in Sources */,
 				E2B60E87297972AC001E710D /* StartingView.swift in Sources */,
+				E202EFF9298FC78500CADCF2 /* StageDataManager.swift in Sources */,
 				E22B5EA2297847B400836E92 /* Extensions.swift in Sources */,
 				E2D906EB297924E2009C6B4B /* NotificationMessage.swift in Sources */,
 				E2B60E6729793FE4001E710D /* CustomButton.swift in Sources */,

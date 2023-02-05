@@ -9,7 +9,6 @@ import Foundation
 
 class UserDataManager {
     static let shared = UserDataManager()
-    
     private init() {}
     //MARK: - загрузка всех карточк пользователей
     func loadUsers(completion: @escaping(Result<[UserAPP], NetworkError>) -> Void) {
@@ -85,8 +84,9 @@ class UserDataManager {
                     userExport.image = user.image
                     myGroup.notify(queue: .main) {
                         print("Сохранение обновленной карточки пользователя \(userAPP.name)")
-                        NetworkManager.shared.upLoadUser(to: userID, user: userExport)
-                        completion(true)
+                        NetworkManager.shared.upLoadUser(to: userID, user: userExport) { status in
+                            completion(status)
+                        }
                     }
                 case .failure(_):
                     print("Ошибка загрузки карточки пользователя из сети \(userAPP.name)")
@@ -101,9 +101,7 @@ class UserDataManager {
         print("Создание новой карточки пользователя \(userAPP.name)")
         let myGroup = DispatchGroup()
         let image = userAPP.image
-        let id = userAPP.id ?? "не авторизован"
-        var user = User(email: userAPP.email, phone: userAPP.phone, name: userAPP.name, surname: userAPP.surname)
-        user.id = id
+        var user = convertToUser(userAPP: userAPP)
         
         myGroup.enter()
         NetworkManager.shared.upLoadFile(type: .user, model: UserData.self, collection: userAPP.profile) { file in
@@ -119,8 +117,9 @@ class UserDataManager {
         }
         myGroup.notify(queue: .main) {
             print("Сохранен карточки пользователя \(user.name)")
-            NetworkManager.shared.upLoadUser(to: nil, user: user)
-            completion(true)
+            NetworkManager.shared.upLoadUser(to: nil, user: user) { status in
+                completion(status)
+            }
         }
     }
     

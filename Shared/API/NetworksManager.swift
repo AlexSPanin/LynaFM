@@ -27,9 +27,18 @@ enum NetworkError: Error {
 enum UploadType: String {
     case system = "/system/"
     case user = "/user/"
+    
     case product = "/product/"
+    case product_image = "/product/image/"
+    case product_process = "/product/process/"
+    case product_data = "/product/data/"
+    
     case material = "/material/"
+    case material_data = "/material/data/"
+    case material_image = "/material/image/"
+    
     case bundle = "/bundle/"
+    
     case group = "/group/"
     case parameter = "/parameter/"
     case stage = "/stage/"
@@ -51,7 +60,6 @@ enum NetworkCollection: String {
     case group = "group"
     case parameter = "parameter"
     case stage = "stage"
-    
     case order = "order"
     
     var collection: String {
@@ -76,7 +84,7 @@ class NetworkManager {
     private init() {}
     //MARK: - методы работы с типом продукты
     // сохранение карточки продукты
-    func upLoadMaterial(to id: String?, product: Product?) {
+    func upLoadMaterial(to id: String?, product: Product?, completion: @escaping (Bool) -> Void) {
         let collection = NetworkCollection.product.collection
         var idElement = ""
         if let id = id {
@@ -84,29 +92,31 @@ class NetworkManager {
         } else {
             idElement = Firestore.firestore().collection(collection).document().documentID
         }
-        guard let product = product else {
-            return
+        if let product = product {
+            let data = ["id:" : idElement,
+                        "date" : product.date,
+                        "idUser" : product.idUser,
+                        "idGroup" : product.idGroup,
+                        "isActive" : product.isActive,
+                        "countUse" : product.countUse,
+                        
+                        "sort" : product.sort,
+                        "article" : product.article,
+                        "name" : product.name,
+                        "label" : product.label,
+                        "file" : product.file,
+                        "images" : product.images,
+                        "process" : product.process] as [String : Any]
+            upLoadElementCollection(to: .product, name: idElement, data: data) { status in
+                completion(status)
+            }
+        } else {
+            completion(false)
         }
-        let data = ["id:" : idElement,
-                    "date" : product.date,
-                    "idUser" : product.idUser,
-                    "idGroup" : product.idGroup,
-                    "isActive" : product.isActive,
-                    "countUse" : product.countUse,
-                    
-                    "sort" : product.sort,
-                    "article" : product.article,
-                    "name" : product.name,
-                    "label" : product.label,
-                    "file" : product.file,
-                    "images" : product.images,
-                    "process" : product.process
-        ] as [String : Any]
-        upLoadElementCollection(to: .product, name: idElement, data: data)
     }
     //MARK: - методы работы с типом материалы
     // сохранение карточки материалов
-    func upLoadMaterial(to id: String?, material: Material?) {
+    func upLoadMaterial(to id: String?, material: Material?, completion: @escaping (Bool) -> Void) {
         let collection = NetworkCollection.material.collection
         var idElement = ""
         if let id = id {
@@ -114,9 +124,7 @@ class NetworkManager {
         } else {
             idElement = Firestore.firestore().collection(collection).document().documentID
         }
-        guard let material = material else {
-            return
-        }
+        if let material = material {
         let data = ["id:" : idElement,
                     "date" : material.date,
                     "idUser" : material.idUser,
@@ -129,13 +137,17 @@ class NetworkManager {
                     "name" : material.name,
                     "label" : material.label,
                     "file" : material.file,
-                    "images" : material.images
-        ] as [String : Any]
-        upLoadElementCollection(to: .material, name: idElement, data: data)
+                    "images" : material.images] as [String : Any]
+        upLoadElementCollection(to: .material, name: idElement, data: data) { status in
+            completion(status)
+        }
+        } else {
+            completion(false)
+        }
     }
     //MARK: - методы работы с продуктовой группы
     // сохранение карточки продуктовой группы
-    func upLoadGroup(to id: String?, group: Group?) {
+    func upLoadGroup(to id: String?, group: Group?, completion: @escaping (Bool) -> Void) {
         let collection = NetworkCollection.group.collection
         var idElement = ""
         if let id = id {
@@ -143,25 +155,28 @@ class NetworkManager {
         } else {
             idElement = Firestore.firestore().collection(collection).document().documentID
         }
-        guard let group = group else {
-            return
-        }
+        if let group = group {
         let data = ["id:" : idElement,
                     "date" : group.date,
                     "idUser" : group.idUser,
                     "idType" : group.idType,
                     "isActive" : group.isActive,
                     "countUse" : group.countUse,
+                    
                     "sort" : group.sort,
                     "name" : group.name,
                     "label" : group.label,
-                    "file" : group.file
-        ] as [String : Any]
-        upLoadElementCollection(to: .group, name: idElement, data: data)
+                    "file" : group.file] as [String : Any]
+            upLoadElementCollection(to: .group, name: idElement, data: data) { status in
+                completion(status)
+            }
+        } else {
+            completion(false)
+        }
     }
     //MARK: - методы работы с параметрами товара
     // сохранение карточки параметров товара
-    func upLoadParameter(to id: String?, param: ProductParameter?) {
+    func upLoadParameter(to id: String?, param: ProductParameter?, completion: @escaping (Bool) -> Void) {
         let collection = NetworkCollection.parameter.collection
         var idElement = ""
         if let id = id {
@@ -169,24 +184,27 @@ class NetworkManager {
         } else {
             idElement = Firestore.firestore().collection(collection).document().documentID
         }
-        guard let param = param else {
-            return
-        }
+        if let param = param {
         let data = ["id:" : idElement,
                     "date" : param.date,
                     "idUser" : param.idUser,
                     "isActive" : param.isActive,
                     "countUse" : param.countUse,
+                    
                     "sort" : param.sort,
                     "name" : param.name,
                     "label" : param.label,
-                    "file" : param.file
-        ] as [String : Any]
-        upLoadElementCollection(to: .parameter, name: idElement, data: data)
+                    "file" : param.file] as [String : Any]
+            upLoadElementCollection(to: .parameter, name: idElement, data: data) { status in
+                completion(status)
+            }
+        } else {
+            completion(false)
+        }
     }
     //MARK: - методы работы с этапами производства
     // сохранение этапа производства
-    func upLoadStage(to id: String?, stage: ProductionStage?) {
+    func upLoadStage(to id: String?, stage: ProductionStage?, completion: @escaping (Bool) -> Void) {
         let collection = NetworkCollection.stage.collection
         var idElement = ""
         if let id = id {
@@ -194,29 +212,32 @@ class NetworkManager {
         } else {
             idElement = Firestore.firestore().collection(collection).document().documentID
         }
-        guard let stage = stage else {
-            return
-        }
+        if let stage = stage {
         let data = ["id:" : idElement,
                     "date" : stage.date,
                     "idUser" : stage.idUser,
                     "isActive" : stage.isActive,
                     "countUse" : stage.countUse,
+                    
                     "sort" : stage.sort,
                     "name" : stage.name,
-                    "label" : stage.label
-        ] as [String : Any]
-        upLoadElementCollection(to: .stage, name: idElement, data: data)
+                    "label" : stage.label] as [String : Any]
+            upLoadElementCollection(to: .stage, name: idElement, data: data) { status in
+                completion(status)
+            }
+        } else {
+            completion(false)
+        }
     }
 
     //MARK: - методы работы с пользователем USER
     // сохранение пользователя
-    func upLoadUser(to id: String?, user: User?) {
+    func upLoadUser(to id: String?, user: User?, completion: @escaping (Bool) -> Void) {
         var name = AuthUserManager.shared.currentUserID()
         if let id = id {
             name = id
         }
-        guard let user = user else { return }
+        if let user = user {
         let data = ["id:" : name,
                     "date" : user.date,
                     "email" : user.email,
@@ -225,9 +246,13 @@ class NetworkManager {
                     "surname" : user.surname,
                     "image" : user.image,
                     "profile" : user.profile,
-                    "isActive" : user.isActive
-        ] as [String : Any]
-        upLoadElementCollection(to: .user, name: name, data: data)
+                    "isActive" : user.isActive] as [String : Any]
+            upLoadElementCollection(to: .user, name: name, data: data) { status in
+                completion(status)
+            }
+        } else {
+            completion(false)
+        }
     }
     // MARK: -  работа с хранилищем загрузка и выгрузка файлов ввиде Data
     // сохранение файла с автоматическим uuid - возвращает путь к файлу
@@ -240,7 +265,7 @@ class NetworkManager {
                 print("ERROR: upLoad File")
                 completion("")
             } else {
-                print("FINISH: upLoad File")
+                print("FINISH: upLoad File \(uuid)")
                 completion(uuid)
             }
         }
@@ -300,19 +325,40 @@ class NetworkManager {
     }
     
     // записать элемент коллекции [String: Any]
-    func upLoadElementCollection(to collection: NetworkCollection, name: String, data: [String : Any]) {
+    func upLoadElementCollection(to collection: NetworkCollection, name: String, data: [String : Any], completion: @escaping (Bool) -> Void) {
         let collection = collection.collection
         let time = Date().timeStamp()
         let system = NetworkCollection.system.collection
-        Firestore.firestore().collection(collection).document(name).setData(data)
-        // обновление даты базы
-        updateValueElement(to: .system, document: system, key: collection, value: time)
+        Firestore.firestore().collection(collection).document(name).setData(data) { error in
+            if error != nil {
+                completion(false)
+            } else {
+                // обновление даты в system
+                self.updateValueElement(to: .system, document: system, key: collection, value: time)
+                completion(true)
+            }
+        }
     }
     
     // изменить значение поля элемента в коллекции
     func updateValueElement(to collection: NetworkCollection, document: String, key: String, value: Any) {
         let collection = collection.collection
         Firestore.firestore().collection(collection).document(document).updateData([key : value])
+    }
+    
+    // удалить карточку
+    func deleteElement(to collection: NetworkCollection, document: String, completion: @escaping (Bool) -> Void) {
+        let collection = collection.collection
+        let time = Date().timeStamp()
+        let system = NetworkCollection.system.collection
+        Firestore.firestore().collection(collection).document(document).delete() { error in
+            if error != nil {
+                completion(false)
+            } else {
+                self.updateValueElement(to: .system, document: system, key: collection, value: time)
+                completion(true)
+            }
+        }
     }
     
     // MARK: -  работа с хранилищем кодирование и декодирование загрузка и выгрузка файлов ввиде Data
@@ -329,7 +375,7 @@ class NetworkManager {
                         print("ERROR: upLoad File")
                         completion("")
                     } else {
-                        print("FINISH: upLoad File")
+                        print("FINISH: upLoad File \(uuid)")
                         completion(uuid)
                     }
                 }
@@ -358,4 +404,6 @@ class NetworkManager {
             }
         }
     }
+    
+    
 }
