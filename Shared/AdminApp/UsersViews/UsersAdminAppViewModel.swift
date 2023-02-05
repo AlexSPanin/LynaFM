@@ -91,6 +91,8 @@ class UsersAdminAppViewModel: ObservableObject {
         UserDataManager.shared.updateUser(to: user) { status in
             if status {
                 let currentID = AuthUserManager.shared.currentUserID()
+                print("ID авторизованного пользователя \(currentID)")
+   //             print("ID редактируемого пользователя \(self.user.id)")
                 if let userID = self.user.id, currentID == userID {
                     print("Сохранение изменений авторизированного профиля")
                     let collection = self.user as Any

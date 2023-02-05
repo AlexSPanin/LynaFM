@@ -83,8 +83,8 @@ class UserDataManager {
                     userExport.profile = user.profile
                     userExport.image = user.image
                     myGroup.notify(queue: .main) {
-                        print("Сохранение обновленной карточки пользователя \(userAPP.name)")
                         NetworkManager.shared.upLoadUser(to: userID, user: userExport) { status in
+                            print("Статус сохранения \(status) карточки пользователя \(userAPP.name) \(userID)")
                             completion(status)
                         }
                     }

@@ -47,8 +47,16 @@ final class AuthViewModel: ObservableObject {
     // редактирование профиля пользователя
     @Published var isEdit = false {
         didSet {
-            saveProfile()
-            showView = .starting
+            saveProfile() { [self] status in
+                if status {
+                    showView = .starting
+                } else {
+                    errorText = "Ошибка редактирования профиля."
+                    errorOccured = true
+                }
+                
+            }
+            
         }
     }
     // создание новой карточки профиля пользователя
@@ -84,7 +92,7 @@ final class AuthViewModel: ObservableObject {
     @Published var isFinish = false {
         didSet {
             if isFinish {
-            saveProfile()
+                saveProfile() {_ in }
             }
         }
     }
@@ -161,11 +169,9 @@ final class AuthViewModel: ObservableObject {
     }
  
     //MARK: - сохранить профиль после редактирования
-    private func saveProfile() {
+    private func saveProfile(completion: @escaping(Bool) -> Void) {
         if userAPP.name.isEmpty || userAPP.surname.isEmpty || userAPP.phone.isEmpty {
-            errorText = "Все поля должны\nбыть заполнены"
-            errorOccured.toggle()
-            return
+            completion(false)
         } else {
             let email = AuthUserManager.shared.currentUserEmail()
             userAPP.email = email
@@ -174,6 +180,7 @@ final class AuthViewModel: ObservableObject {
                     let collection = self.userAPP as Any
                     StorageManager.shared.save(type: .user, model: UserAPP.self, collection: collection)
                 }
+                completion(status)
             }
         }
     }

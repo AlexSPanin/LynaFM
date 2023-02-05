@@ -51,9 +51,9 @@ struct NotificationView: View {
             }
             .padding(.all, 15)
             .frame(minWidth: WIDTH * 0.8)
-            .background(Color.accentColor
+            .background(Color.white
                 .cornerRadius(10)
-                .shadow(color: .black.opacity(0.2),
+                .shadow(color: .black.opacity(0.3),
                         radius: 2, x: 2, y: 2)
             )
         }

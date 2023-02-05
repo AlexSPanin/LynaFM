@@ -265,7 +265,7 @@ class NetworkManager {
                 print("ERROR: upLoad File")
                 completion("")
             } else {
-                print("FINISH: upLoad File \(uuid)")
+  //              print("FINISH: upLoad File \(uuid)")
                 completion(uuid)
             }
         }
@@ -375,7 +375,7 @@ class NetworkManager {
                         print("ERROR: upLoad File")
                         completion("")
                     } else {
-                        print("FINISH: upLoad File \(uuid)")
+  //                      print("FINISH: upLoad File \(uuid)")
                         completion(uuid)
                     }
                 }
