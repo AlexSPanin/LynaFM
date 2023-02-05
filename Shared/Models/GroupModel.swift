@@ -12,6 +12,7 @@ struct Group: Codable {
     var id: String = ""
     var date: String = ""
     var idUser: String = ""
+    var idType: String = ""
     var isActive: Bool = true
     var countUse: Int = 0
     

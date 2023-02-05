@@ -74,6 +74,140 @@ struct SystemApp: Codable {
 class NetworkManager {
     static let shared = NetworkManager()
     private init() {}
+    //MARK: - методы работы с типом продукты
+    // сохранение карточки продукты
+    func upLoadMaterial(to id: String?, product: Product?) {
+        let collection = NetworkCollection.product.collection
+        var idElement = ""
+        if let id = id {
+            idElement = id
+        } else {
+            idElement = Firestore.firestore().collection(collection).document().documentID
+        }
+        guard let product = product else {
+            return
+        }
+        let data = ["id:" : idElement,
+                    "date" : product.date,
+                    "idUser" : product.idUser,
+                    "idGroup" : product.idGroup,
+                    "isActive" : product.isActive,
+                    "countUse" : product.countUse,
+                    
+                    "sort" : product.sort,
+                    "article" : product.article,
+                    "name" : product.name,
+                    "label" : product.label,
+                    "file" : product.file,
+                    "images" : product.images,
+                    "process" : product.process
+        ] as [String : Any]
+        upLoadElementCollection(to: .product, name: idElement, data: data)
+    }
+    //MARK: - методы работы с типом материалы
+    // сохранение карточки материалов
+    func upLoadMaterial(to id: String?, material: Material?) {
+        let collection = NetworkCollection.material.collection
+        var idElement = ""
+        if let id = id {
+            idElement = id
+        } else {
+            idElement = Firestore.firestore().collection(collection).document().documentID
+        }
+        guard let material = material else {
+            return
+        }
+        let data = ["id:" : idElement,
+                    "date" : material.date,
+                    "idUser" : material.idUser,
+                    "idGroup" : material.idGroup,
+                    "isActive" : material.isActive,
+                    "countUse" : material.countUse,
+                    
+                    "sort" : material.sort,
+                    "article" : material.article,
+                    "name" : material.name,
+                    "label" : material.label,
+                    "file" : material.file,
+                    "images" : material.images
+        ] as [String : Any]
+        upLoadElementCollection(to: .material, name: idElement, data: data)
+    }
+    //MARK: - методы работы с продуктовой группы
+    // сохранение карточки продуктовой группы
+    func upLoadGroup(to id: String?, group: Group?) {
+        let collection = NetworkCollection.group.collection
+        var idElement = ""
+        if let id = id {
+            idElement = id
+        } else {
+            idElement = Firestore.firestore().collection(collection).document().documentID
+        }
+        guard let group = group else {
+            return
+        }
+        let data = ["id:" : idElement,
+                    "date" : group.date,
+                    "idUser" : group.idUser,
+                    "idType" : group.idType,
+                    "isActive" : group.isActive,
+                    "countUse" : group.countUse,
+                    "sort" : group.sort,
+                    "name" : group.name,
+                    "label" : group.label,
+                    "file" : group.file
+        ] as [String : Any]
+        upLoadElementCollection(to: .group, name: idElement, data: data)
+    }
+    //MARK: - методы работы с параметрами товара
+    // сохранение карточки параметров товара
+    func upLoadParameter(to id: String?, param: ProductParameter?) {
+        let collection = NetworkCollection.parameter.collection
+        var idElement = ""
+        if let id = id {
+            idElement = id
+        } else {
+            idElement = Firestore.firestore().collection(collection).document().documentID
+        }
+        guard let param = param else {
+            return
+        }
+        let data = ["id:" : idElement,
+                    "date" : param.date,
+                    "idUser" : param.idUser,
+                    "isActive" : param.isActive,
+                    "countUse" : param.countUse,
+                    "sort" : param.sort,
+                    "name" : param.name,
+                    "label" : param.label,
+                    "file" : param.file
+        ] as [String : Any]
+        upLoadElementCollection(to: .parameter, name: idElement, data: data)
+    }
+    //MARK: - методы работы с этапами производства
+    // сохранение этапа производства
+    func upLoadStage(to id: String?, stage: ProductionStage?) {
+        let collection = NetworkCollection.stage.collection
+        var idElement = ""
+        if let id = id {
+            idElement = id
+        } else {
+            idElement = Firestore.firestore().collection(collection).document().documentID
+        }
+        guard let stage = stage else {
+            return
+        }
+        let data = ["id:" : idElement,
+                    "date" : stage.date,
+                    "idUser" : stage.idUser,
+                    "isActive" : stage.isActive,
+                    "countUse" : stage.countUse,
+                    "sort" : stage.sort,
+                    "name" : stage.name,
+                    "label" : stage.label
+        ] as [String : Any]
+        upLoadElementCollection(to: .stage, name: idElement, data: data)
+    }
 
     //MARK: - методы работы с пользователем USER
     // сохранение пользователя
@@ -113,7 +247,6 @@ class NetworkManager {
     }
     // загрузка файла по названию и типу
     func loadFile(type: UploadType, name: String, completion: @escaping (Result<Data, NetworkError>) -> Void) {
-        
         let storageRef = type.filePath.child(name)
         storageRef.getData(maxSize: 5 * 1024 * 1024 ) { data, error in
             if let error = error {

@@ -186,6 +186,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E202EFF7298FBCA800CADCF2 /* StageView */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = StageView;
+			sourceTree = "<group>";
+		};
 		E22B5E4A297839CE00836E92 = {
 			isa = PBXGroup;
 			children = (
@@ -262,9 +269,9 @@
 				E22B5EB02978580600836E92 /* UserModel.swift */,
 				E23278E9298147DC0099642C /* ProductionStageModel.swift */,
 				E211110429816176002552C7 /* ProductParameterModel.swift */,
+				E211110C298165A1002552C7 /* GroupModel.swift */,
 				E2111108298163B3002552C7 /* MaterialModel.swift */,
 				E211110A298164A8002552C7 /* ProductModel.swift */,
-				E211110C298165A1002552C7 /* GroupModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -339,6 +346,7 @@
 				E2B60E6A29794BFA001E710D /* AdminAppView.swift */,
 				E2ECEADE2984EA7700261A33 /* AdminAppViewModel.swift */,
 				E2ECEAE82984FC9400261A33 /* UsersViews */,
+				E202EFF7298FBCA800CADCF2 /* StageView */,
 				E2ECEAE02984ED6A00261A33 /* Views */,
 			);
 			path = AdminApp;
