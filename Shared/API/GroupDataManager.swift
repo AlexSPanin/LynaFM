@@ -14,7 +14,7 @@ class GroupDataManager {
     //MARK: - загрузка всех карточк
     func loadCollection(completion: @escaping(Result<[GroupAPP], NetworkError>) -> Void) {
         let myGroup = DispatchGroup()
-        NetworkManager.shared.fetchFullCollection(to: .stage, model: Group.self) { result in
+        NetworkManager.shared.fetchFullCollection(to: .group, model: Group.self) { result in
             switch result {
             case .success(let cards):
                 print("Коллекция из сети загружена")
@@ -95,7 +95,7 @@ class GroupDataManager {
         var card = convertToCard(cardAPP: cardAPP)
 
         myGroup.enter()
-        NetworkManager.shared.upLoadFile(to: nil, type: .parameter, data: data) { file in
+        NetworkManager.shared.upLoadFile(to: nil, type: .group, data: data) { file in
             print("Сохранен файл \(card.name)")
             card.file = file
             myGroup.leave()
@@ -115,8 +115,21 @@ class GroupDataManager {
             let error = true
             completion(errorText,error)
         } else {
+            NetworkManager.shared.fetchElementCollection(to: .group, doc: cardAPP.id, model: Group.self) { result in
+                switch result {
+                case .success(let card):
+                    NetworkManager.shared.deleteFile(type: .group, name: card.file) { status in
+                        if !status {
+                            print("Ошибка удаления файла \(card.file)")
+                        }
+                    }
+                case .failure(_):
+                    print("Ошибка загрузки карточки \(cardAPP.name)")
+                }
+            }
             NetworkManager.shared.deleteElement(to: .group, document: cardAPP.id) { status in
                 if status {
+                    self.updateTimeStamp()
                     completion("", false)
                 } else {
                     let errorText = "Ошибка удаление карточки \(cardAPP.countUse)."
@@ -173,5 +186,11 @@ class GroupDataManager {
         card.label = cardAPP.label
         return card
     }
-
+    
+    private func updateTimeStamp() {
+        let collection = NetworkCollection.group.collection
+        let time = Date().timeStamp()
+        let system = NetworkCollection.system.collection
+        NetworkManager.shared.updateValueElement(to: .system, document: system, key: collection, value: time)
+    }
 }

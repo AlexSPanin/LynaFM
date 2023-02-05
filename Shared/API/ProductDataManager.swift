@@ -1,5 +1,5 @@
 //
-//  ParametrDataManager.swift
+//  ProductDataManager.swift
 //  LynaFM (iOS)
 //
 //  Created by Александр Панин on 05.02.2023.
@@ -7,18 +7,18 @@
 
 import Foundation
 
-class ParameterDataManager {
-    static let shared = ParameterDataManager()
+class ProductDataManager {
+    static let shared = ProductDataManager()
     private init() {}
     
     //MARK: - загрузка всех карточк
-    func loadCollection(completion: @escaping(Result<[ProductParameterAPP], NetworkError>) -> Void) {
+    func loadCollection(completion: @escaping(Result<[ProductAPP], NetworkError>) -> Void) {
         let myGroup = DispatchGroup()
-        NetworkManager.shared.fetchFullCollection(to: .parameter, model: ProductParameter.self) { result in
+        NetworkManager.shared.fetchFullCollection(to: .product, model: Product.self) { result in
             switch result {
             case .success(let cards):
                 print("Коллекция из сети загружена")
-                var cardsAPP = [ProductParameterAPP]()
+                var cardsAPP = [ProductAPP]()
                 cards.forEach { card in
                     myGroup.enter()
                     self.loadCard(to: card.id) { result in
@@ -43,9 +43,9 @@ class ParameterDataManager {
     }
     
     //MARK: - загрузка карточки
-    func loadCard(to id: String?, completion: @escaping(Result<ProductParameterAPP, NetworkError>) -> Void) {
+    func loadCard(to id: String?, completion: @escaping(Result<ProductAPP, NetworkError>) -> Void) {
         if let id = id {
-            NetworkManager.shared.fetchElementCollection(to: .parameter, doc: id, model: ProductParameter.self) { result in
+            NetworkManager.shared.fetchElementCollection(to: .product, doc: id, model: Product.self) { result in
                 switch result {
                 case .success(let card):
                     self.convertCardToCardAPP(card: card) { cardAPP in
@@ -60,15 +60,15 @@ class ParameterDataManager {
     }
     
     //MARK: - обновление карточки
-    func updateCard(to cardAPP: ProductParameterAPP, completion: @escaping(Bool) -> Void) {
+    func updateCard(to cardAPP: ProductAPP, completion: @escaping(Bool) -> Void) {
         let myGroup = DispatchGroup()
         let cardID = cardAPP.id
         print("Обновление карточки пользователя \(cardAPP.name)")
-        NetworkManager.shared.fetchElementCollection(to: .parameter, doc: cardID, model: ProductParameter.self) { result in
+        NetworkManager.shared.fetchElementCollection(to: .product, doc: cardID, model: Product.self) { result in
             switch result {
             case .success(let card):
                 myGroup.enter()
-                NetworkManager.shared.upLoadFile(to: card.file, type: .parameter, data: cardAPP.file) { _ in
+                NetworkManager.shared.upLoadFile(to: card.file, type: .product_data, data: cardAPP.file) { _ in
                     print("Сохранен файл userData \(cardAPP.name)")
                     myGroup.leave()
                 }
@@ -76,7 +76,7 @@ class ParameterDataManager {
                 cardExport.file = card.file
                 myGroup.notify(queue: .main) {
                     print("Сохранение обновленной карточки пользователя \(cardAPP.name)")
-                    NetworkManager.shared.upLoadParameter (to: cardID, param: cardExport) { status in
+                    NetworkManager.shared.upLoadProduct (to: cardID, product: cardExport) { status in
                         completion(status)
                     }
                 }
@@ -86,39 +86,86 @@ class ParameterDataManager {
             }
         }
     }
+    //MARK: - обновить image
+    func updateImage(to name: String, data: Data, completion: @escaping(Bool) -> Void) {
+        NetworkManager.shared.upLoadFile(to: name, type: .product_image, data: data) { _ in
+            self.updateTimeStamp()
+            completion(true)
+        }
+    }
+    //MARK: - удалить image
+    func deleteImage(to cardAPP: ProductAPP, name: String, completion: @escaping(Bool) -> Void) {
+        var images = cardAPP.images
+        images.removeValue(forKey: name)
+        let collection = images as Any
+        NetworkManager.shared.updateValueElement(to: .product, document: cardAPP.id, key: "images", value: collection)
+        NetworkManager.shared.deleteFile(type: .product_image, name: name) { status in
+            self.updateTimeStamp()
+            completion(status)
+        }
+    }
+    //MARK: - добавить image
+    func addImage(to cardAPP: ProductAPP, data: Data, sort: Int, completion: @escaping(Bool) -> Void) {
+        var images = cardAPP.images
+        NetworkManager.shared.upLoadFile(type: .product_image, data: data) { file in
+            images[file] = sort
+            let collection = images as Any
+            NetworkManager.shared.updateValueElement(to: .product, document: cardAPP.id, key: "images", value: collection)
+            self.updateTimeStamp()
+            completion(true)
+        }
+    }
+    //MARK: - сохранить изменения порядка сортировки
+    func updateSort(to cardAPP: ProductAPP, completion: @escaping(Bool) -> Void) {
+        let collection = cardAPP.images as Any
+        NetworkManager.shared.updateValueElement(to: .product, document: cardAPP.id, key: "images", value: collection)
+        self.updateTimeStamp()
+        completion(true)
+    }
     
     //MARK: - создать новую карточку
-    func createNewCard(to cardAPP: ProductParameterAPP, completion: @escaping(Bool) -> Void) {
+    func createNewCard(to cardAPP: ProductAPP, images: [Data], completion: @escaping(Bool) -> Void) {
         print("Создание новой карточки \(cardAPP.name)")
         let myGroup = DispatchGroup()
         let data = cardAPP.file
         var card = convertToCard(cardAPP: cardAPP)
-
+        
         myGroup.enter()
-        NetworkManager.shared.upLoadFile(to: nil, type: .parameter, data: data) { file in
+        NetworkManager.shared.upLoadFile(to: nil, type: .product, data: data) { file in
             print("Сохранен файл \(card.name)")
             card.file = file
             myGroup.leave()
         }
+        
+        for index in 0..<images.count {
+            myGroup.enter()
+            let image = images[index]
+            NetworkManager.shared.upLoadFile(type: .product_image, data: image) { file in
+                card.images[file] = index
+                myGroup.leave()
+            }
+        }
+        
         myGroup.notify(queue: .main) {
             print("Сохранена карточка \(card.name)")
-            NetworkManager.shared.upLoadParameter(to: nil, param: card) { status in
+            NetworkManager.shared.upLoadProduct(to: nil, product: card) { status in
                 completion(status)
             }
         }
     }
     
     //MARK: - удалить карточку
-    func deleteCard(to cardAPP: ProductParameterAPP, completion: @escaping(String, Bool) -> Void) {
+    func deleteCard(to cardAPP: ProductAPP, completion: @escaping(String, Bool) -> Void) {
         if cardAPP.countUse != 0 {
             let errorText = "Карточка используется в \(cardAPP.countUse) документах."
             let error = true
             completion(errorText,error)
         } else {
-            NetworkManager.shared.fetchElementCollection(to: .parameter, doc: cardAPP.id, model: ProductParameter.self) { result in
+            
+            NetworkManager.shared.fetchElementCollection(to: .product, doc: cardAPP.id, model: Material.self) { result in
                 switch result {
                 case .success(let card):
-                    NetworkManager.shared.deleteFile(type: .parameter, name: card.file) { status in
+                    NetworkManager.shared.deleteFile(type: .product_data, name: card.file) { status in
                         if !status {
                             print("Ошибка удаления файла \(card.file)")
                         }
@@ -127,7 +174,24 @@ class ParameterDataManager {
                     print("Ошибка загрузки карточки \(cardAPP.name)")
                 }
             }
-            NetworkManager.shared.deleteElement(to: .parameter, document: cardAPP.id) { status in
+            
+            cardAPP.images.forEach { image in
+                NetworkManager.shared.deleteFile(type: .product_image, name: image.key) { status in
+                    if !status {
+                        print("Ошибка удаления файла \(image)")
+                    }
+                }
+            }
+            
+            cardAPP.process.forEach { proces in
+                NetworkManager.shared.deleteFile(type: .product_process, name: proces.key) { status in
+                    if !status {
+                        print("Ошибка удаления файла \(proces)")
+                    }
+                }
+            }
+            
+            NetworkManager.shared.deleteElement(to: .material, document: cardAPP.id) { status in
                 if status {
                     self.updateTimeStamp()
                     completion("", false)
@@ -140,25 +204,29 @@ class ParameterDataManager {
         }
     }
     
+    
     //MARK: - конвертации
-    private func convertCardToCardAPP(card: ProductParameter, completion: @escaping(ProductParameterAPP) -> Void) {
+    private func convertCardToCardAPP(card: Product, completion: @escaping(ProductAPP) -> Void) {
         let myGroup = DispatchGroup()
-        var current = ProductParameterAPP()
+        var current = ProductAPP()
         current.id = card.id
         current.date = card.date
         current.idUser = card.idUser
+        current.idGroup = card.idGroup
         current.isActive = card.isActive
         current.countUse = card.countUse
         
         current.sort = card.sort
+        current.article = card.article
         current.name = card.name
         current.label = card.label
+        current.images = card.images
         
         myGroup.enter()
-        NetworkManager.shared.loadFile(type: .parameter, name: card.file) { result in
+        NetworkManager.shared.loadFile(type: .product_data, name: card.file) { result in
             switch result {
             case .success(let data):
-               current.file = data
+                current.file = data
                 myGroup.leave()
             case .failure(_):
                 print("Ошибка загрузки файла \(card.name)")
@@ -167,26 +235,29 @@ class ParameterDataManager {
         }
         myGroup.notify(queue: .main) {
             print("Сохранение обновленной карточки пользователя \(card.name)")
-           completion(current)
+            completion(current)
         }
     }
     
-    private func convertToCard(cardAPP: ProductParameterAPP) -> ProductParameter {
-        var card = ProductParameter()
+    private func convertToCard(cardAPP: ProductAPP) -> Product {
+        var card = Product()
         card.id = cardAPP.id
         card.date = cardAPP.date
         card.idUser = cardAPP.idUser
+        card.idGroup = cardAPP.idGroup
         card.isActive = cardAPP.isActive
         card.countUse = cardAPP.countUse
         
         card.sort = cardAPP.sort
         card.name = cardAPP.name
         card.label = cardAPP.label
+        card.images = cardAPP.images
+        card.process = cardAPP.process
         return card
     }
     
     private func updateTimeStamp() {
-        let collection = NetworkCollection.parameter.collection
+        let collection = NetworkCollection.product.collection
         let time = Date().timeStamp()
         let system = NetworkCollection.system.collection
         NetworkManager.shared.updateValueElement(to: .system, document: system, key: collection, value: time)

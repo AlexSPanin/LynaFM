@@ -9,7 +9,6 @@ import Foundation
 
 class StageDataManager {
     static let shared = StageDataManager()
-    
     private init() {}
     
     //MARK: - загрузка всех карточк
@@ -64,6 +63,7 @@ class StageDataManager {
         } else {
             NetworkManager.shared.deleteElement(to: .stage, document: cardAPP.id) { status in
                 if status {
+                    self.updateTimeStamp()
                     completion("", false)
                 } else {
                     let errorText = "Ошибка удаление карточки \(cardAPP.countUse)."
@@ -72,5 +72,11 @@ class StageDataManager {
                 }
             }
         }
+    }
+    private func updateTimeStamp() {
+        let collection = NetworkCollection.stage.collection
+        let time = Date().timeStamp()
+        let system = NetworkCollection.system.collection
+        NetworkManager.shared.updateValueElement(to: .system, document: system, key: collection, value: time)
     }
 }

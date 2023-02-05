@@ -84,7 +84,7 @@ class NetworkManager {
     private init() {}
     //MARK: - методы работы с типом продукты
     // сохранение карточки продукты
-    func upLoadMaterial(to id: String?, product: Product?, completion: @escaping (Bool) -> Void) {
+    func upLoadProduct(to id: String?, product: Product?, completion: @escaping (Bool) -> Void) {
         let collection = NetworkCollection.product.collection
         var idElement = ""
         if let id = id {
@@ -404,6 +404,16 @@ class NetworkManager {
             }
         }
     }
-    
+    // удаление файла
+    func deleteFile(type: UploadType, name: String,completion: @escaping (Bool) -> Void) {
+        let storageRef = type.filePath.child(name)
+        storageRef.delete { error in
+            if error != nil {
+                completion(false)
+            } else {
+                completion(true)
+            }
+        }
+    }
     
 }
