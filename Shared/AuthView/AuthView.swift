@@ -32,9 +32,9 @@ struct AuthView: View {
 
             // отработка сообщений об ошибках
             if viewModel.errorOccured {
-                NotificationView(text: viewModel.errorText, button: "ОК") {
+                NotificationView(text: viewModel.errorText, button: "ОК", button2: nil) {
                     viewModel.errorOccured.toggle()
-                }
+                } action2: {}
             }
         }
         .onAppear {

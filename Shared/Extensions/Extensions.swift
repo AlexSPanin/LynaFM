@@ -80,7 +80,6 @@ extension Date {
 // возвращает текст с разделенными тысячами и знаком рубля
 extension Float {
     func getRusPrice() -> String {
-     
             let numberForrmatter: NumberFormatter = NumberFormatter()
             numberForrmatter.groupingSeparator = " "
             numberForrmatter.groupingSize = 3
@@ -89,5 +88,43 @@ extension Float {
             numberForrmatter.numberStyle = NumberFormatter.Style.decimal
             guard let price = numberForrmatter.string(from: self as NSNumber) as String? else { return ""}
             return price + String(" ₽")
+    }
+}
+
+// удаление из строки справа от указанного до указанного (включая его)
+extension String {
+    // обрезает справа строку от первого встретившевося символа (включая символ)
+    func croppingFirstRigthSimbols(_ element: Character) -> String {
+        if let index = self.firstIndex(of: element) {
+            return String(self[..<index])
+        }
+        return self
+    }
+    // обрезает слева строку от первого встретившевося символа (включая символ)
+    func croppingFirstLeftSimbols(_ element: Character) -> String {
+        if let index = self.firstIndex(of: element) {
+            let i = self.index(after: index)
+            return String(self[i...])
+        }
+        return self
+    }
+    // обрезает справа строку от последнего встретившевося символа (включая символ)
+    func croppingLastRigthSimbols(_ element: Character) -> String {
+        if let index = self.lastIndex(of: element) {
+            return String(self[..<index])
+        }
+        return self
+    }
+    // обрезает слева строку от последнего встретившевося символа (включая символ)
+    func croppingLastLeftSimbols(_ element: Character) -> String {
+        if let index = self.lastIndex(of: element) {
+            let i = self.index(after: index)
+            return String(self[i...])
+        }
+        return self
+    }
+    // проверяем наличие символа
+    func checkSimbol(_ element: Character) -> Bool {
+       return self.contains(where: {$0 == element})
     }
 }

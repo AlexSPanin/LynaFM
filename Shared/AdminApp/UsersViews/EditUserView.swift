@@ -32,11 +32,11 @@ struct EditUserView: View {
                         Spacer()
                     }
                     VStack(alignment: .leading, spacing: 2) {
-                        ForEach(viewModel.user.profile.roles.sorted(by: {$0.key.sort < $1.key.sort}), id: \.key.sort) { key, value in
+                        ForEach(0..<UserRole.allCases.count, id: \.self) { index in
                             Button {
-                                viewModel.user.profile.roles[key]?.toggle()
+                                viewModel.user.roles.append(UserRole.allCases[index].role)
                             } label: {
-                                UserRoleLineStatusView(status: value, role: key)
+                                UserRoleLineStatusView(index: index, roles: viewModel.user.roles)
                             }
                         }
                     }
@@ -57,9 +57,9 @@ struct EditUserView: View {
                 
                 // отработка сообщений об ошибках
                 if viewModel.errorOccured {
-                    NotificationView(text: viewModel.errorText, button: "ОК") {
+                    NotificationView(text: viewModel.errorText, button: "ОК", button2: nil) {
                         viewModel.errorOccured.toggle()
-                    }
+                    } action2: { }
                 }
             }
         }

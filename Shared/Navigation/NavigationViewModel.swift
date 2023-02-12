@@ -45,28 +45,21 @@ class NavigationViewModel: ObservableObject {
     
     // получаем системный файл из облака и локально
     private func fetchSystemApp(){
-        StorageManager.shared.load(type: .system, model: SystemApp.self) { result in
-            switch result {
-            case .success(let storage):
+        StorageManager.shared.load(type: .system, model: SystemApp.self) { storage in
+            if let storage = storage {
                 self.systemStorage = storage
                 self.systemStorage?.ver = version
-            case .failure(_):
-                print("ERROR: loadSystemApp Storge")
+            } else {
+                print("Первый запуск")
             }
         }
  
-        if let systemStorage = systemStorage {
-            print("SystemStorage: \(systemStorage)")
-        }
-        
-        NetworkManager.shared.fetchElementCollection(to: .system, doc: "system", model: SystemApp.self) { result in
-            switch result {
-            case .success(let network):
+        NetworkManager.shared.fetchElementCollection(to: .system, doc: "system", model: SystemApp.self) { network in
+            if let network = network {
                 self.systemServer = network
                 self.checkVersionApp()
-            case .failure(_):
-                print("ERROR: fetchSystemAppNetwork")
-                self.label = "ERROR: Not Network"
+            } else {
+                self.label = "Проверьте подключение к сети Интернет"
                 self.view = .error
             }
         }
@@ -78,23 +71,23 @@ class NavigationViewModel: ObservableObject {
             if let systemStorage = systemStorage {
   //              print("systemStorage - enable")
                 checkList[.system] = CheckLine(app: systemStorage.ver, server: systemServer.ver)
-                checkList[.user] = CheckLine(app: systemStorage.user, server: systemServer.user)
-                checkList[.product] = CheckLine(app: systemStorage.product, server: systemServer.product)
-                checkList[.material] = CheckLine(app: systemStorage.material, server: systemServer.material)
-                checkList[.bundle] = CheckLine(app: systemStorage.bundle, server: systemServer.bundle)
-                checkList[.group] = CheckLine(app: systemStorage.group, server: systemServer.group)
-                checkList[.parameter] = CheckLine(app: systemStorage.parameter, server: systemServer.parameter)
-                checkList[.stage] = CheckLine(app: systemStorage.stage, server: systemServer.stage)
+//                checkList[.user] = CheckLine(app: systemStorage.user, server: systemServer.user)
+//                checkList[.product] = CheckLine(app: systemStorage.product, server: systemServer.product)
+//                checkList[.material] = CheckLine(app: systemStorage.material, server: systemServer.material)
+//                checkList[.bundle] = CheckLine(app: systemStorage.bundle, server: systemServer.bundle)
+//                checkList[.group] = CheckLine(app: systemStorage.group, server: systemServer.group)
+//                checkList[.parameter] = CheckLine(app: systemStorage.parameter, server: systemServer.parameter)
+//                checkList[.stage] = CheckLine(app: systemStorage.stage, server: systemServer.stage)
             } else {
   //              print("systemStorage - is enable")
                 checkList[.system] = CheckLine(app: version, server: systemServer.ver)
-                checkList[.user] = CheckLine(app: "", server: systemServer.user)
-                checkList[.product] = CheckLine(app: "", server: systemServer.product)
-                checkList[.material] = CheckLine(app: "", server: systemServer.material)
-                checkList[.bundle] = CheckLine(app: "", server: systemServer.bundle)
-                checkList[.group] = CheckLine(app: "", server: systemServer.group)
-                checkList[.parameter] = CheckLine(app: "", server: systemServer.parameter)
-                checkList[.stage] = CheckLine(app: "", server: systemServer.stage)
+//                checkList[.user] = CheckLine(app: "", server: systemServer.user)
+//                checkList[.product] = CheckLine(app: "", server: systemServer.product)
+//                checkList[.material] = CheckLine(app: "", server: systemServer.material)
+//                checkList[.bundle] = CheckLine(app: "", server: systemServer.bundle)
+//                checkList[.group] = CheckLine(app: "", server: systemServer.group)
+//                checkList[.parameter] = CheckLine(app: "", server: systemServer.parameter)
+//                checkList[.stage] = CheckLine(app: "", server: systemServer.stage)
                 StorageManager.shared.save(type: .system, model: SystemApp.self, collection: systemServer)
             }
         }

@@ -16,16 +16,10 @@ struct StartingView: View {
     private var surname: String {
         viewModel.userAPP.surname
     }
-    private var image: UIImage? {
-        UIImage(data: viewModel.userAPP.image)
-    }
-    private var roles: [UserRole: Bool] {
-       return viewModel.userAPP.profile.roles.filter({$0.value})
-    }
-    
+
     var body: some View {
         VStack(alignment: .center, spacing: 10) {
-            CircleAvatarView(image: image, disable: true) {
+            CircleAvatarView(image: viewModel.photo, disable: true) {
                 do {}
             }
             
@@ -37,10 +31,8 @@ struct StartingView: View {
                 .padding(.bottom, 10)
 
             VStack(alignment: .center, spacing: 5) {
-                if roles.count > 1 {
-                UserRoleView(role: $viewModel.userAPP.profile.prefer,
-                             select: $viewModel.isFinish,
-                             roles: roles)
+                if viewModel.userAPP.roles.count > 1 {
+                    UserRoleView(select: $viewModel.userAPP.role, roles: viewModel.userAPP.roles)
                 }
                 
                 CustomButton(text: "Продолжить", width: WIDTH * 0.4) {
@@ -68,8 +60,8 @@ struct StartingView: View {
                 )
         )
         .onChange(of: viewModel.isFinish) { newValue in
-            if newValue {
-                switch viewModel.userAPP.profile.prefer {
+            if newValue, let role = UserRole.allCases.first(where: {$0.role == viewModel.userAPP.role}) {
+                switch role {
                 case .owner:
                     navigation.view = .error
                 case .app:

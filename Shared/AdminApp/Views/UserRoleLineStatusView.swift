@@ -8,8 +8,16 @@
 import SwiftUI
 
 struct UserRoleLineStatusView: View {
-    let status: Bool
-    let role: UserRole
+    let index: Int
+    let roles: [String]
+    private var label: String {
+        UserRole.allCases[index].label
+    }
+    private var status: Bool {
+        let role = UserRole.allCases[index].role
+        return roles.contains(where: {$0 == role })
+        
+    }
     var body: some View {
         VStack(spacing: 1) {
             HStack(spacing: hPadding) {
@@ -18,8 +26,8 @@ struct UserRoleLineStatusView: View {
                     .interpolation(.medium)
                     .aspectRatio(contentMode: .fit)
                     .frame(width: WIDTH * 0.03, alignment: .center)
-                    .foregroundColor(status ? .green : .red)
-                Text("\(role.label)")
+                    .foregroundColor(status ? .cyan.opacity(0.8) : .red.opacity(0.8))
+                Text(label)
                     .minimumScaleFactor(0.9)
                     .lineLimit(1)
                 Spacer()
@@ -32,8 +40,14 @@ struct UserRoleLineStatusView: View {
 }
 
 struct UserRoleLineSelectView: View {
-    let status: Bool
-    let role: UserRole
+    let select: String
+    let role: String
+    private var status: Bool {
+        select == role
+    }
+    private var label: String? {
+        UserRole.allCases.first(where: {$0.role == role})?.label
+    }
     var body: some View {
         VStack(spacing: 1) {
             HStack(spacing: hPadding) {
@@ -42,8 +56,8 @@ struct UserRoleLineSelectView: View {
                     .interpolation(.medium)
                     .aspectRatio(contentMode: .fit)
                     .frame(width: WIDTH * 0.03, alignment: .center)
-                    .foregroundColor(.green.opacity(status ? 1 : 0))
-                Text("\(role.label)")
+                    .foregroundColor(.cyan.opacity(status ? 0.8 : 0))
+                Text(label ?? "")
                     .minimumScaleFactor(0.9)
                     .lineLimit(1)
                 Spacer()

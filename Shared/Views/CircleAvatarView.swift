@@ -8,16 +8,23 @@
 import SwiftUI
 
 struct CircleAvatarView: View {
-    let image: UIImage?
+    let image: Data?
     let disable: Bool
     let action: () -> Void
+    private var uiImage: UIImage {
+        if let image = image, let ui = UIImage(data: image) {
+            return ui
+        } else {
+            return UIImage()
+        }
+    }
     
     var body: some View {
-        if let image = image {
+        if uiImage != UIImage() {
             Button {
                 action()
             } label: {
-                Image(uiImage: image)
+                Image(uiImage: uiImage)
                     .resizable()
                     .interpolation(.medium)
                     .aspectRatio(contentMode: .fit)

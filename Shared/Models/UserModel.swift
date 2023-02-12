@@ -26,22 +26,6 @@ enum UserRole: CaseIterable, Codable {
             return "admin"
         }
     }
-    
-    var sort: String {
-        switch self {
-        case .owner:
-            return "B"
-        case .app:
-            return "C"
-        case .order:
-            return "D"
-        case .stage:
-            return "E"
-        case .admin:
-            return "A"
-        }
-    }
-    
     var label: String {
         switch self {
         case .owner:
@@ -62,7 +46,6 @@ enum UserRole: CaseIterable, Codable {
 struct User: Identifiable,  Codable {
   @DocumentID var id: String?
     var date = Date().timeStamp()
-    
     var isActive = true
    
     var email: String
@@ -71,6 +54,10 @@ struct User: Identifiable,  Codable {
     var surname: String
     
     var image = ""
+    var role = ""
+    var roles = [String]()
+    var stages = [String]()
+    
     var profile = ""
     
     static func getUser(email: String, phone: String, name: String, surname: String) -> User {
@@ -94,16 +81,12 @@ struct UserAPP: Codable {
     var name = ""
     var surname = ""
     
-    var image = Data()
-    var profile = UserData()
+    var image = ""
+    var role = ""
+    var roles = [String]()
+    var stages = [String]()
     
-
+    var profile = ""
 }
 
-// набор ролей и привязанных этапов пользователя
-struct UserData: Codable {
-    var prefer: UserRole = .admin
-    var roles: [UserRole: Bool] = [:]
-    var stages: [String] = []
-}
 

@@ -47,16 +47,16 @@ class StorageManager {
     }
     
     // MARK: - запись и чтение по ключу и по типу модели (для кодирования)
-    func load<T: Decodable>(type: TypeKey, model: T.Type, completion: @escaping(Result<T, NetworkError>) -> Void) {
+    func load<T: Decodable>(type: TypeKey, model: T.Type, completion: @escaping(T?) -> Void) {
         if let data = userDefaults.object(forKey: type.key) as? Data {
             do {
                 let decoder = try JSONDecoder().decode(T.self, from: data)
-                completion(.success(decoder))
+                completion(decoder)
             } catch {
-                completion(.failure(.decodeStorage))
+                completion(nil)
             }
         } else {
-            completion(.failure(.loadStorage))
+            completion(nil)
         }
     }
     

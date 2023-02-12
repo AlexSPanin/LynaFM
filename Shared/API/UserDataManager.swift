@@ -6,55 +6,53 @@
 //
 //MARK: - методы для работы с профилем пользователя
 import Foundation
+import SwiftUI
 
 class UserDataManager {
     static let shared = UserDataManager()
     private init() {}
     //MARK: - загрузка всех карточк пользователей
-    func loadUsers(completion: @escaping(Result<[UserAPP], NetworkError>) -> Void) {
+    func loadUsers(completion: @escaping([UserAPP]?) -> Void) {
         print("Загрузка карточек пользователей")
         let myGroup = DispatchGroup()
-        NetworkManager.shared.fetchFullCollection(to: .user, model: User.self) { result in
-            switch result {
-            case .success(let users):
+        NetworkManager.shared.fetchFullCollection(to: .user, model: User.self) { users in
+            if let users = users {
                 print("Коллекция из сети загружена Users Collection")
                 var usersAPP = [UserAPP]()
                 users.forEach { user in
                     myGroup.enter()
-                    self.loadUser(to: user.id) { result in
-                        switch result {
-                        case .success(let userAPP):
+                    self.loadUser(to: user.id) { userAPP in
+                        if let userAPP = userAPP {
                             usersAPP.append(userAPP)
                             myGroup.leave()
-                        case .failure(_):
+                        } else {
                             print("Ошибка загрузки Пользователя \(user.name) \(user.surname)")
                             myGroup.leave()
                         }
                     }
                 }
                 myGroup.notify(queue: .main) {
-                    completion(.success(usersAPP))
+                    completion(usersAPP)
                 }
-            case .failure(_):
+            } else {
                 print("Ошибка: сбой обнавления коллекции.\nОбратитесь к администратору.")
-                completion(.failure(.fetchCollection))
+                completion(nil)
             }
         }
     }
     
     //MARK: - загрузка карточки пользователя
-    func loadUser(to id: String?, completion: @escaping(Result<UserAPP, NetworkError>) -> Void) {
+    func loadUser(to id: String?, completion: @escaping(UserAPP?) -> Void) {
         if let id = id {
             print("Загрузка карточки пользователя \(id)")
-            NetworkManager.shared.fetchElementCollection(to: .user, doc: id, model: User.self) { [self] result in
-                switch result {
-                case .success(let user):
-                    convertToUserAPP(user: user, completion: { userAPP in
-                        completion(.success(userAPP))
-                    })
-                case .failure(_):
+            NetworkManager.shared.fetchElementCollection(to: .user, doc: id, model: User.self) { user in
+                if let user = user {
+                    print("Kарточка пользователя из сети загружена \(id)")
+                    let userAPP = self.convertToUserAPP(user: user)
+                        completion(userAPP)
+                } else {
                     print("Ошибка загрузки карточки пользователя из сети \(id)")
-                    completion(.failure(.fetchUser))
+                    completion(nil)
                 }
             }
         }
@@ -62,37 +60,35 @@ class UserDataManager {
     
     //MARK: - обновление карточки пользователя
     func updateUser(to userAPP: UserAPP, completion: @escaping(Bool) -> Void) {
-        
-        let myGroup = DispatchGroup()
         if let userID = userAPP.id {
             print("Обновление карточки пользователя \(userAPP.name) \(userID)")
-            NetworkManager.shared.fetchElementCollection(to: .user, doc: userID, model: User.self) { result in
-                switch result {
-                case .success(let user):
-                    myGroup.enter()
-                    NetworkManager.shared.upLoadFile(to: user.profile, type: .user, model: UserData.self, collection: userAPP.profile) { _ in
-                        print("Сохранен файл userData \(userAPP.name)")
-                        myGroup.leave()
-                    }
-                    myGroup.enter()
-                    NetworkManager.shared.upLoadFile(to: user.image, type: .user, data: userAPP.image) { _ in
+            let userExport = self.convertToUser(userAPP: userAPP)
+            upLoadUser(to: userID, user: userExport) { status in
+                print("Статус сохранения \(status) карточки пользователя \(userAPP.name) \(userID)")
+                completion(status)
+            }
+        }
+    }
+    
+    //MARK: - обновление карточки пользователя
+    func updateUserPhoto(to userAPP: UserAPP, completion: @escaping(Bool) -> Void) {
+        let image = userAPP.image
+        if let userID = userAPP.id {
+            print("Обновление фото пользователя \(userAPP.name) \(userID)")
+            FileAppManager.shared.loadFileData(to: image, type: .assets) { data in
+                if let data = data {
+                    NetworkManager.shared.upLoadFile(to: image, type: .user, data: data) { _ in
                         print("Сохранен файл image \(userAPP.name)")
-                        myGroup.leave()
+                        let image = image as Any
+                        NetworkManager.shared.updateValueElement(to: .user, document: userID, key: "image", value: image)
+                        completion(true)
                     }
-                    var userExport = self.convertToUser(userAPP: userAPP)
-                    userExport.profile = user.profile
-                    userExport.image = user.image
-                    myGroup.notify(queue: .main) {
-                        NetworkManager.shared.upLoadUser(to: userID, user: userExport) { status in
-                            print("Статус сохранения \(status) карточки пользователя \(userAPP.name) \(userID)")
-                            completion(status)
-                        }
-                    }
-                case .failure(_):
-                    print("Ошибка загрузки карточки пользователя из сети \(userAPP.name)")
+                } else {
                     completion(false)
                 }
             }
+        } else {
+            completion(false)
         }
     }
     
@@ -104,38 +100,28 @@ class UserDataManager {
         var user = convertToUser(userAPP: userAPP)
         
         myGroup.enter()
-        NetworkManager.shared.upLoadFile(type: .user, model: UserData.self, collection: userAPP.profile) { file in
-            print("Сохранен файл userData \(user.name)")
-            user.profile = file
-            myGroup.leave()
+        FileAppManager.shared.loadFileData(to: image, type: .assets) { data in
+            if let data = data {
+                NetworkManager.shared.upLoadFile(to: image, type: .user, data: data) { file in
+                    print("Сохранен файл image \(user.name)")
+                    user.image = file
+                    myGroup.leave()
+                }
+            } else {
+                myGroup.leave()
+            }
         }
-        myGroup.enter()
-        NetworkManager.shared.upLoadFile(type: .user, data: image) { file in
-            print("Сохранен файл image \(user.name)")
-            user.image = file
-            myGroup.leave()
-        }
+        
         myGroup.notify(queue: .main) {
             print("Сохранен карточки пользователя \(user.name)")
-            NetworkManager.shared.upLoadUser(to: nil, user: user) { status in
+            self.upLoadUser(to: nil, user: user) { status in
                 completion(status)
             }
         }
     }
-    
-    //MARK: -  создание пустой UserData
-    func createUserData() -> UserData {
-        var userData = UserData()
-        UserRole.allCases.forEach { role in
-            // ВНИМАНИЕ потом заменить на false
-            userData.roles[role] = true
-        }
-        return userData
-    }
-    
+  
     // coding User to JSON standart UserCurrent
-    private func convertToUserAPP(user: User, completion: @escaping(UserAPP) -> Void) {
-        let myGroup = DispatchGroup()
+    private func convertToUserAPP(user: User) -> UserAPP {
         var current = UserAPP()
         current.id = user.id
         current.date = user.date
@@ -146,32 +132,13 @@ class UserDataManager {
         current.name = user.name
         current.surname = user.surname
         
-        myGroup.enter()
-        NetworkManager.shared.loadFile(type: .user, name: user.profile, model: UserData.self) { result in
-            switch result {
-            case .success(let profile):
-               current.profile = profile
-                myGroup.leave()
-            case .failure(_):
-                print("Ошибка загрузки файл userData \(user.name)")
-                myGroup.leave()
-            }
-        }
-        myGroup.enter()
-        NetworkManager.shared.loadFile(type: .user, name: user.image) { result in
-            switch result {
-            case .success(let data):
-                current.image = data
-                myGroup.leave()
-            case .failure(_):
-                print("Ошибка загрузки файл image \(user.name)")
-                myGroup.leave()
-            }
-        }
-        myGroup.notify(queue: .main) {
-            print("Сохранение обновленной карточки пользователя \(user.name)")
-           completion(current)
-        }
+        current.image = user.image
+        current.role = user.role
+        current.roles = user.roles
+        current.stages = user.stages
+        
+        current.profile = user.profile
+        return current
     }
     
     // encoding JSON standart UserCurrent to User
@@ -185,8 +152,63 @@ class UserDataManager {
         user.phone = userAPP.phone
         user.name = userAPP.name
         user.surname = userAPP.surname
-
+        
+        user.image = userAPP.image
+        user.role = userAPP.role
+        user.roles = userAPP.roles
+        user.stages = userAPP.stages
+        
+        user.profile = userAPP.profile
         return user
     }
 
+    //MARK: - методы работы с пользователем USER
+    // сохранение пользователя
+    func upLoadUser(to id: String?, user: User?, completion: @escaping (Bool) -> Void) {
+        let name = id != nil ? id : AuthUserManager.shared.currentUserID()
+        if let user = user, let name = name {
+            let data = ["id:" : name,
+                        "date" : user.date,
+                        "isActive" : user.isActive,
+                        
+                        "email" : user.email,
+                        "phone" : user.phone,
+                        "name" : user.name,
+                        "surname" : user.surname,
+                        
+                        
+                        "image" : user.image,
+                        "role" : user.role,
+                        "roles" : user.roles,
+                        "stages" : user.stages,
+                        
+                        "profile" : user.profile ] as [String : Any]
+            NetworkManager.shared.upLoadElementCollection(to: .user, name: name, data: data) { status in
+                completion(status)
+            }
+        } else {
+            completion(false)
+        }
+    }
+    // получить имя пользователя
+    func getNameUser(to id: String, completion: @escaping (String?) -> Void) {
+        StorageManager.shared.load(type: .user, model: UserAPP.self) { user in
+            if let user = user {
+                let name = user.name
+                let surname = " " + user.surname
+                completion(name + surname)
+            } else {
+                NetworkManager.shared.fetchElementCollection(to: .user, doc: id, model: User.self) { user in
+                    if let user = user {
+                        let name = user.name
+                        let surname = " " + user.surname
+                        completion(name + surname)
+                    } else {
+                        completion(nil)
+                    }
+                }
+            }
+        }
+    }
+    
 }

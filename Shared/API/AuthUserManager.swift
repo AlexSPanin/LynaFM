@@ -15,19 +15,11 @@ class AuthUserManager {
     private init() {}
     
     func currentUserID() -> String {
-        if let id = Auth.auth().currentUser?.uid {
-            return id
-        } else {
-            return ""
-        }
+        return Auth.auth().currentUser?.uid ?? ""
     }
     
     func currentUserEmail() -> String {
-        if let email = Auth.auth().currentUser?.email {
-            return email
-        } else {
-            return ""
-        }
+        return Auth.auth().currentUser?.email ?? ""
     }
     
     

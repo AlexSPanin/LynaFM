@@ -23,14 +23,16 @@ struct StartAdminAppView: View {
                 CustomButton(text: "Тех. карты", width: WIDTH * 0.7) {
                     viewModel.showView = .card
                 }
-                
+                CustomButton(text: "Карточки Этапов", width: WIDTH * 0.7) {
+                    viewModel.showView = .stage
+                }
                 
                 HorizontalDividerLabelView(label: "или")
                 HStack(alignment: .center, spacing: 20) {
                     TextButton(text: "Сменить профиль") {
                         viewModel.isExit.toggle()
                     }
-                    TextButton(text: "Общие справочники") {
+                    TextButton(text: "Пользователи") {
                         viewModel.showView = .property
                     }
                 }

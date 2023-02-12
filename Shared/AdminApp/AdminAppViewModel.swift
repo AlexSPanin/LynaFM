@@ -7,7 +7,7 @@
 
 import Foundation
 enum AdminAppViews: Codable {
-    case user, card, product, material, property, start
+    case user, card, product, material, property, start, stage
 }
 
 enum TapButtonAdminApp: Codable {
@@ -30,6 +30,8 @@ class AdminAppViewModel: ObservableObject {
                 label = "Справочники приложения"
             case .start:
                 label = "Настройка справочников"
+            case .stage:
+                label = "Справочник производственных этапов"
             }
         }
     }

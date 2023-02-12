@@ -35,7 +35,6 @@ class UsersAdminAppViewModel: ObservableObject {
             if showAddUser {
                 label = "Добавить нового пользователя"
                 user = UserAPP()
-                user.profile = UserDataManager.shared.createUserData()
                 password = ""
             } else {
                 label = "Справочник пользователей"
@@ -72,13 +71,12 @@ class UsersAdminAppViewModel: ObservableObject {
     
     //MARK: -  получение актуального массива пользователей из сети
     private func fethUsersAPP() {
-        UserDataManager.shared.loadUsers { result in
-            switch result {
-            case .success(let usersAPP):
+        UserDataManager.shared.loadUsers { usersAPP in
+            if let usersAPP = usersAPP {
                 let collection = usersAPP as Any
                 StorageManager.shared.save(type: .users, model: [UserAPP].self, collection: collection)
                 self.users = usersAPP
-            case .failure(_):
+            } else {
                 print("Ошибка загрузки списка пользователей из сети")
             }
         }

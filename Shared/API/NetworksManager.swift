@@ -86,14 +86,9 @@ class NetworkManager {
     // сохранение карточки продукты
     func upLoadProduct(to id: String?, product: Product?, completion: @escaping (Bool) -> Void) {
         let collection = NetworkCollection.product.collection
-        var idElement = ""
-        if let id = id {
-            idElement = id
-        } else {
-            idElement = Firestore.firestore().collection(collection).document().documentID
-        }
-        if let product = product {
-            let data = ["id:" : idElement,
+        let id = id != nil ? id : Firestore.firestore().collection(collection).document().documentID
+        if let product = product, let id = id {
+            let data = ["id:" : id,
                         "date" : product.date,
                         "idUser" : product.idUser,
                         "idGroup" : product.idGroup,
@@ -107,7 +102,7 @@ class NetworkManager {
                         "file" : product.file,
                         "images" : product.images,
                         "process" : product.process] as [String : Any]
-            upLoadElementCollection(to: .product, name: idElement, data: data) { status in
+            upLoadElementCollection(to: .product, name: id, data: data) { status in
                 completion(status)
             }
         } else {
@@ -118,14 +113,9 @@ class NetworkManager {
     // сохранение карточки материалов
     func upLoadMaterial(to id: String?, material: Material?, completion: @escaping (Bool) -> Void) {
         let collection = NetworkCollection.material.collection
-        var idElement = ""
-        if let id = id {
-            idElement = id
-        } else {
-            idElement = Firestore.firestore().collection(collection).document().documentID
-        }
-        if let material = material {
-        let data = ["id:" : idElement,
+        let id = id != nil ? id : Firestore.firestore().collection(collection).document().documentID
+        if let material = material, let id = id {
+        let data = ["id:" : id,
                     "date" : material.date,
                     "idUser" : material.idUser,
                     "idGroup" : material.idGroup,
@@ -138,7 +128,7 @@ class NetworkManager {
                     "label" : material.label,
                     "file" : material.file,
                     "images" : material.images] as [String : Any]
-        upLoadElementCollection(to: .material, name: idElement, data: data) { status in
+        upLoadElementCollection(to: .material, name: id, data: data) { status in
             completion(status)
         }
         } else {
@@ -149,14 +139,9 @@ class NetworkManager {
     // сохранение карточки продуктовой группы
     func upLoadGroup(to id: String?, group: Group?, completion: @escaping (Bool) -> Void) {
         let collection = NetworkCollection.group.collection
-        var idElement = ""
-        if let id = id {
-            idElement = id
-        } else {
-            idElement = Firestore.firestore().collection(collection).document().documentID
-        }
-        if let group = group {
-        let data = ["id:" : idElement,
+        let id = id != nil ? id : Firestore.firestore().collection(collection).document().documentID
+        if let group = group, let id = id {
+        let data = ["id:" : id,
                     "date" : group.date,
                     "idUser" : group.idUser,
                     "idType" : group.idType,
@@ -167,7 +152,7 @@ class NetworkManager {
                     "name" : group.name,
                     "label" : group.label,
                     "file" : group.file] as [String : Any]
-            upLoadElementCollection(to: .group, name: idElement, data: data) { status in
+            upLoadElementCollection(to: .group, name: id, data: data) { status in
                 completion(status)
             }
         } else {
@@ -178,14 +163,9 @@ class NetworkManager {
     // сохранение карточки параметров товара
     func upLoadParameter(to id: String?, param: ProductParameter?, completion: @escaping (Bool) -> Void) {
         let collection = NetworkCollection.parameter.collection
-        var idElement = ""
-        if let id = id {
-            idElement = id
-        } else {
-            idElement = Firestore.firestore().collection(collection).document().documentID
-        }
-        if let param = param {
-        let data = ["id:" : idElement,
+        let id = id != nil ? id : Firestore.firestore().collection(collection).document().documentID
+        if let param = param, let id = id {
+        let data = ["id:" : id,
                     "date" : param.date,
                     "idUser" : param.idUser,
                     "isActive" : param.isActive,
@@ -195,65 +175,16 @@ class NetworkManager {
                     "name" : param.name,
                     "label" : param.label,
                     "file" : param.file] as [String : Any]
-            upLoadElementCollection(to: .parameter, name: idElement, data: data) { status in
+            upLoadElementCollection(to: .parameter, name: id, data: data) { status in
                 completion(status)
             }
         } else {
             completion(false)
         }
     }
-    //MARK: - методы работы с этапами производства
-    // сохранение этапа производства
-    func upLoadStage(to id: String?, stage: ProductionStage?, completion: @escaping (Bool) -> Void) {
-        let collection = NetworkCollection.stage.collection
-        var idElement = ""
-        if let id = id {
-            idElement = id
-        } else {
-            idElement = Firestore.firestore().collection(collection).document().documentID
-        }
-        if let stage = stage {
-        let data = ["id:" : idElement,
-                    "date" : stage.date,
-                    "idUser" : stage.idUser,
-                    "isActive" : stage.isActive,
-                    "countUse" : stage.countUse,
-                    
-                    "sort" : stage.sort,
-                    "name" : stage.name,
-                    "label" : stage.label] as [String : Any]
-            upLoadElementCollection(to: .stage, name: idElement, data: data) { status in
-                completion(status)
-            }
-        } else {
-            completion(false)
-        }
-    }
+    
 
-    //MARK: - методы работы с пользователем USER
-    // сохранение пользователя
-    func upLoadUser(to id: String?, user: User?, completion: @escaping (Bool) -> Void) {
-        var name = AuthUserManager.shared.currentUserID()
-        if let id = id {
-            name = id
-        }
-        if let user = user {
-        let data = ["id:" : name,
-                    "date" : user.date,
-                    "email" : user.email,
-                    "phone" : user.phone,
-                    "name" : user.name,
-                    "surname" : user.surname,
-                    "image" : user.image,
-                    "profile" : user.profile,
-                    "isActive" : user.isActive] as [String : Any]
-            upLoadElementCollection(to: .user, name: name, data: data) { status in
-                completion(status)
-            }
-        } else {
-            completion(false)
-        }
-    }
+    
     // MARK: -  работа с хранилищем загрузка и выгрузка файлов ввиде Data
     // сохранение файла с автоматическим uuid - возвращает путь к файлу
     func upLoadFile(to name: String? = nil, type: UploadType, data: Data, completion: @escaping (String) -> Void) {
@@ -274,8 +205,7 @@ class NetworkManager {
     func loadFile(type: UploadType, name: String, completion: @escaping (Result<Data, NetworkError>) -> Void) {
         let storageRef = type.filePath.child(name)
         storageRef.getData(maxSize: 5 * 1024 * 1024 ) { data, error in
-            if let error = error {
-                print("NetworkManager ERROR: loadFile  type \(type)", error.localizedDescription)
+            if error != nil {
                 completion(.failure(.loadFile))
             } else {
                 guard let dataFile = data else { return }
@@ -286,40 +216,26 @@ class NetworkManager {
     
     // MARK: - работа с коллекцией
     // получить весь список из коллекции ввиде [QueryDocumentSnapshot]
-    func fetchFullCollection<T: Decodable>(to collection: NetworkCollection, model: T.Type, comletion: @escaping (Result<[T], NetworkError>) -> Void ) {
-        Firestore.firestore().collection(collection.collection).getDocuments { querySnapshot, error in
-            if error != nil {
-                comletion(.failure(.fetchCollection))
+    func fetchFullCollection<T: Decodable>(to collection: NetworkCollection, model: T.Type, comletion: @escaping ([T]?) -> Void ) {
+        Firestore.firestore().collection(collection.collection).getDocuments { querySnapshot, _ in
+            if let documents = querySnapshot?.documents {
+                let datas = documents.compactMap({ try? $0.data(as: T.self)})
+                comletion(datas)
             } else {
-                if let documents = querySnapshot?.documents {
-                    var datas = [T]()
-                    for document in documents {
-                        do {
-                            let data = try? document.data(as: T.self)
-                            if let data = data {
-                                datas.append(data)
-                            } else {
-                                print("ERROR: Decode Network data")
-                                comletion(.failure(.decodeCollection))
-                            }
-                        }
-                    }
-                    comletion(.success(datas))
-                } else {
-                    comletion(.failure(.fetchCollection))
-                }
+                print("Документы не получены")
+                comletion(nil)
             }
         }
     }
     
     // получить элемент коллекции DocumentSnapshot
-    func fetchElementCollection<T: Decodable>(to collection: NetworkCollection, doc: String, model: T.Type, comletion: @escaping (Result<T, NetworkError>) -> Void ) {
-        Firestore.firestore().collection(collection.collection).document(doc).getDocument(as: T.self) {result in
+    func fetchElementCollection<T: Decodable>(to collection: NetworkCollection, doc: String, model: T.Type, comletion: @escaping (T?) -> Void ) {
+        Firestore.firestore().collection(collection.collection).document(doc).getDocument(as: T.self) { result in
             switch result {
-            case .success(let element):
-                comletion(.success(element))
+            case .success(let doc):
+                comletion(doc)
             case .failure(_):
-                comletion(.failure(.fetchElement))
+                comletion(nil)
             }
         }
     }
@@ -372,15 +288,14 @@ class NetworkManager {
                 let data = try JSONEncoder().encode(collection)
                 storageRef.putData(data, metadata: nil) { _, error in
                     if error != nil {
-                        print("ERROR: upLoad File")
                         completion("")
                     } else {
-  //                      print("FINISH: upLoad File \(uuid)")
                         completion(uuid)
                     }
                 }
             } catch {
                 print("Ошибка кодирования файла перед сохранением")
+                completion("")
             }
         }
     }
@@ -389,8 +304,7 @@ class NetworkManager {
         
         let storageRef = type.filePath.child(name)
         storageRef.getData(maxSize: 5 * 1024 * 1024 ) { data, error in
-            if let error = error {
-                print("NetworkManager ERROR: loadFile  type \(type)", error.localizedDescription)
+            if error != nil {
                 completion(.failure(.loadFile))
             } else {
                 if let data = data {

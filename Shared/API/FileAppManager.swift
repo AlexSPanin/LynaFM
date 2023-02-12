@@ -9,13 +9,15 @@ import Foundation
 
 
 enum DirectoryType: Codable {
-    case doc, temp
+    case doc, temp, assets
     var url: URL? {
         switch self {
         case .doc:
             return fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
         case .temp:
             return fileManager.temporaryDirectory
+        case .assets:
+            return fileManager.urls(for: .cachesDirectory, in: .userDomainMask)[0]
         }
     }
 }
@@ -60,36 +62,36 @@ class FileAppManager {
     }
     
     // загружаем и декодируем файл из директории определенного типа
-    func loadFile<T: Decodable>(to name: String, type: DirectoryType, model: T.Type, complition: @escaping(Result<T, NetworkError>) -> Void) {
+    func loadFile<T: Decodable>(to name: String, type: DirectoryType, model: T.Type, complition: @escaping(T?) -> Void) {
         if let directory = type.url {
             let url = directory.appendingPathComponent(name)
             do {
                 let data = fileManager.contents(atPath: url.path)
                 if let data = data {
                     let decoder = try JSONDecoder().decode(T.self, from: data)
-                    complition(.success(decoder))
+                    complition(decoder)
                 } else {
                     print("ERROR: decoder file from file manager")
-                    complition(.failure(.decodeFile))
+                    complition(nil)
                 }
             } catch {
                 print("ERROR: load File from file manager")
-                complition(.failure(.loadFile))
+                complition(nil)
             }
         }
     }
     
     // загружаем файл из директории определенной ее видом и возвращаем DATA
-    func loadFileData(to name: String, type: DirectoryType, complition: @escaping(Result<Data, NetworkError>) -> Void) {
+    func loadFileData(to name: String, type: DirectoryType, complition: @escaping(Data?) -> Void) {
         if let directory = type.url {
             let url = directory.appendingPathComponent(name)
             do {
                 let data = fileManager.contents(atPath: url.path)
                 if let data = data {
-                    complition(.success(data))
+                    complition(data)
                 } else {
                     print("ERROR: load File from file manager NO DATA \(name)")
-                    complition(.failure(.loadFile))
+                    complition(nil)
                 }
             }
         }

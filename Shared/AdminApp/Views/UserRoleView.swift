@@ -8,9 +8,8 @@
 import SwiftUI
 
 struct UserRoleView: View {
-    @Binding var role: UserRole
-    @Binding var select: Bool
-    let roles: [UserRole: Bool]
+    @Binding var select: String
+    let roles: [String]
     var body: some View {
         VStack {
             HStack {
@@ -22,12 +21,11 @@ struct UserRoleView: View {
                 Spacer()
             }
             VStack(alignment: .leading, spacing: 2) {
-                ForEach(roles.sorted(by: {$0.key.sort < $1.key.sort}), id: \.key.sort) { key, value in
+                ForEach(0..<roles.count, id: \.self) { index in
                     Button {
-                        role = key
-                        select.toggle()
+                        select = roles[index]
                     } label: {
-                        UserRoleLineSelectView(status: role == key, role: key)
+                        UserRoleLineSelectView(select: select, role: roles[index])
                     }
                 }
             }

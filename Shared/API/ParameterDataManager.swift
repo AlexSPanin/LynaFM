@@ -14,9 +14,8 @@ class ParameterDataManager {
     //MARK: - загрузка всех карточк
     func loadCollection(completion: @escaping(Result<[ProductParameterAPP], NetworkError>) -> Void) {
         let myGroup = DispatchGroup()
-        NetworkManager.shared.fetchFullCollection(to: .parameter, model: ProductParameter.self) { result in
-            switch result {
-            case .success(let cards):
+        NetworkManager.shared.fetchFullCollection(to: .parameter, model: ProductParameter.self) { cards in
+            if let cards = cards {
                 print("Коллекция из сети загружена")
                 var cardsAPP = [ProductParameterAPP]()
                 cards.forEach { card in
@@ -35,7 +34,7 @@ class ParameterDataManager {
                 myGroup.notify(queue: .main) {
                     completion(.success(cardsAPP))
                 }
-            case .failure(_):
+            } else {
                 print("Ошибка: сбой обнавления коллекции.")
                 completion(.failure(.fetchCollection))
             }
@@ -45,13 +44,12 @@ class ParameterDataManager {
     //MARK: - загрузка карточки
     func loadCard(to id: String?, completion: @escaping(Result<ProductParameterAPP, NetworkError>) -> Void) {
         if let id = id {
-            NetworkManager.shared.fetchElementCollection(to: .parameter, doc: id, model: ProductParameter.self) { result in
-                switch result {
-                case .success(let card):
+            NetworkManager.shared.fetchElementCollection(to: .parameter, doc: id, model: ProductParameter.self) { card in
+                if let card = card {
                     self.convertCardToCardAPP(card: card) { cardAPP in
                         completion(.success(cardAPP))
                     }
-                case .failure(_):
+                } else {
                     print("Ошибка загрузки карточки из сети \(id)")
                     completion(.failure(.fetchUser))
                 }
@@ -64,9 +62,8 @@ class ParameterDataManager {
         let myGroup = DispatchGroup()
         let cardID = cardAPP.id
         print("Обновление карточки пользователя \(cardAPP.name)")
-        NetworkManager.shared.fetchElementCollection(to: .parameter, doc: cardID, model: ProductParameter.self) { result in
-            switch result {
-            case .success(let card):
+        NetworkManager.shared.fetchElementCollection(to: .parameter, doc: cardID, model: ProductParameter.self) { card in
+            if let card = card {
                 myGroup.enter()
                 NetworkManager.shared.upLoadFile(to: card.file, type: .parameter, data: cardAPP.file) { _ in
                     print("Сохранен файл userData \(cardAPP.name)")
@@ -80,7 +77,7 @@ class ParameterDataManager {
                         completion(status)
                     }
                 }
-            case .failure(_):
+            } else {
                 print("Ошибка загрузки карточки пользователя из сети \(cardAPP.name)")
                 completion(false)
             }
@@ -115,15 +112,14 @@ class ParameterDataManager {
             let error = true
             completion(errorText,error)
         } else {
-            NetworkManager.shared.fetchElementCollection(to: .parameter, doc: cardAPP.id, model: ProductParameter.self) { result in
-                switch result {
-                case .success(let card):
+            NetworkManager.shared.fetchElementCollection(to: .parameter, doc: cardAPP.id, model: ProductParameter.self) { card in
+                if let card = card {
                     NetworkManager.shared.deleteFile(type: .parameter, name: card.file) { status in
                         if !status {
                             print("Ошибка удаления файла \(card.file)")
                         }
                     }
-                case .failure(_):
+                } else {
                     print("Ошибка загрузки карточки \(cardAPP.name)")
                 }
             }

@@ -40,12 +40,8 @@ struct TextFieldView: View {
     
     var body: some View {
         HStack(spacing: 12){
-           
+            
             VStack(alignment: .leading, spacing: 3){
-                Text(subtitle)
-                    .font(.caption)
-                    .lineLimit(1)
-                    .minimumScaleFactor(scaleFactor)
                 HStack(spacing: 2) {
                     
                     if tipeTextField == .password {
@@ -57,19 +53,16 @@ struct TextFieldView: View {
                         }
                     }
                     
-                if !isEye && tipeTextField == .password {
-                    SecureField("", text: $text)
-                        .font(.footnote)
-                        .autocapitalization(.none)
-                        .frame(height: scaleWidth * 14)
+                    if !isEye && tipeTextField == .password {
+                        SecureField(subtitle, text: $text)
+                            .autocapitalization(.none)
                         
-                } else {
-                    TextField("", text: $text)
-                        .font(.footnote)
-                        .autocapitalization(.none)
-                        .frame(height: scaleWidth * 14)
+                    } else {
+                        TextField(subtitle, text: $text)
+                            .autocapitalization(.none)
+                    }
                 }
-                }
+                .font(.body)
             }
             Spacer()
             
@@ -94,9 +87,7 @@ struct TextFieldView: View {
             }
             
         }
-        .padding(.all, 10)
-//        .padding(.top, 12)
-//        .padding(.bottom, 15)
+        .padding(.all, 5)
         .background(
             RoundedRectangle(cornerRadius: 2)
                 .strokeBorder(lineWidth: 1)

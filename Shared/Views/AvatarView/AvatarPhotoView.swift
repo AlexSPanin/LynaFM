@@ -11,11 +11,11 @@ struct AvatarPhotoView: View {
     
     @StateObject var viewModel = AvatarPhotoViewModel()
     
-    @Binding var imageData: Data
+    @Binding var image: Data?
     @Binding var showAvatarPhotoView: Bool
     
-    init(imageData: Binding<Data>, showAvatarPhotoView: Binding<Bool>){
-        self._imageData = imageData
+    init(imageData: Binding<Data?>, showAvatarPhotoView: Binding<Bool>){
+        self._image = imageData
         self._showAvatarPhotoView = showAvatarPhotoView
     }
     
@@ -30,7 +30,7 @@ struct AvatarPhotoView: View {
                 }
                 Spacer()
                 Button {
-                    imageData = viewModel.savePhoto()
+                    image = viewModel.savePhoto()
                     showAvatarPhotoView.toggle()
                 } label: {
                     Text("Добавить")
@@ -52,7 +52,9 @@ struct AvatarPhotoView: View {
             Spacer()
         }
         .onAppear{
-            viewModel.photo = UIImage(data: imageData)
+            if let image = image {
+                viewModel.photo = UIImage(data: image)
+            }
         }
     }
 }

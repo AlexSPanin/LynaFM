@@ -14,9 +14,8 @@ class MaterialDataManager {
     //MARK: - загрузка всех карточк
     func loadCollection(completion: @escaping(Result<[MaterialAPP], NetworkError>) -> Void) {
         let myGroup = DispatchGroup()
-        NetworkManager.shared.fetchFullCollection(to: .material, model: Material.self) { result in
-            switch result {
-            case .success(let cards):
+        NetworkManager.shared.fetchFullCollection(to: .material, model: Material.self) { cards in
+            if let cards = cards {
                 print("Коллекция из сети загружена")
                 var cardsAPP = [MaterialAPP]()
                 cards.forEach { card in
@@ -35,7 +34,7 @@ class MaterialDataManager {
                 myGroup.notify(queue: .main) {
                     completion(.success(cardsAPP))
                 }
-            case .failure(_):
+            } else {
                 print("Ошибка: сбой обнавления коллекции.")
                 completion(.failure(.fetchCollection))
             }
@@ -45,13 +44,12 @@ class MaterialDataManager {
     //MARK: - загрузка карточки
     func loadCard(to id: String?, completion: @escaping(Result<MaterialAPP, NetworkError>) -> Void) {
         if let id = id {
-            NetworkManager.shared.fetchElementCollection(to: .material, doc: id, model: Material.self) { result in
-                switch result {
-                case .success(let card):
+            NetworkManager.shared.fetchElementCollection(to: .material, doc: id, model: Material.self) { card in
+                if let card = card {
                     self.convertCardToCardAPP(card: card) { cardAPP in
                         completion(.success(cardAPP))
                     }
-                case .failure(_):
+                } else {
                     print("Ошибка загрузки карточки из сети \(id)")
                     completion(.failure(.fetchUser))
                 }
@@ -64,9 +62,8 @@ class MaterialDataManager {
         let myGroup = DispatchGroup()
         let cardID = cardAPP.id
         print("Обновление карточки пользователя \(cardAPP.name)")
-        NetworkManager.shared.fetchElementCollection(to: .material, doc: cardID, model: Material.self) { result in
-            switch result {
-            case .success(let card):
+        NetworkManager.shared.fetchElementCollection(to: .material, doc: cardID, model: Material.self) { card in
+            if let card = card {
                 myGroup.enter()
                 NetworkManager.shared.upLoadFile(to: card.file, type: .material_data, data: cardAPP.file) { _ in
                     print("Сохранен файл userData \(cardAPP.name)")
@@ -80,7 +77,7 @@ class MaterialDataManager {
                         completion(status)
                     }
                 }
-            case .failure(_):
+            } else {
                 print("Ошибка загрузки карточки пользователя из сети \(cardAPP.name)")
                 completion(false)
             }
@@ -161,15 +158,14 @@ class MaterialDataManager {
             completion(errorText,error)
         } else {
             
-            NetworkManager.shared.fetchElementCollection(to: .material, doc: cardAPP.id, model: Material.self) { result in
-                switch result {
-                case .success(let card):
+            NetworkManager.shared.fetchElementCollection(to: .material, doc: cardAPP.id, model: Material.self) { card in
+                if let card = card {
                     NetworkManager.shared.deleteFile(type: .material_data, name: card.file) { status in
                         if !status {
                             print("Ошибка удаления файла \(card.file)")
                         }
                     }
-                case .failure(_):
+                } else {
                     print("Ошибка загрузки карточки \(cardAPP.name)")
                 }
             }

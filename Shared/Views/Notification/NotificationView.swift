@@ -10,14 +10,9 @@ import SwiftUI
 struct NotificationView: View {
     let text: String
     let button: String
+    let button2: String?
     let action: (() -> Void)
-
-    init(text: String, button: String, action: @escaping (() -> Void)){
-        self.text = text
-        self.button = button
-        self.action = action
-    }
-    
+    let action2: (() -> Void)
     var body: some View {
         ZStack {
             Color.accentColor.opacity(0.1)
@@ -35,18 +30,35 @@ struct NotificationView: View {
                     .font(.footnote)
                     .minimumScaleFactor(0.9)
                     .lineLimit(3)
+                HStack(alignment: .center, spacing: 30) {
+                    
+                    if let button2 = button2 {
+                        Button(action: {
+                            action2()
+                        }, label: {
+                            Text(button2)
+                                .font(.footnote)
+                                .foregroundColor(Color.cyan.opacity(0.8))
+                        })
+                        .frame(width: WIDTH * 0.25, height: WIDTH * 0.07)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 5).stroke(Color.cyan.opacity(0.8), lineWidth: 1)
+                        )
+                    }
+                    
+                    Button(action: {
+                        action()
+                    }, label: {
+                        Text(button)
+                            .font(.footnote)
+                            .foregroundColor(Color.orange.opacity(0.8))
+                    })
+                    .frame(width: WIDTH * 0.25, height: WIDTH * 0.07)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 5).stroke(Color.orange.opacity(0.8), lineWidth: 1)
+                    )
 
-                Button(action: {
-                    action()
-                }, label: {
-                    Text(button)
-                        .font(.footnote)
-                        .foregroundColor(.orange)
-                })
-                .frame(width: WIDTH * 0.25, height: WIDTH * 0.07)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 5).stroke(Color.orange, lineWidth: 1)
-                )
+                }
                 .padding(.vertical, 10)
             }
             .padding(.all, 15)
@@ -59,5 +71,4 @@ struct NotificationView: View {
         }
     }
 }
-
 

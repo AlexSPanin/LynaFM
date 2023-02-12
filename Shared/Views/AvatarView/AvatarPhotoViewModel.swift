@@ -34,10 +34,27 @@ class AvatarPhotoViewModel: ObservableObject {
      //   fethPhoto()
     }
     
-//    func fethPhoto() {
-//        let dataImage = StorageManager.shared.fetchData()
-//        if let photo = UIImage(data: dataImage, scale: 1.0) { self.photo = photo }
-//    }
+    func fethPhoto(to file: String, completion: @escaping(Data) -> Void) {
+        if file.isEmpty {
+            completion(Data())
+        } else {
+            FileAppManager.shared.loadFileData(to: file, type: .assets) { data in
+                if let data = data {
+                    completion(data)
+                } else {
+                    NetworkManager.shared.loadFile(type: .user, name: file) { result in
+                        switch result {
+                        case .success(let data):
+                            FileAppManager.shared.saveFileData(to: file, type: .assets, data: data)
+                            completion(data)
+                        case .failure(_):
+                            completion(Data())
+                        }
+                    }
+                }
+            }
+        }
+    }
     
     func pressedButtonsPhoto() {
         switch typePressButton {
