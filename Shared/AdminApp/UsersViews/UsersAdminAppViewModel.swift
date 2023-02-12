@@ -12,7 +12,7 @@ class UsersAdminAppViewModel: ObservableObject {
     @Published var users = [UserAPP]()
     @Published var user = UserAPP()
     @Published var password = ""
-    
+    @Published var stages = [ProductionStage]()
 
     @Published var isAddUser = false {
         didSet {
@@ -62,12 +62,38 @@ class UsersAdminAppViewModel: ObservableObject {
     
     init() {
         print("START: UsersAdminAppViewModel")
+       StageDataManager.shared.loadCollection(completion: { stages in
+            if let stages = stages {
+                self.stages = stages
+            }
+        })
         fethUsersAPP()
         
     }
     deinit {
         print("CLOSE: UsersAdminAppViewModel")
     }
+    //MARK: -  изменение роли пользователя
+    func changeRoleUser(to role: UserRole) {
+        let role = role.role
+        if let index = user.roles.firstIndex(of: role) {
+            user.roles.remove(at: index)
+        } else {
+            user.roles.append(role)
+        }
+    }
+    
+    //MARK: -  изменение производственного этапа пользователя
+    func changeStageUser(to stage: ProductionStage) {
+        let name = stage.name
+        if let index = user.stages.firstIndex(of: name) {
+            user.stages.remove(at: index)
+        } else {
+            user.stages.append(name)
+        }
+    }
+    
+    
     
     //MARK: -  получение актуального массива пользователей из сети
     private func fethUsersAPP() {

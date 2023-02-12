@@ -40,7 +40,7 @@ struct CreateUserView: View {
                             Button {
                                 viewModel.user.roles.append(UserRole.allCases[index].role)
                             } label: {
-                                UserRoleLineStatusView(index: index, roles: viewModel.user.roles)
+                                UserRoleLineStatusView(index: index, strings: viewModel.user.roles)
                             }
                         }
                     }

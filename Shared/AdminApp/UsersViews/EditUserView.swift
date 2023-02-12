@@ -11,36 +11,51 @@ struct EditUserView: View {
     @ObservedObject var viewModel: UsersAdminAppViewModel
     
     var body: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            ZStack {
-                TopLabelButtonView(label: viewModel.label) {
-                    viewModel.showEditUser.toggle()
-                }
+        ZStack {
+            TopLabelButtonView(label: viewModel.label) {
+                viewModel.showEditUser.toggle()
+            }
+            ScrollView(.vertical, showsIndicators: true) {
                 VStack {
+                    VStack (spacing: 5){
                     TextFieldView(subtitle: "Имя",
                                   tipeTextField: .userName, text: $viewModel.user.name)
                     TextFieldView(subtitle: "Фамилия",
                                   tipeTextField: .userName, text: $viewModel.user.surname)
                     TextFieldView(subtitle: "Телефон",
                                   tipeTextField: .userName, text: $viewModel.user.phone)
-                    HStack {
-                    Text("Роли пользователя:")
-                        .font(.footnote)
-                        .foregroundColor(.accentColor)
-                        .minimumScaleFactor(0.9)
-                        .lineLimit(1)
-                        Spacer()
                     }
-                    VStack(alignment: .leading, spacing: 2) {
-                        ForEach(0..<UserRole.allCases.count, id: \.self) { index in
-                            Button {
-                                viewModel.user.roles.append(UserRole.allCases[index].role)
-                            } label: {
-                                UserRoleLineStatusView(index: index, roles: viewModel.user.roles)
+                    .padding(.all, hPadding)
+                    
+                    List {
+                        Section("Роли пользователя:") {
+                            ForEach(0..<UserRole.allCases.count, id: \.self) { index in
+                                Button {
+                                    viewModel.changeRoleUser(to: UserRole.allCases[index])
+                                } label: {
+                                    UserRoleLineStatusView(index: index, strings: viewModel.user.roles)
+                                }
                             }
                         }
                     }
-
+                    .listStyle(.plain)
+                    .frame(height: HEIGHT * 0.25)
+                    
+                    List {
+                        Section("Этапы производства:") {
+                            ForEach(0..<viewModel.stages.count, id: \.self) { index in
+                                Button {
+                                    viewModel.changeStageUser(to: viewModel.stages[index])
+                                } label: {
+                                    UserStageLineStatusView(index: index, strings: viewModel.user.stages, stages: viewModel.stages)
+                                }
+                            }
+                        }
+                    }
+                    .listStyle(.plain)
+                    .frame(height: HEIGHT * 0.25)
+                    .padding(.vertical, hPadding)
+                    
                     VStack {
                         CustomButton(text: "Сохранить", width: WIDTH * 0.4) {
                             viewModel.isEditUser.toggle()
@@ -50,20 +65,18 @@ struct EditUserView: View {
                             viewModel.showEditUser.toggle()
                         }
                     }
-                    .padding(.top, hPadding)
+                    .padding(.bottom, hPadding)
                 }
-                .padding(.top, 100)
-                .padding(.horizontal, hPadding)
-                
-                // отработка сообщений об ошибках
-                if viewModel.errorOccured {
-                    NotificationView(text: viewModel.errorText, button: "ОК", button2: nil) {
-                        viewModel.errorOccured.toggle()
-                    } action2: { }
-                }
+            }
+            .padding(.top, 60)
+            if viewModel.errorOccured {
+                NotificationView(text: viewModel.errorText, button: "ОК", button2: nil) {
+                    viewModel.errorOccured.toggle()
+                } action2: { }
             }
         }
     }
 }
+
 
 

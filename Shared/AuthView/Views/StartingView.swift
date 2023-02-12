@@ -33,6 +33,7 @@ struct StartingView: View {
             VStack(alignment: .center, spacing: 5) {
                 if viewModel.userAPP.roles.count > 1 {
                     UserRoleView(select: $viewModel.userAPP.role, roles: viewModel.userAPP.roles)
+                        .padding(.vertical, hPadding)
                 }
                 
                 CustomButton(text: "Продолжить", width: WIDTH * 0.4) {

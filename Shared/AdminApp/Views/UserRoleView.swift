@@ -11,24 +11,23 @@ struct UserRoleView: View {
     @Binding var select: String
     let roles: [String]
     var body: some View {
-        VStack {
+        VStack(spacing: 5) {
             HStack {
                 Text("Роли пользователя:")
-                    .font(.footnote)
+                    .font(.body)
                     .foregroundColor(.accentColor)
-                    .minimumScaleFactor(0.9)
-                    .lineLimit(1)
                 Spacer()
             }
-            VStack(alignment: .leading, spacing: 2) {
-                ForEach(0..<roles.count, id: \.self) { index in
-                    Button {
-                        select = roles[index]
-                    } label: {
-                        UserRoleLineSelectView(select: select, role: roles[index])
-                    }
+            List(roles, id: \.self) { role in
+                Button {
+                    select = role
+                } label: {
+                    UserRoleLineSelectView(select: select, role: role)
                 }
+                .listRowBackground(Color.accentColor.opacity(0.1))
             }
+            .listStyle(.plain)
+            .frame(height: HEIGHT * 0.3)
         }
     }
 }

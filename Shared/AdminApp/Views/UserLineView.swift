@@ -17,7 +17,7 @@ struct UserLineView: View {
                     .interpolation(.medium)
                     .aspectRatio(contentMode: .fit)
                     .frame(width: WIDTH * 0.03, alignment: .center)
-                    .foregroundColor(user.isActive ? .green : .red)
+                    .foregroundColor(user.isActive ? .cyan.opacity(0.8) : .orange.opacity(0.8))
                 if user.isActive {
                 Text("\(user.name) \(user.surname)")
                     .minimumScaleFactor(0.9)
