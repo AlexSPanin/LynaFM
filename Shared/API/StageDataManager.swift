@@ -15,7 +15,7 @@ class StageDataManager {
     
     //MARK: - загрузка всех карточк
     func loadCollection(completion: @escaping([ProductionStage]?) -> Void) {
-        NetworkManager.shared.fetchFullCollection(to: .stage, model: ProductionStage.self) { cards in
+        NetworkManager.shared.fetchCollection(to: .stage, model: ProductionStage.self) { cards in
             if let cards = cards {
                 completion(cards.sorted(by: {$0.sort < $1.sort}))
             } else {
@@ -112,9 +112,4 @@ class StageDataManager {
             completion(false)
         }
     }
-    
-    
-    
-    
-    
 }

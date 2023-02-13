@@ -77,6 +77,9 @@
 		E2B60E852979638F001E710D /* ButtonsPhotoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E7C2979638F001E710D /* ButtonsPhotoModel.swift */; };
 		E2B60E87297972AC001E710D /* StartingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E86297972AC001E710D /* StartingView.swift */; };
 		E2B60E8929798696001E710D /* CircleAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E8829798696001E710D /* CircleAvatarView.swift */; };
+		E2BE6D37299A5ABA00EEA18D /* ParameterAdminView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BE6D36299A5ABA00EEA18D /* ParameterAdminView.swift */; };
+		E2BE6D39299A5AE900EEA18D /* ParameterAdminViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BE6D38299A5AE900EEA18D /* ParameterAdminViewModel.swift */; };
+		E2BE6D3B299A5B4E00EEA18D /* CreatedParameterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BE6D3A299A5B4E00EEA18D /* CreatedParameterView.swift */; };
 		E2D906EB297924E2009C6B4B /* NotificationMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D906EA297924E2009C6B4B /* NotificationMessage.swift */; };
 		E2D906ED29792C02009C6B4B /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D906EC29792C02009C6B4B /* NotificationView.swift */; };
 		E2D906F329793568009C6B4B /* NavigationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D906F229793568009C6B4B /* NavigationViewModel.swift */; };
@@ -150,6 +153,9 @@
 		E2B60E7C2979638F001E710D /* ButtonsPhotoModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonsPhotoModel.swift; sourceTree = "<group>"; };
 		E2B60E86297972AC001E710D /* StartingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartingView.swift; sourceTree = "<group>"; };
 		E2B60E8829798696001E710D /* CircleAvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleAvatarView.swift; sourceTree = "<group>"; };
+		E2BE6D36299A5ABA00EEA18D /* ParameterAdminView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterAdminView.swift; sourceTree = "<group>"; };
+		E2BE6D38299A5AE900EEA18D /* ParameterAdminViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterAdminViewModel.swift; sourceTree = "<group>"; };
+		E2BE6D3A299A5B4E00EEA18D /* CreatedParameterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatedParameterView.swift; sourceTree = "<group>"; };
 		E2D906EA297924E2009C6B4B /* NotificationMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationMessage.swift; sourceTree = "<group>"; };
 		E2D906EC29792C02009C6B4B /* NotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		E2D906F229793568009C6B4B /* NavigationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewModel.swift; sourceTree = "<group>"; };
@@ -331,6 +337,16 @@
 			path = AvatarViews;
 			sourceTree = "<group>";
 		};
+		E2BE6D35299A5A9500EEA18D /* ParameterView */ = {
+			isa = PBXGroup;
+			children = (
+				E2BE6D36299A5ABA00EEA18D /* ParameterAdminView.swift */,
+				E2BE6D38299A5AE900EEA18D /* ParameterAdminViewModel.swift */,
+				E2BE6D3A299A5B4E00EEA18D /* CreatedParameterView.swift */,
+			);
+			path = ParameterView;
+			sourceTree = "<group>";
+		};
 		E2D906E9297924B1009C6B4B /* Notification */ = {
 			isa = PBXGroup;
 			children = (
@@ -380,6 +396,7 @@
 				E2ECEADE2984EA7700261A33 /* AdminAppViewModel.swift */,
 				E2ECEAE82984FC9400261A33 /* UsersViews */,
 				E202EFF7298FBCA800CADCF2 /* StageView */,
+				E2BE6D35299A5A9500EEA18D /* ParameterView */,
 				E2ECEAE02984ED6A00261A33 /* Views */,
 			);
 			path = AdminApp;
@@ -537,6 +554,7 @@
 				E2ECEADF2984EA7700261A33 /* AdminAppViewModel.swift in Sources */,
 				E2D906ED29792C02009C6B4B /* NotificationView.swift in Sources */,
 				E2B60E7129796226001E710D /* RecoveryUserView.swift in Sources */,
+				E2BE6D3B299A5B4E00EEA18D /* CreatedParameterView.swift in Sources */,
 				E2B60E852979638F001E710D /* ButtonsPhotoModel.swift in Sources */,
 				E2F070A32997E202001F9676 /* StageAdminView.swift in Sources */,
 				E22B5EB12978580600836E92 /* UserModel.swift in Sources */,
@@ -559,9 +577,11 @@
 				E202EFFB298FD6A400CADCF2 /* ParameterDataManager.swift in Sources */,
 				E22B5E60297839D000836E92 /* LynaFMApp.swift in Sources */,
 				E211110B298164A8002552C7 /* ProductModel.swift in Sources */,
+				E2BE6D39299A5AE900EEA18D /* ParameterAdminViewModel.swift in Sources */,
 				E2F070A52997E24F001F9676 /* StageAdminViewModel.swift in Sources */,
 				E2111111298173DF002552C7 /* ErrorView.swift in Sources */,
 				E2ECEAE72984F66500261A33 /* TopLabelView.swift in Sources */,
+				E2BE6D37299A5ABA00EEA18D /* ParameterAdminView.swift in Sources */,
 				E2B60E812979638F001E710D /* ScrollPhotoView.swift in Sources */,
 				E2B60E87297972AC001E710D /* StartingView.swift in Sources */,
 				E2F070AB2997FF13001F9676 /* StageTabView.swift in Sources */,

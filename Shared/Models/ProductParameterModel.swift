@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct ProductParameter: Codable {
+struct Parameter: Codable {
     var id: String = ""
     var date: String = ""
     var idUser: String = ""
@@ -18,11 +18,13 @@ struct ProductParameter: Codable {
     var sort: String = ""
     var name: String = ""
     var label: String = ""
-    var file: String = ""
+    var images: [String] = []
+    var files: [String] = []
 }
 
-struct ProductParameterAPP: Codable {
+struct ParameterElement: Codable {
     var id: String = ""
+    var idCollection: String = ""
     var date: String = ""
     var idUser: String = ""
     var isActive: Bool = true
@@ -31,5 +33,6 @@ struct ProductParameterAPP: Codable {
     var sort: String = ""
     var name: String = ""
     var label: String = ""
-    var file = Data()
+    var images: [String] = []
+    var files: [String] = []
 }

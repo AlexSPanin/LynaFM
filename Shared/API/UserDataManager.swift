@@ -15,7 +15,7 @@ class UserDataManager {
     func loadUsers(completion: @escaping([UserAPP]?) -> Void) {
         print("Загрузка карточек пользователей")
         let myGroup = DispatchGroup()
-        NetworkManager.shared.fetchFullCollection(to: .user, model: User.self) { users in
+        NetworkManager.shared.fetchCollection(to: .user, model: User.self) { users in
             if let users = users {
                 print("Коллекция из сети загружена Users Collection")
                 var usersAPP = [UserAPP]()

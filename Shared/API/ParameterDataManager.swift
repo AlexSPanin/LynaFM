@@ -6,185 +6,281 @@
 //
 
 import Foundation
+import Firebase
+import FirebaseFirestoreSwift
+
 
 class ParameterDataManager {
     static let shared = ParameterDataManager()
     private init() {}
     
-    //MARK: - загрузка всех карточк
-    func loadCollection(completion: @escaping(Result<[ProductParameterAPP], NetworkError>) -> Void) {
-        let myGroup = DispatchGroup()
-        NetworkManager.shared.fetchFullCollection(to: .parameter, model: ProductParameter.self) { cards in
+    //MARK: - загрузка всех карточк коллекции
+    func loadCollection(completion: @escaping([Parameter]?) -> Void) {
+        NetworkManager.shared.fetchCollection(to: .parameter, model: Parameter.self) { cards in
             if let cards = cards {
                 print("Коллекция из сети загружена")
-                var cardsAPP = [ProductParameterAPP]()
-                cards.forEach { card in
-                    myGroup.enter()
-                    self.loadCard(to: card.id) { result in
-                        switch result {
-                        case .success(let cardAPP):
-                            cardsAPP.append(cardAPP)
-                            myGroup.leave()
-                        case .failure(_):
-                            print("Ошибка загрузки карточки \(card.name)")
-                            myGroup.leave()
-                        }
-                    }
-                }
-                myGroup.notify(queue: .main) {
-                    completion(.success(cardsAPP))
-                }
+                    completion(cards)
             } else {
                 print("Ошибка: сбой обнавления коллекции.")
-                completion(.failure(.fetchCollection))
+                completion(nil)
             }
         }
     }
     
-    //MARK: - загрузка карточки
-    func loadCard(to id: String?, completion: @escaping(Result<ProductParameterAPP, NetworkError>) -> Void) {
-        if let id = id {
-            NetworkManager.shared.fetchElementCollection(to: .parameter, doc: id, model: ProductParameter.self) { card in
+    //MARK: - загрузка всех карточк под коллекции
+    func loadSubCollection(to doc: String, completion: @escaping([ParameterElement]?) -> Void) {
+        NetworkManager.shared.fetchSubCollection(to: .parameter, doc: doc, model: ParameterElement.self) { cards in
+            if let cards = cards {
+                print("Под Коллекция из сети загружена")
+                    completion(cards)
+            } else {
+                print("Ошибка: сбой обнавления под коллекции.")
+                completion(nil)
+            }
+        }
+    }
+    
+    //MARK: - загрузка карточки коллекции
+    func loadCard(to doc: String?, completion: @escaping(Parameter?) -> Void) {
+        if let doc = doc {
+            NetworkManager.shared.fetchElementCollection(to: .parameter, doc: doc, model: Parameter.self) { card in
                 if let card = card {
-                    self.convertCardToCardAPP(card: card) { cardAPP in
-                        completion(.success(cardAPP))
-                    }
+                    completion(card)
                 } else {
-                    print("Ошибка загрузки карточки из сети \(id)")
-                    completion(.failure(.fetchUser))
+                    print("Ошибка загрузки карточки из сети \(doc)")
+                    completion(nil)
                 }
             }
         }
     }
     
-    //MARK: - обновление карточки
-    func updateCard(to cardAPP: ProductParameterAPP, completion: @escaping(Bool) -> Void) {
-        let myGroup = DispatchGroup()
-        let cardID = cardAPP.id
-        print("Обновление карточки пользователя \(cardAPP.name)")
-        NetworkManager.shared.fetchElementCollection(to: .parameter, doc: cardID, model: ProductParameter.self) { card in
-            if let card = card {
-                myGroup.enter()
-                NetworkManager.shared.upLoadFile(to: card.file, type: .parameter, data: cardAPP.file) { _ in
-                    print("Сохранен файл userData \(cardAPP.name)")
-                    myGroup.leave()
+    //MARK: - загрузка карточки коллекции
+    func loadSubCard(to doc: String, element: String?, completion: @escaping(ParameterElement?) -> Void) {
+        if let element = element {
+            NetworkManager.shared.fetchElementSubCollection(to: .parameter, doc: doc, element: element, model: ParameterElement.self) { card in
+                if let card = card {
+                    completion(card)
+                } else {
+                    print("Ошибка загрузки карточки из сети \(element)")
+                    completion(nil)
                 }
-                var cardExport = self.convertToCard(cardAPP: cardAPP)
-                cardExport.file = card.file
-                myGroup.notify(queue: .main) {
-                    print("Сохранение обновленной карточки пользователя \(cardAPP.name)")
-                    NetworkManager.shared.upLoadParameter (to: cardID, param: cardExport) { status in
-                        completion(status)
-                    }
+            }
+        }
+    }
+    
+    //MARK: - обновление карточки коллекции
+    func updateCard(to card: Parameter, completion: @escaping(Bool) -> Void) {
+        print("Обновление карточки пользователя \(card.name)")
+        upLoadParameter (param: card) { status in
+            completion(status)
+        }
+    }
+    
+    //MARK: - обновление карточки под коллекции
+    func updateCard(to doc: String, card: ParameterElement, completion: @escaping(Bool) -> Void) {
+        print("Обновление карточки пользователя \(card.name)")
+        upLoadParameterElement(to: doc, param: card) { status in
+            completion(status)
+        }
+    }
+    
+    //MARK: - сохранение файла
+    func saveFileImage(to file: String, doc: String, element: String? = nil, completion: @escaping(Bool) -> Void) {
+        print("Сохранение файла \(file)")
+        FileAppManager.shared.loadFileData(to: file, type: .assets) { data in
+            if let data = data {
+                NetworkManager.shared.upLoadFile(to: file, type: .parameter, data: data) { _ in
+                    print("Сохранен файл \(file)")
+                    NetworkManager.shared.updateTimeStamp(to: .parameter, doc: doc, element: element)
                 }
             } else {
-                print("Ошибка загрузки карточки пользователя из сети \(cardAPP.name)")
-                completion(false)
+                print("Файл не найден \(file)")
             }
         }
     }
     
-    //MARK: - создать новую карточку
-    func createNewCard(to cardAPP: ProductParameterAPP, completion: @escaping(Bool) -> Void) {
-        print("Создание новой карточки \(cardAPP.name)")
-        let myGroup = DispatchGroup()
-        let data = cardAPP.file
-        var card = convertToCard(cardAPP: cardAPP)
-
-        myGroup.enter()
-        NetworkManager.shared.upLoadFile(to: nil, type: .parameter, data: data) { file in
-            print("Сохранен файл \(card.name)")
-            card.file = file
-            myGroup.leave()
+    func saveFile(to file: String, doc: String, element: String? = nil, completion: @escaping(Bool) -> Void) {
+        print("Сохранение файла \(file)")
+        FileAppManager.shared.loadFileData(to: file, type: .temp) { data in
+            if let data = data {
+                NetworkManager.shared.upLoadFile(to: file, type: .parameter, data: data) { _ in
+                    print("Сохранен файл \(file)")
+                    NetworkManager.shared.updateTimeStamp(to: .parameter, doc: doc, element: element)
+                }
+            } else {
+                print("Файл не найден \(file)")
+            }
         }
+    }
+        
+        
+    //MARK: - создать новую карточку коллекции
+    func createCard(to card: Parameter, completion: @escaping(Bool) -> Void) {
+        print("Создание новой карточки коллекции\(card.name)")
+        let myGroup = DispatchGroup()
+        
+        card.images.forEach { image in
+            myGroup.enter()
+            saveFileImage(to: image, doc: card.id) { _ in
+                myGroup.leave()
+            }
+        }
+        
+        card.files.forEach { file in
+            myGroup.enter()
+            saveFile(to: file, doc: card.id) { _ in
+                myGroup.leave()
+            }
+        }
+        
         myGroup.notify(queue: .main) {
-            print("Сохранена карточка \(card.name)")
-            NetworkManager.shared.upLoadParameter(to: nil, param: card) { status in
+            print("Сохранена карточка коллекции\(card.name)")
+            self.upLoadParameter(param: card) { status in
                 completion(status)
             }
         }
     }
     
-    //MARK: - удалить карточку
-    func deleteCard(to cardAPP: ProductParameterAPP, completion: @escaping(String, Bool) -> Void) {
-        if cardAPP.countUse != 0 {
-            let errorText = "Карточка используется в \(cardAPP.countUse) документах."
-            let error = true
-            completion(errorText,error)
-        } else {
-            NetworkManager.shared.fetchElementCollection(to: .parameter, doc: cardAPP.id, model: ProductParameter.self) { card in
-                if let card = card {
-                    NetworkManager.shared.deleteFile(type: .parameter, name: card.file) { status in
-                        if !status {
-                            print("Ошибка удаления файла \(card.file)")
-                        }
-                    }
-                } else {
-                    print("Ошибка загрузки карточки \(cardAPP.name)")
-                }
-            }
-            NetworkManager.shared.deleteElement(to: .parameter, document: cardAPP.id) { status in
-                if status {
-                    self.updateTimeStamp()
-                    completion("", false)
-                } else {
-                    let errorText = "Ошибка удаление карточки \(cardAPP.countUse)."
-                    let error = true
-                    completion(errorText,error)
-                }
-            }
-        }
-    }
-    
-    //MARK: - конвертации
-    private func convertCardToCardAPP(card: ProductParameter, completion: @escaping(ProductParameterAPP) -> Void) {
+    //MARK: - создать новую карточку под коллекции
+    func createSubCard(to doc: String, card: ParameterElement, completion: @escaping(Bool) -> Void) {
+        print("Создание новой карточки под коллекции \(card.name)")
         let myGroup = DispatchGroup()
-        var current = ProductParameterAPP()
-        current.id = card.id
-        current.date = card.date
-        current.idUser = card.idUser
-        current.isActive = card.isActive
-        current.countUse = card.countUse
         
-        current.sort = card.sort
-        current.name = card.name
-        current.label = card.label
-        
-        myGroup.enter()
-        NetworkManager.shared.loadFile(type: .parameter, name: card.file) { result in
-            switch result {
-            case .success(let data):
-               current.file = data
-                myGroup.leave()
-            case .failure(_):
-                print("Ошибка загрузки файла \(card.name)")
+        card.images.forEach { image in
+            myGroup.enter()
+            saveFileImage(to: image, doc: doc, element: card.id) { _ in
                 myGroup.leave()
             }
         }
+        
+        card.files.forEach { file in
+            myGroup.enter()
+            saveFile(to: file, doc: doc, element: card.id) { _ in
+                myGroup.leave()
+            }
+        }
+        
         myGroup.notify(queue: .main) {
-            print("Сохранение обновленной карточки пользователя \(card.name)")
-           completion(current)
+            print("Сохранена карточка под коллекции \(card.name)")
+            self.upLoadParameterElement(to: doc, param: card) { status in
+                completion(status)
+            }
+        }
+    }
+    //MARK: - удалить карточку коллекции
+    func deleteCard(to card: Parameter, completion: @escaping(Bool) -> Void) {
+        if card.countUse == 0 {
+            let myGroup = DispatchGroup()
+            card.images.forEach { image in
+                myGroup.enter()
+                NetworkManager.shared.deleteFile(type: .parameter, name: image) { _ in
+                    myGroup.leave()
+                }
+            }
+            card.files.forEach { file in
+                myGroup.enter()
+                NetworkManager.shared.deleteFile(type: .parameter, name: file) { _ in
+                    myGroup.leave()
+                }
+            }
+            
+            NetworkManager.shared.fetchSubCollection(to: .parameter, doc: card.id, model: ParameterElement.self) { elements in
+                elements?.forEach({ element in
+                    myGroup.enter()
+                    self.deleteSubCard(to: element) { _ in
+                        myGroup.leave()
+                    }
+                })
+            }
+            
+            myGroup.notify(queue: .main) {
+                NetworkManager.shared.deleteElement(to: .parameter, document: card.id) { status in
+                    completion(status)
+                }
+            }
         }
     }
     
-    private func convertToCard(cardAPP: ProductParameterAPP) -> ProductParameter {
-        var card = ProductParameter()
-        card.id = cardAPP.id
-        card.date = cardAPP.date
-        card.idUser = cardAPP.idUser
-        card.isActive = cardAPP.isActive
-        card.countUse = cardAPP.countUse
-        
-        card.sort = cardAPP.sort
-        card.name = cardAPP.name
-        card.label = cardAPP.label
-        return card
+    //MARK: - удалить карточку коллекции
+    func deleteSubCard(to card: ParameterElement, completion: @escaping(Bool) -> Void) {
+        if card.countUse == 0 {
+            let myGroup = DispatchGroup()
+            card.images.forEach { image in
+                myGroup.enter()
+                NetworkManager.shared.deleteFile(type: .parameter, name: image) { _ in
+                    myGroup.leave()
+                }
+            }
+            
+            card.files.forEach { file in
+                myGroup.enter()
+                NetworkManager.shared.deleteFile(type: .parameter, name: file) { _ in
+                    myGroup.leave()
+                }
+            }
+            
+            myGroup.notify(queue: .main) {
+                NetworkManager.shared.deleteSubElement(to: .parameter, document: card.idCollection, element: card.id) { status in
+                    NetworkManager.shared.updateTimeStamp(to: .parameter, doc: card.idCollection)
+                    completion(status)
+                }
+            }
+        }
     }
     
-    private func updateTimeStamp() {
-        let collection = NetworkCollection.parameter.collection
-        let time = Date().timeStamp()
-        let system = NetworkCollection.system.collection
-        NetworkManager.shared.updateValueElement(to: .system, document: system, key: collection, value: time)
+    //MARK: - методы работы с параметрами товара
+    // сохранение карточки параметров товара
+    func upLoadParameter(param: Parameter?, completion: @escaping (Bool) -> Void) {
+        let collection = NetworkCollection.stage.collection
+        if let param = param {
+            var id = param.id
+            if param.id.isEmpty {
+                id = Firestore.firestore().collection(collection).document().documentID
+            }
+        let data = ["id:" : id,
+                    "date" : param.date,
+                    "idUser" : param.idUser,
+                    "isActive" : param.isActive,
+                    "countUse" : param.countUse,
+                    
+                    "sort" : param.sort,
+                    "name" : param.name,
+                    "label" : param.label,
+                    "images" : param.images,
+                    "files" : param.files] as [String : Any]
+            NetworkManager.shared.upLoadElementCollection(to: .parameter, name: id, data: data) { status in
+                completion(status)
+            }
+        } else {
+            completion(false)
+        }
+    }
+    
+    // сохранение карточки параметров товара
+    func upLoadParameterElement(to doc: String, param: ParameterElement?, completion: @escaping (Bool) -> Void) {
+        let collection = NetworkCollection.stage.collection
+        if let param = param {
+            var id = param.id
+            if param.id.isEmpty {
+                id = Firestore.firestore().collection(collection).document().documentID
+            }
+        let data = ["id:" : id,
+                    "idCollection" : doc,
+                    "date" : param.date,
+                    "idUser" : param.idUser,
+                    "isActive" : param.isActive,
+                    "countUse" : param.countUse,
+                    
+                    "sort" : param.sort,
+                    "name" : param.name,
+                    "label" : param.label,
+                    "images" : param.images,
+                    "files" : param.files] as [String : Any]
+            NetworkManager.shared.upLoadElementSubCollection(to: .parameter, doc: doc, name: id, data: data) { status in
+                completion(status)
+            }
+        } else {
+            completion(false)
+        }
     }
 }

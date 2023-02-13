@@ -14,7 +14,7 @@ class GroupDataManager {
     //MARK: - загрузка всех карточк
     func loadCollection(completion: @escaping(Result<[GroupAPP], NetworkError>) -> Void) {
         let myGroup = DispatchGroup()
-        NetworkManager.shared.fetchFullCollection(to: .group, model: Group.self) { cards in
+        NetworkManager.shared.fetchCollection(to: .group, model: Group.self) { cards in
             if let cards = cards {
                 print("Коллекция из сети загружена")
                 var cardsAPP = [GroupAPP]()

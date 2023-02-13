@@ -159,29 +159,7 @@ class NetworkManager {
             completion(false)
         }
     }
-    //MARK: - методы работы с параметрами товара
-    // сохранение карточки параметров товара
-    func upLoadParameter(to id: String?, param: ProductParameter?, completion: @escaping (Bool) -> Void) {
-        let collection = NetworkCollection.parameter.collection
-        let id = id != nil ? id : Firestore.firestore().collection(collection).document().documentID
-        if let param = param, let id = id {
-        let data = ["id:" : id,
-                    "date" : param.date,
-                    "idUser" : param.idUser,
-                    "isActive" : param.isActive,
-                    "countUse" : param.countUse,
-                    
-                    "sort" : param.sort,
-                    "name" : param.name,
-                    "label" : param.label,
-                    "file" : param.file] as [String : Any]
-            upLoadElementCollection(to: .parameter, name: id, data: data) { status in
-                completion(status)
-            }
-        } else {
-            completion(false)
-        }
-    }
+    
     
 
     
@@ -216,7 +194,7 @@ class NetworkManager {
     
     // MARK: - работа с коллекцией
     // получить весь список из коллекции ввиде [QueryDocumentSnapshot]
-    func fetchFullCollection<T: Decodable>(to collection: NetworkCollection, model: T.Type, comletion: @escaping ([T]?) -> Void ) {
+    func fetchCollection<T: Decodable>(to collection: NetworkCollection, model: T.Type, comletion: @escaping ([T]?) -> Void ) {
         Firestore.firestore().collection(collection.collection).getDocuments { querySnapshot, _ in
             if let documents = querySnapshot?.documents {
                 let datas = documents.compactMap({ try? $0.data(as: T.self)})
@@ -240,21 +218,57 @@ class NetworkManager {
         }
     }
     
+    // получить весь список из под коллекции ввиде [QueryDocumentSnapshot]
+    func fetchSubCollection<T: Decodable>(to collection: NetworkCollection, doc: String, model: T.Type, comletion: @escaping ([T]?) -> Void ) {
+        Firestore.firestore().collection(collection.collection).document(doc).collection("elements").getDocuments { querySnapshot, _ in
+            if let documents = querySnapshot?.documents {
+                let datas = documents.compactMap({ try? $0.data(as: T.self)})
+                comletion(datas)
+            } else {
+                print("Документы под коллекции не получены")
+                comletion(nil)
+            }
+        }
+    }
+    
+    // получить элемент из под коллекции DocumentSnapshot
+    func fetchElementSubCollection<T: Decodable>(to collection: NetworkCollection, doc: String, element: String, model: T.Type, comletion: @escaping (T?) -> Void ) {
+        Firestore.firestore().collection(collection.collection).document(doc).collection("elements").document(element).getDocument(as: T.self) { result in
+            switch result {
+            case .success(let doc):
+                comletion(doc)
+            case .failure(_):
+                comletion(nil)
+            }
+        }
+    }
+    
     // записать элемент коллекции [String: Any]
     func upLoadElementCollection(to collection: NetworkCollection, name: String, data: [String : Any], completion: @escaping (Bool) -> Void) {
         let collection = collection.collection
-        let time = Date().timeStamp()
-        let system = NetworkCollection.system.collection
         Firestore.firestore().collection(collection).document(name).setData(data) { error in
             if error != nil {
                 completion(false)
             } else {
-                // обновление даты в system
-                self.updateValueElement(to: .system, document: system, key: collection, value: time)
                 completion(true)
             }
         }
     }
+    
+    // записать элемент под коллекции [String: Any]
+    func upLoadElementSubCollection(to collection: NetworkCollection, doc: String, name: String, data: [String : Any], completion: @escaping (Bool) -> Void) {
+        let collection = collection.collection
+        Firestore.firestore().collection(collection).document(doc).collection("elements").document(name).setData(data) { error in
+            if error != nil {
+                completion(false)
+            } else {
+                completion(true)
+            }
+        }
+    }
+    
+    
+    
     
     // изменить значение поля элемента в коллекции
     func updateValueElement(to collection: NetworkCollection, document: String, key: String, value: Any) {
@@ -262,16 +276,31 @@ class NetworkManager {
         Firestore.firestore().collection(collection).document(document).updateData([key : value])
     }
     
-    // удалить карточку
+    // изменить значение поля элемента в под коллекции
+    func updateValueSubElement(to collection: NetworkCollection, document: String, element: String, key: String, value: Any) {
+        let collection = collection.collection
+        Firestore.firestore().collection(collection).document(document).collection("elements").document(element).updateData([key : value])
+    }
+    
+    // удалить карточку коллекции
     func deleteElement(to collection: NetworkCollection, document: String, completion: @escaping (Bool) -> Void) {
         let collection = collection.collection
-        let time = Date().timeStamp()
-        let system = NetworkCollection.system.collection
         Firestore.firestore().collection(collection).document(document).delete() { error in
             if error != nil {
                 completion(false)
             } else {
-                self.updateValueElement(to: .system, document: system, key: collection, value: time)
+                completion(true)
+            }
+        }
+    }
+    
+    // удалить карточку под коллекции
+    func deleteSubElement(to collection: NetworkCollection, document: String, element: String, completion: @escaping (Bool) -> Void) {
+        let collection = collection.collection
+        Firestore.firestore().collection(collection).document(document).collection("elements").document(element).delete() { error in
+            if error != nil {
+                completion(false)
+            } else {
                 completion(true)
             }
         }
@@ -330,4 +359,12 @@ class NetworkManager {
         }
     }
     
+    func updateTimeStamp(to collection: NetworkCollection, doc: String, element: String? = nil) {
+        let time = Date().timeStamp() as Any
+        if let element = element {
+            NetworkManager.shared.updateValueSubElement(to: collection, document: doc, element: element, key: "date", value: time)
+        } else {
+            NetworkManager.shared.updateValueElement(to: collection, document: doc, key: "date", value: time)
+        }
+    }
 }

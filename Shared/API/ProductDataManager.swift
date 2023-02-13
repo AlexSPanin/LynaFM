@@ -14,7 +14,7 @@ class ProductDataManager {
     //MARK: - загрузка всех карточк
     func loadCollection(completion: @escaping(Result<[ProductAPP], NetworkError>) -> Void) {
         let myGroup = DispatchGroup()
-        NetworkManager.shared.fetchFullCollection(to: .product, model: Product.self) { cards in
+        NetworkManager.shared.fetchCollection(to: .product, model: Product.self) { cards in
             if let cards = cards {
                 print("Коллекция из сети загружена")
                 var cardsAPP = [ProductAPP]()

@@ -14,7 +14,7 @@ class MaterialDataManager {
     //MARK: - загрузка всех карточк
     func loadCollection(completion: @escaping(Result<[MaterialAPP], NetworkError>) -> Void) {
         let myGroup = DispatchGroup()
-        NetworkManager.shared.fetchFullCollection(to: .material, model: Material.self) { cards in
+        NetworkManager.shared.fetchCollection(to: .material, model: Material.self) { cards in
             if let cards = cards {
                 print("Коллекция из сети загружена")
                 var cardsAPP = [MaterialAPP]()
