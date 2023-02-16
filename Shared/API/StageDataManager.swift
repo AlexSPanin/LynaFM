@@ -45,6 +45,7 @@ class StageDataManager {
         cards.forEach { card in
             myGroup.enter()
             upLoadStage(stage: card) { _ in
+                NetworkManager.shared.updateTimeStamp(to: .stage, doc: card.id, sub: .elements)
                 myGroup.leave()
             }
         }
@@ -55,34 +56,26 @@ class StageDataManager {
     
     
     //MARK: - обновление карточки
-    func updateCard(to cardAPP: ProductionStage, completion: @escaping(Bool) -> Void) {
-        upLoadStage(stage: cardAPP) { status in
+    func updateCard(to card: ProductionStage, completion: @escaping(Bool) -> Void) {
+        upLoadStage(stage: card) { status in
+            NetworkManager.shared.updateTimeStamp(to: .stage, doc: card.id, sub: .elements)
             completion(status)
         }
     }
     
     //MARK: - создать новую карточку
-    func createNewCard(to cardAPP: ProductionStage, completion: @escaping(Bool) -> Void) {
-        upLoadStage(stage: cardAPP) { status in
+    func createCard(to card: ProductionStage, completion: @escaping(Bool) -> Void) {
+        upLoadStage(stage: card) { status in
             completion(status)
         }
     }
     
     //MARK: - удалить карточку
-    func deleteCard(to cardAPP: ProductionStage, completion: @escaping(String, Bool) -> Void) {
-        if cardAPP.countUse != 0 {
-            let errorText = "Карточка используется в \(cardAPP.countUse) документах."
-            let error = true
-            completion(errorText,error)
-        } else {
-            NetworkManager.shared.deleteElement(to: .stage, document: cardAPP.id) { status in
-                if status {
-                    completion("", false)
-                } else {
-                    let errorText = "Ошибка удаление карточки \(cardAPP.countUse)."
-                    let error = true
-                    completion(errorText,error)
-                }
+    func deleteCard(to card: ProductionStage, completion: @escaping(Bool) -> Void) {
+        if card.countUse == 0 {
+            NetworkManager.shared.deleteElement(to: .stage, document: card.id) { status in
+                NetworkManager.shared.updateTimeStamp(to: .stage, doc: card.id, sub: .elements)
+                completion(status)
             }
         }
     }

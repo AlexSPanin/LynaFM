@@ -152,12 +152,11 @@ class GroupDataManager {
         current.label = card.label
         
         myGroup.enter()
-        NetworkManager.shared.loadFile(type: .group, name: card.file) { result in
-            switch result {
-            case .success(let data):
+        NetworkManager.shared.loadFile(type: .group, name: card.file) { data in
+            if let data = data {
                current.file = data
                 myGroup.leave()
-            case .failure(_):
+            } else {
                 print("Ошибка загрузки файла \(card.name)")
                 myGroup.leave()
             }

@@ -19,6 +19,10 @@
 		E211110D298165A1002552C7 /* GroupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E211110C298165A1002552C7 /* GroupModel.swift */; };
 		E211110F2981735A002552C7 /* LoadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E211110E2981735A002552C7 /* LoadView.swift */; };
 		E2111111298173DF002552C7 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2111110298173DF002552C7 /* ErrorView.swift */; };
+		E21BBA5D299E4A96006FF428 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E21BBA5C299E4A96006FF428 /* NetworkError.swift */; };
+		E21BBA5F299E4ACB006FF428 /* UploadType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E21BBA5E299E4ACB006FF428 /* UploadType.swift */; };
+		E21BBA61299E4B6F006FF428 /* NetworkCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = E21BBA60299E4B6F006FF428 /* NetworkCollection.swift */; };
+		E21BBA65299E4BD2006FF428 /* SystemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E21BBA64299E4BD2006FF428 /* SystemModel.swift */; };
 		E22B5E60297839D000836E92 /* LynaFMApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22B5E50297839CE00836E92 /* LynaFMApp.swift */; };
 		E22B5E62297839D000836E92 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22B5E51297839CE00836E92 /* ContentView.swift */; };
 		E22B5E64297839D000836E92 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E22B5E52297839D000836E92 /* Assets.xcassets */; };
@@ -80,6 +84,9 @@
 		E2BE6D37299A5ABA00EEA18D /* ParameterAdminView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BE6D36299A5ABA00EEA18D /* ParameterAdminView.swift */; };
 		E2BE6D39299A5AE900EEA18D /* ParameterAdminViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BE6D38299A5AE900EEA18D /* ParameterAdminViewModel.swift */; };
 		E2BE6D3B299A5B4E00EEA18D /* CreatedParameterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BE6D3A299A5B4E00EEA18D /* CreatedParameterView.swift */; };
+		E2BE6D3D299A7B7D00EEA18D /* ParameterTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BE6D3C299A7B7D00EEA18D /* ParameterTabView.swift */; };
+		E2BE6D3F299A7B9800EEA18D /* ParameterElementTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BE6D3E299A7B9800EEA18D /* ParameterElementTabView.swift */; };
+		E2BE6D41299A7C2D00EEA18D /* ButtonMoveAdd.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BE6D40299A7C2D00EEA18D /* ButtonMoveAdd.swift */; };
 		E2D906EB297924E2009C6B4B /* NotificationMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D906EA297924E2009C6B4B /* NotificationMessage.swift */; };
 		E2D906ED29792C02009C6B4B /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D906EC29792C02009C6B4B /* NotificationView.swift */; };
 		E2D906F329793568009C6B4B /* NavigationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D906F229793568009C6B4B /* NavigationViewModel.swift */; };
@@ -117,6 +124,10 @@
 		E211110C298165A1002552C7 /* GroupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupModel.swift; sourceTree = "<group>"; };
 		E211110E2981735A002552C7 /* LoadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadView.swift; sourceTree = "<group>"; };
 		E2111110298173DF002552C7 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
+		E21BBA5C299E4A96006FF428 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
+		E21BBA5E299E4ACB006FF428 /* UploadType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadType.swift; sourceTree = "<group>"; };
+		E21BBA60299E4B6F006FF428 /* NetworkCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkCollection.swift; sourceTree = "<group>"; };
+		E21BBA64299E4BD2006FF428 /* SystemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemModel.swift; sourceTree = "<group>"; };
 		E22B5E50297839CE00836E92 /* LynaFMApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LynaFMApp.swift; sourceTree = "<group>"; };
 		E22B5E51297839CE00836E92 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E22B5E52297839D000836E92 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -156,6 +167,9 @@
 		E2BE6D36299A5ABA00EEA18D /* ParameterAdminView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterAdminView.swift; sourceTree = "<group>"; };
 		E2BE6D38299A5AE900EEA18D /* ParameterAdminViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterAdminViewModel.swift; sourceTree = "<group>"; };
 		E2BE6D3A299A5B4E00EEA18D /* CreatedParameterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatedParameterView.swift; sourceTree = "<group>"; };
+		E2BE6D3C299A7B7D00EEA18D /* ParameterTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterTabView.swift; sourceTree = "<group>"; };
+		E2BE6D3E299A7B9800EEA18D /* ParameterElementTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterElementTabView.swift; sourceTree = "<group>"; };
+		E2BE6D40299A7C2D00EEA18D /* ButtonMoveAdd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonMoveAdd.swift; sourceTree = "<group>"; };
 		E2D906EA297924E2009C6B4B /* NotificationMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationMessage.swift; sourceTree = "<group>"; };
 		E2D906EC29792C02009C6B4B /* NotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		E2D906F229793568009C6B4B /* NavigationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewModel.swift; sourceTree = "<group>"; };
@@ -225,6 +239,16 @@
 			path = StageView;
 			sourceTree = "<group>";
 		};
+		E21BBA5B299E4A5D006FF428 /* Enum */ = {
+			isa = PBXGroup;
+			children = (
+				E21BBA5C299E4A96006FF428 /* NetworkError.swift */,
+				E21BBA5E299E4ACB006FF428 /* UploadType.swift */,
+				E21BBA60299E4B6F006FF428 /* NetworkCollection.swift */,
+			);
+			path = Enum;
+			sourceTree = "<group>";
+		};
 		E22B5E4A297839CE00836E92 = {
 			isa = PBXGroup;
 			children = (
@@ -245,6 +269,7 @@
 				E2ECEADD2984EA1C00261A33 /* AdminApp */,
 				E23278EB298149BD0099642C /* Models */,
 				E2D906EE297933DF009C6B4B /* Views */,
+				E21BBA5B299E4A5D006FF428 /* Enum */,
 				E22B5EA529784A2400836E92 /* Extensions */,
 				E22B5E52297839D000836E92 /* Assets.xcassets */,
 				E22B5EA629784A6E00836E92 /* Launch Screen.storyboard */,
@@ -309,6 +334,7 @@
 				E211110C298165A1002552C7 /* GroupModel.swift */,
 				E2111108298163B3002552C7 /* MaterialModel.swift */,
 				E211110A298164A8002552C7 /* ProductModel.swift */,
+				E21BBA64299E4BD2006FF428 /* SystemModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -343,6 +369,8 @@
 				E2BE6D36299A5ABA00EEA18D /* ParameterAdminView.swift */,
 				E2BE6D38299A5AE900EEA18D /* ParameterAdminViewModel.swift */,
 				E2BE6D3A299A5B4E00EEA18D /* CreatedParameterView.swift */,
+				E2BE6D3C299A7B7D00EEA18D /* ParameterTabView.swift */,
+				E2BE6D3E299A7B9800EEA18D /* ParameterElementTabView.swift */,
 			);
 			path = ParameterView;
 			sourceTree = "<group>";
@@ -409,6 +437,7 @@
 				E2ECEAEF29853EA100261A33 /* UserRoleLineStatusView.swift */,
 				E2ECEAE62984F66500261A33 /* TopLabelView.swift */,
 				E2DD94D4298EA38A00308D10 /* UserRoleView.swift */,
+				E2BE6D40299A7C2D00EEA18D /* ButtonMoveAdd.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -542,6 +571,7 @@
 				E22B5EB82978703000836E92 /* AuthViewModel.swift in Sources */,
 				E2F070A12997B544001F9676 /* RemoteImage.swift in Sources */,
 				E211110D298165A1002552C7 /* GroupModel.swift in Sources */,
+				E2BE6D3F299A7B9800EEA18D /* ParameterElementTabView.swift in Sources */,
 				E22B5EB329786F8300836E92 /* NetworksManager.swift in Sources */,
 				E2B60E6529793D80001E710D /* TextFieldView.swift in Sources */,
 				E2ECEAF429856D9D00261A33 /* UpdateUserView.swift in Sources */,
@@ -550,7 +580,9 @@
 				E2B60E8929798696001E710D /* CircleAvatarView.swift in Sources */,
 				E2B60E822979638F001E710D /* ImagePickerView.swift in Sources */,
 				E2B60E6D29794C8F001E710D /* LoginAuthView.swift in Sources */,
+				E21BBA61299E4B6F006FF428 /* NetworkCollection.swift in Sources */,
 				E2B60E7D2979638F001E710D /* AvatarPhotoView.swift in Sources */,
+				E2BE6D41299A7C2D00EEA18D /* ButtonMoveAdd.swift in Sources */,
 				E2ECEADF2984EA7700261A33 /* AdminAppViewModel.swift in Sources */,
 				E2D906ED29792C02009C6B4B /* NotificationView.swift in Sources */,
 				E2B60E7129796226001E710D /* RecoveryUserView.swift in Sources */,
@@ -558,6 +590,7 @@
 				E2B60E852979638F001E710D /* ButtonsPhotoModel.swift in Sources */,
 				E2F070A32997E202001F9676 /* StageAdminView.swift in Sources */,
 				E22B5EB12978580600836E92 /* UserModel.swift in Sources */,
+				E21BBA65299E4BD2006FF428 /* SystemModel.swift in Sources */,
 				E23278EA298147DC0099642C /* ProductionStageModel.swift in Sources */,
 				E2DD94D5298EA38A00308D10 /* UserRoleView.swift in Sources */,
 				E2F070A92997E630001F9676 /* TextEditorView.swift in Sources */,
@@ -568,6 +601,7 @@
 				E202EFFF298FE22800CADCF2 /* MaterialDataManager.swift in Sources */,
 				E202F001298FF43700CADCF2 /* ProductDataManager.swift in Sources */,
 				E211110F2981735A002552C7 /* LoadView.swift in Sources */,
+				E21BBA5D299E4A96006FF428 /* NetworkError.swift in Sources */,
 				E2B60E7F2979638F001E710D /* ButtonsPhotoDataManager.swift in Sources */,
 				E2B60E832979638F001E710D /* LowerButtonsPhotoView.swift in Sources */,
 				E22B5EAE2978563800836E92 /* AuthUserManager.swift in Sources */,
@@ -583,8 +617,10 @@
 				E2ECEAE72984F66500261A33 /* TopLabelView.swift in Sources */,
 				E2BE6D37299A5ABA00EEA18D /* ParameterAdminView.swift in Sources */,
 				E2B60E812979638F001E710D /* ScrollPhotoView.swift in Sources */,
+				E2BE6D3D299A7B7D00EEA18D /* ParameterTabView.swift in Sources */,
 				E2B60E87297972AC001E710D /* StartingView.swift in Sources */,
 				E2F070AB2997FF13001F9676 /* StageTabView.swift in Sources */,
+				E21BBA5F299E4ACB006FF428 /* UploadType.swift in Sources */,
 				E202EFF9298FC78500CADCF2 /* StageDataManager.swift in Sources */,
 				E22B5EA2297847B400836E92 /* Extensions.swift in Sources */,
 				E2D906EB297924E2009C6B4B /* NotificationMessage.swift in Sources */,

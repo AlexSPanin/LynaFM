@@ -52,13 +52,12 @@ class RemoteImageURL: ObservableObject {
                 self.data = data
             } else {
                 DispatchQueue.main.async {
-                    NetworkManager.shared.loadFile(type: type, name: file) { result in
-                        switch result {
-                        case .success(let data):
+                    NetworkManager.shared.loadFile(type: type, name: file) { data in
+                        if let data = data {
                             print("Файл загружен начало сохранения в памяти \(file)")
                             FileAppManager.shared.saveFileData(to: file, type: .assets, data: data)
                             self.data = data
-                        case .failure(_):
+                        } else {
                             print("ОШИБКА загрузки из сети файла \(file)")
                             self.data = nil
                         }

@@ -29,7 +29,7 @@ class ParameterDataManager {
     
     //MARK: - загрузка всех карточк под коллекции
     func loadSubCollection(to doc: String, completion: @escaping([ParameterElement]?) -> Void) {
-        NetworkManager.shared.fetchSubCollection(to: .parameter, doc: doc, model: ParameterElement.self) { cards in
+        NetworkManager.shared.fetchSubCollection(to: .parameter, doc: doc, sub: .elements, model: ParameterElement.self) { cards in
             if let cards = cards {
                 print("Под Коллекция из сети загружена")
                     completion(cards)
@@ -57,7 +57,8 @@ class ParameterDataManager {
     //MARK: - загрузка карточки коллекции
     func loadSubCard(to doc: String, element: String?, completion: @escaping(ParameterElement?) -> Void) {
         if let element = element {
-            NetworkManager.shared.fetchElementSubCollection(to: .parameter, doc: doc, element: element, model: ParameterElement.self) { card in
+            NetworkManager.shared.fetchElementSubCollection(to: .parameter, doc: doc,
+                                                            sub: .elements, element: element, model: ParameterElement.self) { card in
                 if let card = card {
                     completion(card)
                 } else {
@@ -68,18 +69,50 @@ class ParameterDataManager {
         }
     }
     
+    //MARK: - обновление всех карточek коллекции
+    func updateCards(to cards: [Parameter], completion: @escaping(Bool) -> Void) {
+        let myGroup = DispatchGroup()
+        cards.forEach { card in
+            myGroup.enter()
+            upLoadParameter(param: card) { _ in
+                NetworkManager.shared.updateTimeStamp(to: .stage, doc: card.id, sub: .elements)
+                myGroup.leave()
+            }
+        }
+        myGroup.notify(queue: .main) {
+           completion(true)
+        }
+    }
+    
+    //MARK: - обновление всех карточek под коллекции
+    func updateSubCards(to doc: String, cards: [ParameterElement], completion: @escaping(Bool) -> Void) {
+        let myGroup = DispatchGroup()
+        cards.forEach { card in
+            myGroup.enter()
+            upLoadParameterElement(to: doc, param: card) { _ in
+                NetworkManager.shared.updateTimeStamp(to: .stage, doc: doc, sub: .elements, element: card.id)
+                myGroup.leave()
+            }
+        }
+        myGroup.notify(queue: .main) {
+           completion(true)
+        }
+    }
+    
     //MARK: - обновление карточки коллекции
     func updateCard(to card: Parameter, completion: @escaping(Bool) -> Void) {
         print("Обновление карточки пользователя \(card.name)")
         upLoadParameter (param: card) { status in
+            NetworkManager.shared.updateTimeStamp(to: .parameter, doc: card.id, sub: .elements)
             completion(status)
         }
     }
     
     //MARK: - обновление карточки под коллекции
-    func updateCard(to doc: String, card: ParameterElement, completion: @escaping(Bool) -> Void) {
-        print("Обновление карточки пользователя \(card.name)")
-        upLoadParameterElement(to: doc, param: card) { status in
+    func updateSubCard(to doc: String, element: ParameterElement, completion: @escaping(Bool) -> Void) {
+        print("Обновление карточки пользователя \(element.name)")
+        upLoadParameterElement(to: doc, param: element) { status in
+            NetworkManager.shared.updateTimeStamp(to: .parameter, doc: doc, sub: .elements, element: element.id)
             completion(status)
         }
     }
@@ -91,7 +124,7 @@ class ParameterDataManager {
             if let data = data {
                 NetworkManager.shared.upLoadFile(to: file, type: .parameter, data: data) { _ in
                     print("Сохранен файл \(file)")
-                    NetworkManager.shared.updateTimeStamp(to: .parameter, doc: doc, element: element)
+                    NetworkManager.shared.updateTimeStamp(to: .parameter, doc: doc, sub: .elements, element: element)
                 }
             } else {
                 print("Файл не найден \(file)")
@@ -105,7 +138,7 @@ class ParameterDataManager {
             if let data = data {
                 NetworkManager.shared.upLoadFile(to: file, type: .parameter, data: data) { _ in
                     print("Сохранен файл \(file)")
-                    NetworkManager.shared.updateTimeStamp(to: .parameter, doc: doc, element: element)
+                    NetworkManager.shared.updateTimeStamp(to: .parameter, doc: doc, sub: .elements, element: element)
                 }
             } else {
                 print("Файл не найден \(file)")
@@ -121,7 +154,7 @@ class ParameterDataManager {
         
         card.images.forEach { image in
             myGroup.enter()
-            saveFileImage(to: image, doc: card.id) { _ in
+            saveFileImage(to: image.key, doc: card.id) { _ in
                 myGroup.leave()
             }
         }
@@ -148,7 +181,7 @@ class ParameterDataManager {
         
         card.images.forEach { image in
             myGroup.enter()
-            saveFileImage(to: image, doc: doc, element: card.id) { _ in
+            saveFileImage(to: image.key, doc: doc, element: card.id) { _ in
                 myGroup.leave()
             }
         }
@@ -163,6 +196,7 @@ class ParameterDataManager {
         myGroup.notify(queue: .main) {
             print("Сохранена карточка под коллекции \(card.name)")
             self.upLoadParameterElement(to: doc, param: card) { status in
+                NetworkManager.shared.updateTimeStamp(to: .parameter, doc: doc, sub: .elements)
                 completion(status)
             }
         }
@@ -173,7 +207,7 @@ class ParameterDataManager {
             let myGroup = DispatchGroup()
             card.images.forEach { image in
                 myGroup.enter()
-                NetworkManager.shared.deleteFile(type: .parameter, name: image) { _ in
+                NetworkManager.shared.deleteFile(type: .parameter, name: image.key) { _ in
                     myGroup.leave()
                 }
             }
@@ -184,7 +218,7 @@ class ParameterDataManager {
                 }
             }
             
-            NetworkManager.shared.fetchSubCollection(to: .parameter, doc: card.id, model: ParameterElement.self) { elements in
+            NetworkManager.shared.fetchSubCollection(to: .parameter, doc: card.id, sub: .elements, model: ParameterElement.self) { elements in
                 elements?.forEach({ element in
                     myGroup.enter()
                     self.deleteSubCard(to: element) { _ in
@@ -207,7 +241,7 @@ class ParameterDataManager {
             let myGroup = DispatchGroup()
             card.images.forEach { image in
                 myGroup.enter()
-                NetworkManager.shared.deleteFile(type: .parameter, name: image) { _ in
+                NetworkManager.shared.deleteFile(type: .parameter, name: image.key) { _ in
                     myGroup.leave()
                 }
             }
@@ -220,8 +254,9 @@ class ParameterDataManager {
             }
             
             myGroup.notify(queue: .main) {
-                NetworkManager.shared.deleteSubElement(to: .parameter, document: card.idCollection, element: card.id) { status in
-                    NetworkManager.shared.updateTimeStamp(to: .parameter, doc: card.idCollection)
+                NetworkManager.shared.deleteSubElement(to: .parameter, document: card.idCollection,
+                                                       sub: .elements, element: card.id) { status in
+                    NetworkManager.shared.updateTimeStamp(to: .parameter, doc: card.idCollection, sub: .elements)
                     completion(status)
                 }
             }
@@ -276,7 +311,7 @@ class ParameterDataManager {
                     "label" : param.label,
                     "images" : param.images,
                     "files" : param.files] as [String : Any]
-            NetworkManager.shared.upLoadElementSubCollection(to: .parameter, doc: doc, name: id, data: data) { status in
+            NetworkManager.shared.upLoadElementSubCollection(to: .parameter, doc: doc, sub: .elements, name: id, data: data) { status in
                 completion(status)
             }
         } else {

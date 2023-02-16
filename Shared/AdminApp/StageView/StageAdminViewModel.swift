@@ -78,7 +78,7 @@ class StageAdminViewModel: ObservableObject {
         }
     }
 
-    // отработка экрана ошибки
+    //MARK: -  отработка экрана ошибки
     @Published var errorText = ""
     @Published var errorOccured = false
     @Published var typeNote = false
@@ -144,7 +144,7 @@ class StageAdminViewModel: ObservableObject {
         card.date = date
         card.idUser = idUser
         cards.append(card)
-        StageDataManager.shared.createNewCard(to: card) { _ in
+        StageDataManager.shared.createCard(to: card) { _ in
             self.saveStorage()
             self.showAdd.toggle()
         }
@@ -190,9 +190,9 @@ class StageAdminViewModel: ObservableObject {
     
     private func fethStorage() {
         print("Получение коллекции карточек  из памяти")
-        StorageManager.shared.load(type: .stages, model: [ProductionStage].self) { stases in
-            if let stases = stases {
-                self.cards = stases.sorted(by: {$0.sort < $1.sort})
+        StorageManager.shared.load(type: .stages, model: [ProductionStage].self) { cards in
+            if let cards = cards {
+                self.cards = cards.sorted(by: {$0.sort < $1.sort})
             }
         }
     }

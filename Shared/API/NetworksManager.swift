@@ -4,80 +4,11 @@
 //
 //  Created by Александр Панин on 18.01.2023.
 //
-
+//MARK: -  методы для работы с FB
 import Foundation
 import Firebase
 import FirebaseStorage
 import FirebaseFirestoreSwift
-
-enum NetworkError: Error {
-    case fetchVersion
-    case fetchUser
-    case fetchCollection
-    case fetchElement
-    
-    case loadFile
-    case loadStorage
-    
-    case decodeCollection
-    case decodeStorage
-    case decodeFile
-}
-
-enum UploadType: String {
-    case system = "/system/"
-    case user = "/user/"
-    
-    case product = "/product/"
-    case product_image = "/product/image/"
-    case product_process = "/product/process/"
-    case product_data = "/product/data/"
-    
-    case material = "/material/"
-    case material_data = "/material/data/"
-    case material_image = "/material/image/"
-    
-    case bundle = "/bundle/"
-    
-    case group = "/group/"
-    case parameter = "/parameter/"
-    case stage = "/stage/"
-    
-    case order = "/order/"
-    
-    var filePath: StorageReference {
-        return Storage.storage().reference(withPath: self.rawValue)
-    }
-}
-
-// базы данных
-enum NetworkCollection: String {
-    case system = "system"
-    case user = "user"
-    case product = "product"
-    case material = "material"
-    case bundle = "bundle"
-    case group = "group"
-    case parameter = "parameter"
-    case stage = "stage"
-    case order = "order"
-    
-    var collection: String {
-        return self.rawValue
-    }
-}
-
-struct SystemApp: Codable {
-    var ver = ""
-    var user = ""
-    var product = ""
-    var material = ""
-    var bundle = ""
-    var group = ""
-    var parameter = ""
-    var stage = ""
-}
-
 
 class NetworkManager {
     static let shared = NetworkManager()
@@ -171,26 +102,21 @@ class NetworkManager {
         let storageRef = type.filePath.child(uuid)
         storageRef.putData(data, metadata: nil) { _, error in
             if error != nil {
-                print("ERROR: upLoad File")
+                print("ОШИБКА: ззаписи файла в FB \(uuid)")
                 completion("")
             } else {
-  //              print("FINISH: upLoad File \(uuid)")
                 completion(uuid)
             }
         }
     }
     // загрузка файла по названию и типу
-    func loadFile(type: UploadType, name: String, completion: @escaping (Result<Data, NetworkError>) -> Void) {
+    func loadFile(type: UploadType, name: String, completion: @escaping (Data?) -> Void) {
         let storageRef = type.filePath.child(name)
-        storageRef.getData(maxSize: 5 * 1024 * 1024 ) { data, error in
-            if error != nil {
-                completion(.failure(.loadFile))
-            } else {
-                guard let dataFile = data else { return }
-                completion(.success(dataFile))
-            }
+        storageRef.getData(maxSize: 5 * 1024 * 1024 ) { data, _ in
+            completion(data)
         }
     }
+    
     
     // MARK: - работа с коллекцией
     // получить весь список из коллекции ввиде [QueryDocumentSnapshot]
@@ -219,8 +145,8 @@ class NetworkManager {
     }
     
     // получить весь список из под коллекции ввиде [QueryDocumentSnapshot]
-    func fetchSubCollection<T: Decodable>(to collection: NetworkCollection, doc: String, model: T.Type, comletion: @escaping ([T]?) -> Void ) {
-        Firestore.firestore().collection(collection.collection).document(doc).collection("elements").getDocuments { querySnapshot, _ in
+    func fetchSubCollection<T: Decodable>(to collection: NetworkCollection, doc: String, sub: NetworkCollection, model: T.Type, comletion: @escaping ([T]?) -> Void ) {
+        Firestore.firestore().collection(collection.collection).document(doc).collection(sub.collection).getDocuments { querySnapshot, _ in
             if let documents = querySnapshot?.documents {
                 let datas = documents.compactMap({ try? $0.data(as: T.self)})
                 comletion(datas)
@@ -231,9 +157,10 @@ class NetworkManager {
         }
     }
     
+    
     // получить элемент из под коллекции DocumentSnapshot
-    func fetchElementSubCollection<T: Decodable>(to collection: NetworkCollection, doc: String, element: String, model: T.Type, comletion: @escaping (T?) -> Void ) {
-        Firestore.firestore().collection(collection.collection).document(doc).collection("elements").document(element).getDocument(as: T.self) { result in
+    func fetchElementSubCollection<T: Decodable>(to collection: NetworkCollection, doc: String, sub: NetworkCollection, element: String, model: T.Type, comletion: @escaping (T?) -> Void ) {
+        Firestore.firestore().collection(collection.collection).document(doc).collection(sub.collection).document(element).getDocument(as: T.self) { result in
             switch result {
             case .success(let doc):
                 comletion(doc)
@@ -245,124 +172,85 @@ class NetworkManager {
     
     // записать элемент коллекции [String: Any]
     func upLoadElementCollection(to collection: NetworkCollection, name: String, data: [String : Any], completion: @escaping (Bool) -> Void) {
-        let collection = collection.collection
-        Firestore.firestore().collection(collection).document(name).setData(data) { error in
-            if error != nil {
-                completion(false)
-            } else {
-                completion(true)
-            }
+        Firestore.firestore().collection(collection.collection).document(name).setData(data) { error in
+            completion(error == nil)
         }
     }
     
     // записать элемент под коллекции [String: Any]
-    func upLoadElementSubCollection(to collection: NetworkCollection, doc: String, name: String, data: [String : Any], completion: @escaping (Bool) -> Void) {
-        let collection = collection.collection
-        Firestore.firestore().collection(collection).document(doc).collection("elements").document(name).setData(data) { error in
-            if error != nil {
-                completion(false)
-            } else {
-                completion(true)
-            }
+    func upLoadElementSubCollection(to collection: NetworkCollection, doc: String, sub: NetworkCollection, name: String, data: [String : Any], completion: @escaping (Bool) -> Void) {
+        Firestore.firestore().collection(collection.collection).document(doc).collection(sub.collection).document(name).setData(data) { error in
+            completion(error == nil)
         }
     }
     
-    
-    
-    
     // изменить значение поля элемента в коллекции
     func updateValueElement(to collection: NetworkCollection, document: String, key: String, value: Any) {
-        let collection = collection.collection
-        Firestore.firestore().collection(collection).document(document).updateData([key : value])
+        Firestore.firestore().collection(collection.collection).document(document).updateData([key : value])
     }
     
     // изменить значение поля элемента в под коллекции
-    func updateValueSubElement(to collection: NetworkCollection, document: String, element: String, key: String, value: Any) {
-        let collection = collection.collection
-        Firestore.firestore().collection(collection).document(document).collection("elements").document(element).updateData([key : value])
+    func updateValueSubElement(to collection: NetworkCollection, document: String, sub: NetworkCollection, element: String, key: String, value: Any) {
+        Firestore.firestore().collection(collection.collection).document(document).collection(sub.collection).document(element).updateData([key : value])
     }
     
     // удалить карточку коллекции
     func deleteElement(to collection: NetworkCollection, document: String, completion: @escaping (Bool) -> Void) {
         let collection = collection.collection
         Firestore.firestore().collection(collection).document(document).delete() { error in
-            if error != nil {
-                completion(false)
-            } else {
-                completion(true)
-            }
+            completion(error == nil)
         }
     }
     
     // удалить карточку под коллекции
-    func deleteSubElement(to collection: NetworkCollection, document: String, element: String, completion: @escaping (Bool) -> Void) {
+    func deleteSubElement(to collection: NetworkCollection, document: String, sub: NetworkCollection, element: String, completion: @escaping (Bool) -> Void) {
         let collection = collection.collection
-        Firestore.firestore().collection(collection).document(document).collection("elements").document(element).delete() { error in
-            if error != nil {
-                completion(false)
-            } else {
-                completion(true)
-            }
+        Firestore.firestore().collection(collection).document(document).collection(sub.collection).document(element).delete() { error in
+            completion(error == nil)
         }
     }
     
     // MARK: -  работа с хранилищем кодирование и декодирование загрузка и выгрузка файлов ввиде Data
     // сохранение файла с автоматическим uuid - возвращает путь к файлу
-    func upLoadFile<T: Encodable>(to name: String? = nil, type: UploadType, model: T.Type, collection: Any, completion: @escaping (String) -> Void) {
-        var uuid = UUID().uuidString
-        if let name = name { uuid = name }
-        let storageRef = type.filePath.child(uuid)
+    func upLoadFile<T: Encodable>(to name: String, type: UploadType, model: T.Type, collection: Any, completion: @escaping () -> Void) {
+        let storageRef = type.filePath.child(name)
         if let collection = collection as? T {
             do {
                 let data = try JSONEncoder().encode(collection)
                 storageRef.putData(data, metadata: nil) { _, error in
-                    if error != nil {
-                        completion("")
-                    } else {
-                        completion(uuid)
-                    }
+                    completion()
                 }
             } catch {
-                print("Ошибка кодирования файла перед сохранением")
-                completion("")
+                print("Ошибка кодирования файла перед сохранением \(name)")
+                completion()
             }
         }
     }
-    // загрузка файла по названию и типу
-    func loadFile<T: Decodable>(type: UploadType, name: String, model: T.Type, completion: @escaping (Result<T, NetworkError>) -> Void) {
-        
+    //MARK: - загрузка файла по названию и типу
+    func loadFile<T: Decodable>(type: UploadType, name: String, model: T.Type, completion: @escaping (T?) -> Void) {
         let storageRef = type.filePath.child(name)
-        storageRef.getData(maxSize: 5 * 1024 * 1024 ) { data, error in
-            if error != nil {
-                completion(.failure(.loadFile))
+        storageRef.getData(maxSize: 5 * 1024 * 1024 ) { data, _ in
+            if let data = data {
+                completion( try? JSONDecoder().decode(T.self, from: data))
             } else {
-                if let data = data {
-                    do {
-                        let decoder = try JSONDecoder().decode(T.self, from: data)
-                        completion(.success(decoder))
-                    } catch {
-                        completion(.failure(.decodeStorage))
-                    }
-                }
+                completion(nil)
             }
         }
     }
-    // удаление файла
+    //MARK: - удаление файла
     func deleteFile(type: UploadType, name: String,completion: @escaping (Bool) -> Void) {
         let storageRef = type.filePath.child(name)
         storageRef.delete { error in
-            if error != nil {
-                completion(false)
-            } else {
-                completion(true)
-            }
+            completion(error == nil)
         }
     }
-    
-    func updateTimeStamp(to collection: NetworkCollection, doc: String, element: String? = nil) {
+    //MARK: - изменение времени обновления карточки коллекции
+    func updateTimeStamp(to collection: NetworkCollection, doc: String, sub: NetworkCollection?, element: String? = nil) {
         let time = Date().timeStamp() as Any
-        if let element = element {
-            NetworkManager.shared.updateValueSubElement(to: collection, document: doc, element: element, key: "date", value: time)
+        if let sub = sub, let element = element {
+            NetworkManager.shared.updateValueSubElement(to: collection, document: doc,
+                                                        sub: sub, element: element,
+                                                        key: "date", value: time)
         } else {
             NetworkManager.shared.updateValueElement(to: collection, document: doc, key: "date", value: time)
         }

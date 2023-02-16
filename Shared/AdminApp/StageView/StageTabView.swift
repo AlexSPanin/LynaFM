@@ -8,54 +8,14 @@
 import SwiftUI
 
 struct StageTabView: View {
-    @Environment(\.editMode) private var editMode
+//    @Environment(\.editMode) private var editMode
     @ObservedObject var viewModel: StageAdminViewModel
     
     var body: some View {
         VStack {
-            HStack {
-                
-                Button {
-                    viewModel.isMove.toggle()
-                    if viewModel.isMove {
-                        self.editMode?.wrappedValue = .active
-                    } else {
-                        self.editMode?.wrappedValue = .inactive
-                    }
-                } label: {
-                    if viewModel.isMove {
-                        Text("OK")
-                            .font(.body)
-                            .foregroundColor(.cyan.opacity(0.8))
-                        
-                    } else {
-                    Image(systemName: "arrow.up.arrow.down.circle")
-                        .resizable()
-                        .interpolation(.medium)
-                        .aspectRatio(contentMode: .fit)
-                        .foregroundColor(.cyan.opacity(0.8))
-                        .frame(width: WIDTH * 0.05, alignment: .center)
-                    }
-                    
-                }
-                Spacer()
-                Button {
-                    viewModel.showAdd.toggle()
-                } label: {
-                    Image(systemName: "plus.circle")
-                        .resizable()
-                        .interpolation(.medium)
-                        .aspectRatio(contentMode: .fit)
-                        .foregroundColor(.cyan.opacity(0.8))
-                        .frame(width: WIDTH * 0.05, alignment: .center)
-                    
-                }
-                .disabled(viewModel.isMove)
-                .opacity(viewModel.isMove ? 0 : 1)
-                
-            }
-            .padding(.horizontal, hPadding)
-            .padding(.bottom, 5)
+            ButtonMoveAdd(isMove: $viewModel.isMove, showAdd: $viewModel.showAdd)
+                .padding(.horizontal, hPadding)
+                .padding(.bottom, 5)
             
             
             List {
