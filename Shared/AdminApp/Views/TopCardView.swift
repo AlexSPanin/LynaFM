@@ -18,12 +18,12 @@ struct TopCardView: View {
             VStack (spacing: 5) {
                 Text("Дата: \(date)")
                     .frame(width: WIDTH * 0.9, alignment: .leading)
-                    .font(.body)
+                    .font(.footnote)
                     .lineLimit(1)
                     .minimumScaleFactor(scaleFactor)
                 Text("Ответственный: \(user)")
                     .frame(width: WIDTH * 0.9, alignment: .leading)
-                    .font(.body)
+                    .font(.footnote)
                     .lineLimit(1)
                     .minimumScaleFactor(scaleFactor)
             }
@@ -32,7 +32,7 @@ struct TopCardView: View {
             HStack {
                 Toggle(isOn: $isActive) {               
                     Text(isActive ? "Активна" : "Архив")
-                        .font(.body)
+                        .font(.callout)
                         .lineLimit(1)
                         .minimumScaleFactor(scaleFactor)
                         .foregroundColor(isActive ? .cyan.opacity(0.8) : .orange.opacity(0.8))

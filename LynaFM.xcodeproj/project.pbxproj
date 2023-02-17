@@ -66,6 +66,8 @@
 		E23278ED2981522E0099642C /* FileAppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23278EC2981522E0099642C /* FileAppManager.swift */; };
 		E298D083299FB2A400F33DE6 /* TopCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E298D082299FB2A400F33DE6 /* TopCardView.swift */; };
 		E298D085299FBBAC00F33DE6 /* TypeField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E298D084299FBBAC00F33DE6 /* TypeField.swift */; };
+		E298D087299FD67500F33DE6 /* TypeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = E298D086299FD67500F33DE6 /* TypeKey.swift */; };
+		E298D089299FD6AE00F33DE6 /* DirectoryType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E298D088299FD6AE00F33DE6 /* DirectoryType.swift */; };
 		E2B60E6529793D80001E710D /* TextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E6429793D80001E710D /* TextFieldView.swift */; };
 		E2B60E6729793FE4001E710D /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E6629793FE4001E710D /* CustomButton.swift */; };
 		E2B60E692979412D001E710D /* HorizontalDividerLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E682979412D001E710D /* HorizontalDividerLabelView.swift */; };
@@ -152,6 +154,8 @@
 		E23278EC2981522E0099642C /* FileAppManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileAppManager.swift; sourceTree = "<group>"; };
 		E298D082299FB2A400F33DE6 /* TopCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopCardView.swift; sourceTree = "<group>"; };
 		E298D084299FBBAC00F33DE6 /* TypeField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeField.swift; sourceTree = "<group>"; };
+		E298D086299FD67500F33DE6 /* TypeKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeKey.swift; sourceTree = "<group>"; };
+		E298D088299FD6AE00F33DE6 /* DirectoryType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryType.swift; sourceTree = "<group>"; };
 		E2B60E6429793D80001E710D /* TextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldView.swift; sourceTree = "<group>"; };
 		E2B60E6629793FE4001E710D /* CustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
 		E2B60E682979412D001E710D /* HorizontalDividerLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalDividerLabelView.swift; sourceTree = "<group>"; };
@@ -252,6 +256,8 @@
 				E21BBA5E299E4ACB006FF428 /* UploadType.swift */,
 				E21BBA60299E4B6F006FF428 /* NetworkCollection.swift */,
 				E298D084299FBBAC00F33DE6 /* TypeField.swift */,
+				E298D086299FD67500F33DE6 /* TypeKey.swift */,
+				E298D088299FD6AE00F33DE6 /* DirectoryType.swift */,
 			);
 			path = Enum;
 			sourceTree = "<group>";
@@ -589,12 +595,14 @@
 				E22B5EAB2978518200836E92 /* Constants.swift in Sources */,
 				E2B60E8929798696001E710D /* CircleAvatarView.swift in Sources */,
 				E2B60E822979638F001E710D /* ImagePickerView.swift in Sources */,
+				E298D087299FD67500F33DE6 /* TypeKey.swift in Sources */,
 				E2B60E6D29794C8F001E710D /* LoginAuthView.swift in Sources */,
 				E21BBA61299E4B6F006FF428 /* NetworkCollection.swift in Sources */,
 				E2B60E7D2979638F001E710D /* AvatarPhotoView.swift in Sources */,
 				E2BE6D41299A7C2D00EEA18D /* ButtonMoveAdd.swift in Sources */,
 				E2ECEADF2984EA7700261A33 /* AdminAppViewModel.swift in Sources */,
 				E2D906ED29792C02009C6B4B /* NotificationView.swift in Sources */,
+				E298D089299FD6AE00F33DE6 /* DirectoryType.swift in Sources */,
 				E2B60E7129796226001E710D /* RecoveryUserView.swift in Sources */,
 				E2BE6D3B299A5B4E00EEA18D /* CreatedParameterView.swift in Sources */,
 				E2B60E852979638F001E710D /* ButtonsPhotoModel.swift in Sources */,

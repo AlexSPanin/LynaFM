@@ -24,7 +24,7 @@ struct ParameterElementTabView: View {
     
     var body: some View {
         VStack {
-            ButtonMoveAdd(isMove: $viewModel.isMove, showAdd: $viewModel.showAddElement)
+            ButtonMoveAdd(isMove: $viewModel.isMoveElement, showAdd: $viewModel.showAddElement)
                 .padding(.horizontal, hPadding)
                 .padding(.bottom, 5)
                 .disabled(viewModel.isEmptyElements)
@@ -52,13 +52,13 @@ struct ParameterElementTabView: View {
                                     .font(.body)
                                     .lineLimit(2)
                                     .minimumScaleFactor(scaleFactor)
-                                    .frame(width: viewModel.isMove ? WIDTH * 0.3 : WIDTH * 0.42, height: HEIGHT * 0.05, alignment: .leading)
+                                    .frame(width: viewModel.isMoveElement ? WIDTH * 0.3 : WIDTH * 0.42, height: HEIGHT * 0.05, alignment: .leading)
                                     .padding(.leading, 5)
                                 Text(viewModel.cards[card].elements[index].value)
                                     .font(.footnote)
                                     .lineLimit(3)
                                     .minimumScaleFactor(scaleFactor)
-                                    .frame(width: viewModel.isMove ? WIDTH * 0.35 : WIDTH * 0.45, height: HEIGHT * 0.05, alignment: .leading)
+                                    .frame(width: viewModel.isMoveElement ? WIDTH * 0.35 : WIDTH * 0.45, height: HEIGHT * 0.05, alignment: .leading)
                             }
                             .foregroundColor(.accentColor)
                         }

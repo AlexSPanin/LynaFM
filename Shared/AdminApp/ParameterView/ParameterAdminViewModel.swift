@@ -12,7 +12,11 @@ class ParameterAdminViewModel: ObservableObject {
     @Published var cards = [ParameterAPP]()
     @Published var name: String = ""
     @Published var description: String = ""
-    @Published var type: String = "Не выбран"
+    @Published var type: String = "Не выбран" {
+        didSet {
+            print(type)
+        }
+    }
     
     @Published var card: Int?
     @Published var element: Int?
@@ -190,6 +194,7 @@ class ParameterAdminViewModel: ObservableObject {
         parameter.sort = cards.count + 1
         parameter.name = name
         parameter.label = description
+        parameter.type = type
         ParameterDataManager.shared.createCard(to: parameter) { _ in
             self.cards.append(ParameterAPP(parameter: parameter))
             self.card = parameter.sort - 1
@@ -224,6 +229,7 @@ class ParameterAdminViewModel: ObservableObject {
                 cards[card].parameter.idUser = idUser
                 cards[card].parameter.name = name
                 cards[card].parameter.label = description
+                cards[card].parameter.type = type
                 let parameter = cards[card].parameter
                 ParameterDataManager.shared.updateCard(to: parameter) { _ in
                     self.isChange = false
@@ -258,12 +264,13 @@ class ParameterAdminViewModel: ObservableObject {
     private func fethNetwork() {
         print("Получение коллекции карточек из сети")
         let myGroup = DispatchGroup()
+        var collection = [ParameterAPP]()
         ParameterDataManager.shared.loadCollection { parameters in
             if let parameters = parameters {
-                parameters.forEach { parameter in
-                    var parameterAPP = ParameterAPP(parameter: parameter)
+                for index in parameters.indices {
+                    var parameterAPP = ParameterAPP(parameter: parameters[index])
                     myGroup.enter()
-                    ParameterDataManager.shared.loadSubCollection(to: parameter.id) { elements in
+                    ParameterDataManager.shared.loadSubCollection(to: parameters[index].id) { elements in
                         if let elements = elements {
                             let elements = elements.sorted(by: {$0.sort < $1.sort})
                             parameterAPP.elements = elements
@@ -273,11 +280,13 @@ class ParameterAdminViewModel: ObservableObject {
                         }
                     }
                     myGroup.notify(queue: .main) {
-                        self.cards.append(parameterAPP)
+                        collection.append(parameterAPP)
+                        if index == parameters.count - 1 {
+                            self.cards = collection.sorted(by: {$0.parameter.sort < $1.parameter.sort})
+                            self.showTabCollection.toggle()
+                        }
                     }
                 }
-                self.cards = self.cards.sorted(by: {$0.parameter.sort < $1.parameter.sort})
-                self.showTabCollection.toggle()
             }
         }
     }

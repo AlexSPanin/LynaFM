@@ -26,15 +26,10 @@ class StageDataManager {
     }
     
     //MARK: - загрузка карточки
-    func loadCard(to id: String?, completion: @escaping(Result<ProductionStage, NetworkError>) -> Void) {
+    func loadCard(to id: String?, completion: @escaping(ProductionStage?) -> Void) {
         if let id = id {
             NetworkManager.shared.fetchElementCollection(to: .stage, doc: id, model: ProductionStage.self) { card in
-                if let card = card {
-                        completion(.success(card))
-                } else {
-                    print("Ошибка загрузки карточки из сети \(id)")
-                    completion(.failure(.fetchUser))
-                }
+                completion(card)
             }
         }
     }

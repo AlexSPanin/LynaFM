@@ -53,11 +53,13 @@ struct CreatedParameterView: View {
                                 Text("\(viewModel.type)")
                                     .font(.body)
                                 Image(systemName: "tag.circle")
+                                    .opacity(isEditing ? 0 : 1)
                             }
                             .foregroundColor( viewModel.type != "Не выбран" ? .cyan.opacity(0.8) : .accentColor)
                         }
                         Spacer()
                     }
+                    .disabled(isEditing)
                     
                     
                     TextFieldView(subtitle: "Наименование",

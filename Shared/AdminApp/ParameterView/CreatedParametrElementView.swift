@@ -10,6 +10,18 @@ import SwiftUI
 struct CreatedParametrElementView: View {
     @ObservedObject var viewModel: ParameterAdminViewModel
     let isEditing: Bool
+    var subtitle: String {
+        switch viewModel.type {
+        case TypeField.number.label:
+            return "Коэф. пересчета"
+        case TypeField.color.label:
+            return "Цвет: #FFFFFFFF"
+        case TypeField.text.label:
+            return "Описание"
+        default:
+            return "Параметр"
+        }
+    }
     var body: some View {
         ZStack {
             TopLabelButtonView(label: viewModel.label) {
@@ -31,7 +43,7 @@ struct CreatedParametrElementView: View {
                     VStack {
                         TextFieldView(subtitle: "Наименование",
                                       tipeTextField: .simple, text: $viewModel.name)
-                        TextFieldView(subtitle: "Параметр",
+                        TextFieldView(subtitle: subtitle,
                                       tipeTextField: .simple, text: $viewModel.description)
                         
                         VStack {
@@ -54,9 +66,10 @@ struct CreatedParametrElementView: View {
                         }
                     }
                 }
-                .padding(.all, hPadding)
             }
             .padding(.top, 60)
+            .padding(.horizontal, hPadding)
+            .padding(.bottom, hPadding)
             
             // отработка сообщений об ошибках
             if viewModel.errorOccured {
