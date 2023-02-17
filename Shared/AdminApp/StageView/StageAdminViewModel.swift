@@ -186,12 +186,12 @@ class StageAdminViewModel: ObservableObject {
     }
     
     private func fethStorage() {
-        print("Получение коллекции карточек  из памяти")
-        StorageManager.shared.load(type: .stages, model: [ProductionStage].self) { cards in
-            if let cards = cards {
-                self.cards = cards.sorted(by: {$0.sort < $1.sort})
-            }
-        }
+//        print("Получение коллекции карточек  из памяти")
+//        StorageManager.shared.load(type: .stages, model: [ProductionStage].self) { cards in
+//            if let cards = cards {
+//                self.cards = cards.sorted(by: {$0.sort < $1.sort})
+//            }
+//        }
     }
     
     private func saveStorage() {

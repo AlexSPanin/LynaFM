@@ -53,8 +53,8 @@ struct CreatedParametrElementView: View {
                             .foregroundColor(.cyan.opacity(0.8))
                         }
                     }
-                    .padding(.all, hPadding)
                 }
+                .padding(.all, hPadding)
             }
             .padding(.top, 60)
             

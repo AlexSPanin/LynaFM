@@ -12,6 +12,7 @@ class ParameterAdminViewModel: ObservableObject {
     @Published var cards = [ParameterAPP]()
     @Published var name: String = ""
     @Published var description: String = ""
+    @Published var type: String = "Не выбран"
     
     @Published var card: Int?
     @Published var element: Int?
@@ -42,11 +43,13 @@ class ParameterAdminViewModel: ObservableObject {
     @Published var showAdd = false {
         didSet {
             if showAdd {
+                card = nil
                 label = "Добавить новый параметр."
                 date = Date().timeStamp().croppingLastRigthSimbols(" ")
                 isActive = true
                 name = ""
                 description = ""
+                type = "Не выбран"
             } else {
                 label = "Справочник параметров материалов и продуктов"
             }
@@ -60,6 +63,7 @@ class ParameterAdminViewModel: ObservableObject {
                     isActive = cards[card].parameter.isActive
                     name = cards[card].parameter.name
                     description = cards[card].parameter.label
+                    type = cards[card].parameter.type
                     label = "Редактировать: \(name)"
                     isEmptyElements = cards[card].elements.isEmpty
                 }
@@ -104,6 +108,7 @@ class ParameterAdminViewModel: ObservableObject {
     @Published var showAddElement = false {
         didSet {
             if showAddElement {
+                element = nil
                 label = "Добавить элемент."
                 date = Date().timeStamp().croppingLastRigthSimbols(" ")
                 isActiveElement = true
@@ -122,11 +127,12 @@ class ParameterAdminViewModel: ObservableObject {
         didSet {
             if showEditElement {
                 if let card = card, let element = element {
+                    let collection = cards[card].parameter.name
                     date = Date().timeStamp().croppingLastRigthSimbols(" ")
                     isActiveElement = cards[card].elements[element].isActive
                     name = cards[card].elements[element].name
                     description = cards[card].elements[element].value
-                    label = "Редактировать: \(name)"
+                    label = "Редактировать: \(collection) / \(name)"
                     
                 }
             } else {
@@ -186,6 +192,7 @@ class ParameterAdminViewModel: ObservableObject {
         parameter.label = description
         ParameterDataManager.shared.createCard(to: parameter) { _ in
             self.cards.append(ParameterAPP(parameter: parameter))
+            self.card = parameter.sort - 1
             self.showAddElement.toggle()
         }
     }

@@ -29,16 +29,19 @@ struct TopCardView: View {
             }
             .foregroundColor(.accentColor)
             .padding(.top, hPadding)
-
-            Toggle(isOn: $isActive) {
-                Text(isActive ? "Активна" : "Архив")
-                    .font(.body)
-                    .lineLimit(1)
-                    .minimumScaleFactor(scaleFactor)
-                    .foregroundColor(isActive ? .cyan.opacity(0.8) : .orange.opacity(0.8))
+            HStack {
+                Toggle(isOn: $isActive) {               
+                    Text(isActive ? "Активна" : "Архив")
+                        .font(.body)
+                        .lineLimit(1)
+                        .minimumScaleFactor(scaleFactor)
+                        .foregroundColor(isActive ? .cyan.opacity(0.8) : .orange.opacity(0.8))
+                    
+                }
+                Spacer()
             }
             .disabled(!isEditing || editMode?.wrappedValue == .active)
-            .padding(.horizontal, hPadding)
+            .opacity(editMode?.wrappedValue == .active ? 0.3 : 1)
         }
     }
 }

@@ -65,6 +65,7 @@
 		E23278EA298147DC0099642C /* ProductionStageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23278E9298147DC0099642C /* ProductionStageModel.swift */; };
 		E23278ED2981522E0099642C /* FileAppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23278EC2981522E0099642C /* FileAppManager.swift */; };
 		E298D083299FB2A400F33DE6 /* TopCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E298D082299FB2A400F33DE6 /* TopCardView.swift */; };
+		E298D085299FBBAC00F33DE6 /* TypeField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E298D084299FBBAC00F33DE6 /* TypeField.swift */; };
 		E2B60E6529793D80001E710D /* TextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E6429793D80001E710D /* TextFieldView.swift */; };
 		E2B60E6729793FE4001E710D /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E6629793FE4001E710D /* CustomButton.swift */; };
 		E2B60E692979412D001E710D /* HorizontalDividerLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B60E682979412D001E710D /* HorizontalDividerLabelView.swift */; };
@@ -150,6 +151,7 @@
 		E23278E9298147DC0099642C /* ProductionStageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductionStageModel.swift; sourceTree = "<group>"; };
 		E23278EC2981522E0099642C /* FileAppManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileAppManager.swift; sourceTree = "<group>"; };
 		E298D082299FB2A400F33DE6 /* TopCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopCardView.swift; sourceTree = "<group>"; };
+		E298D084299FBBAC00F33DE6 /* TypeField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeField.swift; sourceTree = "<group>"; };
 		E2B60E6429793D80001E710D /* TextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldView.swift; sourceTree = "<group>"; };
 		E2B60E6629793FE4001E710D /* CustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
 		E2B60E682979412D001E710D /* HorizontalDividerLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalDividerLabelView.swift; sourceTree = "<group>"; };
@@ -249,6 +251,7 @@
 				E21BBA5C299E4A96006FF428 /* NetworkError.swift */,
 				E21BBA5E299E4ACB006FF428 /* UploadType.swift */,
 				E21BBA60299E4B6F006FF428 /* NetworkCollection.swift */,
+				E298D084299FBBAC00F33DE6 /* TypeField.swift */,
 			);
 			path = Enum;
 			sourceTree = "<group>";
@@ -574,6 +577,7 @@
 			files = (
 				E2ECEAE32984EF9C00261A33 /* UsersAdminAppView.swift in Sources */,
 				E2ECEAF229854A3B00261A33 /* EditUserView.swift in Sources */,
+				E298D085299FBBAC00F33DE6 /* TypeField.swift in Sources */,
 				E22B5EB82978703000836E92 /* AuthViewModel.swift in Sources */,
 				E2F070A12997B544001F9676 /* RemoteImage.swift in Sources */,
 				E211110D298165A1002552C7 /* GroupModel.swift in Sources */,

@@ -279,6 +279,7 @@ class ParameterDataManager {
                     "countUse" : param.countUse,
                     
                     "sort" : param.sort,
+                    "type" : param.type,
                     "name" : param.name,
                     "label" : param.label,
                     "images" : param.images,

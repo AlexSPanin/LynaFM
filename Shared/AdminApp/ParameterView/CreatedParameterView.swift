@@ -11,6 +11,9 @@ struct CreatedParameterView: View {
     @Environment(\.editMode) private var editMode
     @ObservedObject var viewModel: ParameterAdminViewModel
     let isEditing: Bool
+    var isDisable: Bool {
+        editMode?.wrappedValue == .active || viewModel.type == "Не выбран" || viewModel.name.isEmpty
+    }
     
     var body: some View {
         ZStack {
@@ -21,42 +24,63 @@ struct CreatedParameterView: View {
                     viewModel.showAdd.toggle()
                 }
             }
- //           ScrollView(.vertical, showsIndicators: true) {
-                
+            VStack {
                 VStack {
                     TopCardView(isActive: $viewModel.isActive,
                                 date: viewModel.date,
                                 user: viewModel.nameUser,
                                 isEditing: isEditing)
- 
-                    // добавить признак активности
-                    VStack {
-                        TextFieldView(subtitle: "Наименование",
-                                      tipeTextField: .simple, text: $viewModel.name)
-                        TextFieldView(subtitle: "Примечание",
-                                      tipeTextField: .simple, text: $viewModel.description)
-                        
-                        if !viewModel.cards.isEmpty, viewModel.card != nil {
-                            HStack {
-                                Text("Справочник элементов параметра")
-                                    .frame(width: WIDTH * 0.9, alignment: .leading)
-                                    .font(.body)
-                                    .lineLimit(1)
-                                    .minimumScaleFactor(scaleFactor)
-                                Spacer()
-                            }
+                    
+                    HStack {
+                        Text("Тип параметра:")
+                            .font(.body)
+                            .lineLimit(1)
+                            .minimumScaleFactor(scaleFactor)
                             .foregroundColor(.accentColor)
-                            .padding(.top, hPadding)
-                            
-                            ParameterElementTabView(viewModel: viewModel)
+                        
+                        Menu {
+                            ForEach(TypeField.allCases.sorted(by: {$0.label < $1.label}), id: \.self) { type in
+                                Button {
+                                    viewModel.type = type.label
+                                } label: {
+                                    Text("\(type.label)")
+                                        .font(.body)
+                                        .foregroundColor(type.label == viewModel.type ? .cyan.opacity(0.8) : .accentColor)
+                                }
+                            }
+                        } label: {
+                            HStack {
+                                Text("\(viewModel.type)")
+                                    .font(.body)
+                                Image(systemName: "tag.circle")
+                            }
+                            .foregroundColor( viewModel.type != "Не выбран" ? .cyan.opacity(0.8) : .accentColor)
                         }
+                        Spacer()
                     }
+                    
+                    
+                    TextFieldView(subtitle: "Наименование",
+                                  tipeTextField: .simple, text: $viewModel.name)
+                    TextFieldView(subtitle: "Примечание",
+                                  tipeTextField: .simple, text: $viewModel.description)
                 }
- //           }
-            .padding(.top, 60)
-            .padding(.horizontal, hPadding)
-            
-            VStack {
+                
+                
+                if !viewModel.cards.isEmpty, viewModel.card != nil {
+                    HStack {
+                        Text("Справочник элементов параметра")
+                            .frame(width: WIDTH * 0.9, alignment: .leading)
+                            .font(.body)
+                            .lineLimit(1)
+                            .minimumScaleFactor(scaleFactor)
+                        Spacer()
+                    }
+                    .foregroundColor(.accentColor)
+                    .padding(.top, hPadding)
+                    
+                    ParameterElementTabView(viewModel: viewModel)
+                }
                 Spacer()
                 CustomButton(text: "Сохранить", width: WIDTH * 0.4) {
                     if isEditing {
@@ -69,8 +93,8 @@ struct CreatedParameterView: View {
                         }
                     }
                 }
-                .disabled(editMode?.wrappedValue == .active)
-                .opacity(editMode?.wrappedValue == .active ? 0 : 1)
+                .disabled(isDisable)
+                .opacity(isDisable ? 0 : 1)
                 
                 HorizontalDividerLabelView(label: "или")
                 
@@ -85,7 +109,10 @@ struct CreatedParameterView: View {
                 .disabled(editMode?.wrappedValue == .active)
                 .opacity(editMode?.wrappedValue == .active ? 0 : 1)
             }
-            .padding(.vertical, hPadding)
+            .padding(.top, 60)
+            .padding(.horizontal, hPadding)
+            .padding(.bottom, hPadding)
+            
             if viewModel.errorOccured {
                 if !viewModel.typeNote {
                     NotificationView(text: viewModel.errorText, button: "ОК", button2: nil) {

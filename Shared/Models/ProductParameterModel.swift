@@ -21,6 +21,7 @@ struct Parameter: Codable {
     var countUse: Int = 0
     
     var sort: Int = 0
+    var type: String = ""
     var name: String = ""
     var label: String = ""
     var images: [String: String] = [:]
