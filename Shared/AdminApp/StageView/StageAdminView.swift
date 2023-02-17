@@ -18,11 +18,6 @@ struct StageAdminView: View {
                 if viewModel.showTab {
                 StageTabView(viewModel: viewModel)
                 }
-                
-                
-                
-                
-                
                 VStack {
                     HorizontalDividerLabelView(label: "или")
                     HStack(alignment: .center, spacing: 20) {
@@ -39,16 +34,6 @@ struct StageAdminView: View {
         .sheet(isPresented: $viewModel.showAdd) {
             CreatedStageView(viewModel: viewModel, isEditing: isEditing)
         }
-        // отработка сообщений об ошибках
-//        if viewModel.errorOccured {
-//            NotificationView(text: viewModel.errorText, button: "Подтвердить", button2: "Отменить") {
-//                viewModel.errorOccured.toggle()
-//                viewModel.isDeleteConfirm.toggle()
-//            } action2: {
-//                viewModel.errorOccured.toggle()
-//                viewModel.isDelete.toggle()
-//            }
-//        }
     }
 }
 

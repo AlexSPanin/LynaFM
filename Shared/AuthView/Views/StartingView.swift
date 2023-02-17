@@ -40,20 +40,23 @@ struct StartingView: View {
                     viewModel.isFinish.toggle()
                 }
                 HorizontalDividerLabelView(label: "или")
-                HStack(alignment: .center, spacing: 20) {
+                HStack {
+                    Spacer()
                     TextButton(text: "Сменить пользователя") {
                         viewModel.isExit.toggle()
                     }
+                    Spacer()
                     TextButton(text: "Редактировать") {
                         viewModel.showView = .edit
                     }
+                    Spacer()
                 }
                 
             }
             .padding(.top, hPadding)
         }
         .padding(.all, hPadding)
-        .frame(width: WIDTH * 0.95)
+        .frame(width: WIDTH * 0.98)
         .background(
             Color.accentColor.opacity(0.1).cornerRadius(10)
                 .overlay(

@@ -8,8 +8,32 @@
 import SwiftUI
 
 struct ParameterAdminView: View {
+    @ObservedObject var viewModelAdmin: AdminAppViewModel
     @StateObject var viewModel = ParameterAdminViewModel()
+    @State private var isEditing: Bool = false
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack {
+            TopLabelView(label: viewModel.label)
+            VStack {
+                if viewModel.showTabCollection {
+                    ParameterTabView(viewModel: viewModel)
+                }
+            }
+            .padding(.top, 60)
+            VStack {
+                Spacer()
+                HorizontalDividerLabelView(label: "или")
+                HStack(alignment: .center, spacing: 20) {
+                    TextButton(text: "Вернуться") {
+                        viewModelAdmin.showView = .start
+                    }
+                    .foregroundColor(.cyan.opacity(0.8))
+                }
+            }
+            .padding(.vertical, hPadding)
+        }
+        .sheet(isPresented: $viewModel.showAdd) {
+            CreatedParameterView(viewModel: viewModel, isEditing: isEditing)
+        }
     }
 }

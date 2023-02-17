@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CreatedStageView: View {
+    @Environment(\.editMode) private var editMode
     @ObservedObject var viewModel: StageAdminViewModel
     let isEditing: Bool
     var body: some View {
@@ -62,7 +63,11 @@ struct CreatedStageView: View {
                                     viewModel.isAdd.toggle()
                                 }
                             }
+                            .disabled(editMode?.wrappedValue == .active)
+                            .opacity(editMode?.wrappedValue == .active ? 0 : 1)
+                            
                             HorizontalDividerLabelView(label: "или")
+                            
                             TextButton(text: "Закрыть") {
                                 if isEditing {
                                     viewModel.showEdit.toggle()
@@ -70,6 +75,9 @@ struct CreatedStageView: View {
                                     viewModel.showAdd.toggle()
                                 }
                             }
+                            .foregroundColor(.cyan.opacity(0.8))
+                            .disabled(editMode?.wrappedValue == .active)
+                            .opacity(editMode?.wrappedValue == .active ? 0 : 1)
                         }
                     }
                     .padding(.all, hPadding)

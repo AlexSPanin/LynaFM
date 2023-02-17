@@ -12,19 +12,25 @@ struct HorizontalDividerLabelView: View {
     let color: Color = .accentColor
     var body: some View {
         ZStack {
-            HStack {
-                Spacer()
+            if label.isEmpty {
                 Divider()
-                    .frame(width: WIDTH / 3, height: 1, alignment: .leading)
+                    .frame(width: WIDTH * 0.7, height: 1, alignment: .leading)
                     .background(color)
-                Spacer()
-                Text(label)
-                    .font(.caption)
-                Spacer()
-                Divider()
-                    .frame(width: WIDTH / 3, height: 1, alignment: .trailing)
-                    .background(color)
-                Spacer()
+            } else {
+                HStack {
+                    Spacer()
+                    Divider()
+                        .frame(width: WIDTH / 3, height: 1, alignment: .leading)
+                        .background(color)
+                    Spacer()
+                    Text(label)
+                        .font(.caption)
+                    Spacer()
+                    Divider()
+                        .frame(width: WIDTH / 3, height: 1, alignment: .trailing)
+                        .background(color)
+                    Spacer()
+                }
             }
         }
     }

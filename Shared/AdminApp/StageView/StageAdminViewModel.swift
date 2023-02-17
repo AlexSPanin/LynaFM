@@ -13,7 +13,6 @@ class StageAdminViewModel: ObservableObject {
     @Published var card = ProductionStage()
     @Published var nameUser = ""
     @Published var date = ""
-    @Published var sort = ""
 
     @Published var showTab = false
     
@@ -29,7 +28,6 @@ class StageAdminViewModel: ObservableObject {
                 label = "Создать новую карточку"
                 card = ProductionStage()
                 date = Date().timeStamp().croppingLastRigthSimbols(" ")
-                sort = String("\(cards.count + 1)")
                 isActive = true
             } else {
                 closeViews()
@@ -56,7 +54,6 @@ class StageAdminViewModel: ObservableObject {
             if showEdit {
                 label = "Редактировать карточку"
                 date = Date().timeStamp().croppingLastRigthSimbols(" ")
-                sort = String("\(card.sort)")
                 isActive = card.isActive
             } else {
                 closeViews()

@@ -26,6 +26,7 @@ struct TopLabelView: View {
 }
 
 struct TopLabelButtonView: View {
+    @Environment(\.editMode) private var editMode
     let label: String
     let action: () -> Void
     
@@ -48,6 +49,8 @@ struct TopLabelButtonView: View {
                         .frame(width: WIDTH * 0.05, alignment: .center)
                         .foregroundColor(.accentColor)
                 })
+                .disabled(editMode?.wrappedValue == .active)
+                .opacity(editMode?.wrappedValue == .active ? 0 : 1)
             }
             
             Divider()

@@ -22,36 +22,25 @@ struct ButtonMoveAdd: View {
                 }
             } label: {
                 if isMove {
-                    Text("OK")
+                    Text("Сохранить")
                         .font(.body)
                         .foregroundColor(.cyan.opacity(0.8))
-                    
                 } else {
-                Image(systemName: "arrow.up.arrow.down.circle")
-                    .resizable()
-                    .interpolation(.medium)
-                    .aspectRatio(contentMode: .fit)
-                    .foregroundColor(.cyan.opacity(0.8))
-                    .frame(width: WIDTH * 0.05, alignment: .center)
+                    Text("Сортировка")
+                        .font(.body)
+                        .foregroundColor(.cyan.opacity(0.8))
                 }
-                
             }
             Spacer()
             Button {
                 showAdd.toggle()
             } label: {
-                Image(systemName: "plus.circle")
-                    .resizable()
-                    .interpolation(.medium)
-                    .aspectRatio(contentMode: .fit)
+                Text("Добавить")
+                    .font(.body)
                     .foregroundColor(.cyan.opacity(0.8))
-                    .frame(width: WIDTH * 0.05, alignment: .center)
-                
             }
             .disabled(isMove)
             .opacity(isMove ? 0 : 1)
-            
         }
-
     }
 }

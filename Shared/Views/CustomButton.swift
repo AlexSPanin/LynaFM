@@ -13,7 +13,7 @@ struct CustomButton: View {
     let width: CGFloat
     let action: () -> Void
     var height: CGFloat {
-        return width * 0.25
+        return width * 0.2
     }
     var font: Font {
         switch width {
@@ -43,11 +43,8 @@ struct CustomButton: View {
 }
 
 struct TextButton: View {
-    
     let text: String
     let action: () -> Void
-    let size = CGSize(width: WIDTH * 0.4, height: WIDTH * 0.07)
-    
     var body: some View {
         Button {
             action()
@@ -55,10 +52,9 @@ struct TextButton: View {
             Text(text)
                 .font(.footnote)
                 .underline()
-                .lineLimit(2)
+                .lineLimit(1)
                 .minimumScaleFactor(0.9)
-                .frame(width: size.width, height: size.height, alignment: .center)
-                
+                .frame(width: WIDTH * 0.35, alignment: .center)
         }
     }
 }

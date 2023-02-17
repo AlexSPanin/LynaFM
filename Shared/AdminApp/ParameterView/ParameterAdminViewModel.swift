@@ -13,55 +13,143 @@ class ParameterAdminViewModel: ObservableObject {
     @Published var name: String = ""
     @Published var description: String = ""
     
-    
     @Published var card: Int?
     @Published var element: Int?
-
+    
     @Published var nameUser = ""
     @Published var date = ""
-    @Published var sort = ""
     
-    
-    @Published var showTab = false
-    
-    //MARK: - создание карточки коллекции
+    //MARK: - переменные для работе с карточками коллекций
+    //MARK: - признаки запуска методов
     @Published var isAdd = false {
         didSet {
-            add(to: card)
+            add()
         }
     }
-    @Published var showAdd = false
-
-    //MARK: -  редактирование карточки
     @Published var isEdit = false {
         didSet {
-            if let card = card {
-                edit(to: card, element: element)
-            }
+            edit(to: card)
         }
     }
-    @Published var showEdit = false
-    
-    
-    //MARK: -  деактивация карточки
-    @Published var isActive = false {
-        didSet {
-            if let card = card, isActive != cards[card].parameter.isActive {
-                checkActive(to: card, element: element)
-            }
-        }
-    }
-    //MARK: -  редактирование карточки
     @Published var isMove = false {
         didSet {
-            saveMoving(to: card)
+            saveMoving()
         }
     }
     
-    //MARK: -  было изменение карточки или коллекции
-    @Published var isChange = false {
+    //MARK: - признаки показа окон
+    @Published var showTabCollection = false
+    @Published var showAdd = false {
         didSet {
-            print("isChange \(isChange)")
+            if showAdd {
+                label = "Добавить новый параметр."
+                date = Date().timeStamp().croppingLastRigthSimbols(" ")
+                isActive = true
+                name = ""
+                description = ""
+            } else {
+                label = "Справочник параметров материалов и продуктов"
+            }
+        }
+    }
+    @Published var showEdit = false {
+        didSet {
+            if showEdit {
+                if let card = card {
+                    date = Date().timeStamp().croppingLastRigthSimbols(" ")
+                    isActive = cards[card].parameter.isActive
+                    name = cards[card].parameter.name
+                    description = cards[card].parameter.label
+                    label = "Редактировать: \(name)"
+                    isEmptyElements = cards[card].elements.isEmpty
+                }
+            } else {
+                label = "Справочник параметров материалов и продуктов"
+            }
+        }
+    }
+    
+    //MARK: - признаки проверок состояния
+    @Published var isChange = false
+    @Published var isActive = false {
+        didSet {
+            if let card = card {
+                if isActive != cards[card].parameter.isActive {
+                checkActive(to: card)
+                }
+            }
+        }
+    }
+    
+    //MARK: - переменные для работе с карточками элементов коллекций
+    //MARK: - признаки запуска методов
+    @Published var isAddElement = false {
+        didSet {
+            addElement(to: card)
+        }
+    }
+    @Published var isEditElement = false {
+        didSet {
+            editElement(to: card, element: element)
+        }
+    }
+    @Published var isMoveElement = false {
+        didSet {
+            if let card = card {
+                saveMovingElement(to: card)
+            }
+        }
+    }
+    //MARK: - признаки показа окон
+    @Published var showAddElement = false {
+        didSet {
+            if showAddElement {
+                label = "Добавить элемент."
+                date = Date().timeStamp().croppingLastRigthSimbols(" ")
+                isActiveElement = true
+                name = ""
+                description = ""
+            } else {
+                if let card = card {
+                    name = cards[card].parameter.name
+                    description = cards[card].parameter.label
+                    label = "Редактировать: \(name)"
+                }
+            }
+        }
+    }
+    @Published var showEditElement = false {
+        didSet {
+            if showEditElement {
+                if let card = card, let element = element {
+                    date = Date().timeStamp().croppingLastRigthSimbols(" ")
+                    isActiveElement = cards[card].elements[element].isActive
+                    name = cards[card].elements[element].name
+                    description = cards[card].elements[element].value
+                    label = "Редактировать: \(name)"
+                    
+                }
+            } else {
+                if let card = card {
+                    name = cards[card].parameter.name
+                    description = cards[card].parameter.label
+                    label = "Редактировать: \(name)"
+                }
+            }
+        }
+    }
+    
+    
+    //MARK: - признаки проверок состояния
+    @Published var isChangeElement = false
+    @Published var isEmptyElements = true
+    @Published var isActiveElement = false {
+        didSet {
+            if let card = card, let element = element {
+              if isActiveElement != cards[card].elements[element].isActive {
+                checkActiveElement (to: card, element: element)
+              }
+            } 
         }
     }
     
@@ -78,7 +166,6 @@ class ParameterAdminViewModel: ObservableObject {
         UserDataManager.shared.getNameUser(to: idUser) { name in
             if let name = name {
                 self.nameUser = name
-                print("\(name)")
             }
         }
         fethNetwork()
@@ -86,62 +173,52 @@ class ParameterAdminViewModel: ObservableObject {
     deinit {
         print("CLOSE: ParameterAdminViewModel")
     }
-    
-    private func add(to card: Int?) {
-        print("Создание карточки")
+    //MARK: - создание карточки коллекции
+    private func add() {
+        print("Создание карточки коллекции")
+        isEmptyElements = true
+        var parameter = Parameter()
+        parameter.id = UUID().uuidString
+        parameter.idUser = idUser
+        parameter.date = Date().timeStamp()
+        parameter.sort = cards.count + 1
+        parameter.name = name
+        parameter.label = description
+        ParameterDataManager.shared.createCard(to: parameter) { _ in
+            self.cards.append(ParameterAPP(parameter: parameter))
+            self.showAddElement.toggle()
+        }
+    }
+    //MARK: - создание карточки элемента коллекции
+    private func addElement(to card: Int?) {
+        print("Создание карточки элемента коллекции")
         if let card = card {
             var element = ParameterElement()
             element.id = UUID().uuidString
             element.idCollection = cards[card].parameter.id
             element.idUser = idUser
-            element.date = date
+            element.date = Date().timeStamp()
             element.sort = cards[card].elements.count + 1
             element.name = name
-            element.label = description
+            element.value = description
             cards[card].elements.append(element)
             ParameterDataManager.shared.createSubCard(to: cards[card].parameter.id, card: element) { _ in
-                self.saveStorage()
-                self.showAdd.toggle()
-            }
-        } else {
-            var parameter = Parameter()
-            parameter.id = UUID().uuidString
-            parameter.idUser = idUser
-            parameter.date = date
-            parameter.sort = cards.count + 1
-            parameter.name = name
-            parameter.label = description
-            ParameterDataManager.shared.createCard(to: parameter) { _ in
-                self.cards.append(ParameterAPP(parameter: parameter))
-                self.saveStorage()
-                self.showAdd.toggle()
+                self.isEmptyElements = false
+                self.showAddElement.toggle()
             }
         }
     }
-    
-    private func edit(to card: Int, element: Int?) {
-        print("Редактирование карточки")
+    //MARK: - редактирование карточки коллекции
+    private func edit(to card: Int?) {
+        print("Редактирование карточки коллекции")
         if isChange {
-            if let element = element {
-                cards[card].elements[element].date = date
-                cards[card].elements[element].idUser = idUser
-                cards[card].elements[element].name = name
-                cards[card].elements[element].label = description
-                let elements = cards[card].elements[element]
-                ParameterDataManager.shared.updateSubCard(to: cards[card].parameter.id,
-                                                          element: elements) { _ in
-                    self.saveStorage()
-                    self.isChange = false
-                    self.showEdit.toggle()
-                }
-            } else {
-                cards[card].parameter.date = date
+            if let card = card {
+                cards[card].parameter.date = Date().timeStamp()
                 cards[card].parameter.idUser = idUser
                 cards[card].parameter.name = name
                 cards[card].parameter.label = description
                 let parameter = cards[card].parameter
                 ParameterDataManager.shared.updateCard(to: parameter) { _ in
-                    self.saveStorage()
                     self.isChange = false
                     self.showEdit.toggle()
                 }
@@ -150,85 +227,88 @@ class ParameterAdminViewModel: ObservableObject {
             showEdit.toggle()
         }
     }
-    
+    //MARK: - редактирование карточки элемента коллекции
+    private func editElement(to card: Int?, element: Int?) {
+        print("Редактирование карточки элемента коллекции")
+        if isChange {
+            if let card = card, let element = element {
+                cards[card].elements[element].date = Date().timeStamp()
+                cards[card].elements[element].idUser = idUser
+                cards[card].elements[element].name = name
+                cards[card].elements[element].value = description
+                let elements = cards[card].elements[element]
+                ParameterDataManager.shared.updateSubCard(to: cards[card].parameter.id,
+                                                          element: elements) { _ in
+                    self.isChange = false
+                    self.showEditElement.toggle()
+                }
+            }
+        } else {
+            showEditElement.toggle()
+        }
+    }
     //MARK: -  получение актуального массива  из сети
     private func fethNetwork() {
         print("Получение коллекции карточек из сети")
+        let myGroup = DispatchGroup()
         ParameterDataManager.shared.loadCollection { parameters in
             if let parameters = parameters {
                 parameters.forEach { parameter in
                     var parameterAPP = ParameterAPP(parameter: parameter)
+                    myGroup.enter()
                     ParameterDataManager.shared.loadSubCollection(to: parameter.id) { elements in
                         if let elements = elements {
                             let elements = elements.sorted(by: {$0.sort < $1.sort})
                             parameterAPP.elements = elements
+                            myGroup.leave()
+                        } else {
+                            myGroup.leave()
                         }
                     }
-                    self.cards.append(parameterAPP)
+                    myGroup.notify(queue: .main) {
+                        self.cards.append(parameterAPP)
+                    }
                 }
                 self.cards = self.cards.sorted(by: {$0.parameter.sort < $1.parameter.sort})
-                self.saveStorage()
-                self.showTab.toggle()
+                self.showTabCollection.toggle()
             }
         }
     }
-    
-    private func closeViews() {
-        label = "Справочник параметров материалов и продуктов"
-        fethStorage()
-    }
-    
-    
-    func move(to card: Int?, from source: IndexSet, to dest: Int) {
-        if let card = card {
-            cards[card].elements.move(fromOffsets: source, toOffset: dest)
-        } else {
-            cards.move(fromOffsets: source, toOffset: dest)
-        }
+
+    //MARK: -  методы по сортировке коллекций
+    func move(from source: IndexSet, to dest: Int) {
+        cards.move(fromOffsets: source, toOffset: dest)
         isChange = true
     }
-    
-    private func saveMoving(to card: Int?) {
+    private func saveMoving() {
         if isChange {
-            reSorting(to: card)
-            if let card = card {
-                ParameterDataManager.shared.updateSubCards(to: cards[card].parameter.id , cards: cards[card].elements) { _ in
-                    self.saveStorage()
-                    self.isChange = false
-                    self.closeViews()
-                }
-            } else {
+            reSorting(to: nil)
                 let collection: [Parameter] = cards.compactMap({ $0.parameter})
                 ParameterDataManager.shared.updateCards(to: collection) { _ in
-                    self.saveStorage()
                     self.isChange = false
-                    self.closeViews()
-                }
-            }
-            
-        }
-    }
-    //MARK: -  методы по работе с сохранением в памяти
-    private func fethStorage() {
-        print("Получение коллекции карточек  из памяти")
-        StorageManager.shared.load(type: .parameters, model: [ParameterAPP].self) { cards in
-            if let cards = cards {
-                self.cards = cards.sorted(by: {$0.parameter.sort < $1.parameter.sort})
             }
         }
     }
-    private func saveStorage() {
-        let cards = cards as Any
-        StorageManager.shared.save(type: .parameters, model: [ParameterAPP].self, collection: cards)
+    //MARK: -  методы по сортировке элементов
+    func moveElements(to card: Int?, from source: IndexSet, to dest: Int) {
+        if let card = card {
+            cards[card].elements.move(fromOffsets: source, toOffset: dest)
+            isChangeElement = true
+        }
+    }
+    private func saveMovingElement(to card: Int) {
+        if isChangeElement {
+            reSorting(to: card)
+            ParameterDataManager.shared.updateSubCards(to: cards[card].parameter.id , cards: cards[card].elements) { _ in
+                self.isChangeElement = false
+            }
+        }
     }
     
-    //MARK: - методы переключения и проверки активного статуса карточки
-    private func checkActive(to card: Int, element: Int?) {
+    //MARK: - методы переключения и проверки активного статуса карточки коллекции
+    private func checkActive(to card: Int) {
         print("проверка на Деактивация карточки")
-        var countUse = cards[card].parameter.countUse
-        if let element = element {
-            countUse = cards[card].elements[element].countUse
-        }
+        let countUse = cards[card].parameter.countUse
         if !isActive {
             if countUse != 0 {
                 errorText = "ОШИБКА!\nКарточка используется в\n других документах!"
@@ -240,18 +320,45 @@ class ParameterAdminViewModel: ObservableObject {
                 typeNote = true
             }
         } else {
-            inActive(to: card, element: element)
+            inActive(to: card)
         }
     }
     
-    func inActive(to card: Int, element: Int?) {
-        if let element = element {
-            cards[card].elements[element].isActive.toggle()
-        } else {
+    func inActive(to card: Int?) {
+        if let card = card {
             cards[card].parameter.isActive.toggle()
+            isChange = true
         }
-        isChange = true
     }
+    
+    //MARK: - методы переключения и проверки активного статуса карточки элемента
+    private func checkActiveElement(to card: Int, element: Int) {
+        print("проверка на Деактивация карточки")
+        let countUse = cards[card].elements[element].countUse
+        if !isActiveElement {
+            if countUse != 0 {
+                errorText = "ОШИБКА!\nКарточка используется в\n других документах!"
+                errorOccured = true
+                typeNote = false
+            } else {
+                errorText = "Предупреждение!\nПодтвердите деактивацию картоки!"
+                errorOccured = true
+                typeNote = true
+            }
+        } else {
+            inActiveElement(to: card, element: element)
+        }
+    }
+    
+    func inActiveElement(to card: Int?, element: Int?) {
+        if let card = card, let element = element {
+            cards[card].elements[element].isActive.toggle()
+            isChangeElement = true
+        }
+    }
+    
+    
+    
     
     
     private func reSorting(to card: Int?) {

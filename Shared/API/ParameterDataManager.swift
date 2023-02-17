@@ -272,7 +272,7 @@ class ParameterDataManager {
             if param.id.isEmpty {
                 id = Firestore.firestore().collection(collection).document().documentID
             }
-        let data = ["id:" : id,
+        let data = ["id" : id,
                     "date" : param.date,
                     "idUser" : param.idUser,
                     "isActive" : param.isActive,
@@ -299,7 +299,7 @@ class ParameterDataManager {
             if param.id.isEmpty {
                 id = Firestore.firestore().collection(collection).document().documentID
             }
-        let data = ["id:" : id,
+        let data = ["id" : id,
                     "idCollection" : doc,
                     "date" : param.date,
                     "idUser" : param.idUser,
@@ -308,7 +308,7 @@ class ParameterDataManager {
                     
                     "sort" : param.sort,
                     "name" : param.name,
-                    "label" : param.label,
+                    "value" : param.value,
                     "images" : param.images,
                     "files" : param.files] as [String : Any]
             NetworkManager.shared.upLoadElementSubCollection(to: .parameter, doc: doc, sub: .elements, name: id, data: data) { status in
