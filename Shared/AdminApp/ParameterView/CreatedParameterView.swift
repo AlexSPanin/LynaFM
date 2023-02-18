@@ -135,7 +135,7 @@ struct CreatedParameterView: View {
         .onChange(of: viewModel.name) { newValue in
             viewModel.isChange = true
         }
-        .onChange(of: viewModel.label) { newValue in
+        .onChange(of: viewModel.description) { newValue in
             viewModel.isChange = true
         }
     }

@@ -14,20 +14,28 @@ struct CreatedParametrElementView: View {
     var isImage: Bool {
         viewModel.image != nil
     }
+    
+    var isColor: Bool {
+        viewModel.type == "Цвет"
+    }
     var subtitle: String {
         switch viewModel.type {
         case TypeField.number.label:
-            return "Коэф. пересчета"
+            return "Добавьте Коэф. пересчета"
         case TypeField.color.label:
-            return "Цвет: #FFFFFFFF"
+            return "Добавьте Цвет: FFFFFFFF"
         case TypeField.text.label:
-            return "Описание"
+            return "Добавьте Описание"
         default:
-            return "Параметр"
+            return "Добавьте Параметр"
         }
     }
     
-    private var uiImage: UIImage {
+    var isDisable: Bool {
+        viewModel.description.isEmpty || viewModel.name.isEmpty
+    }
+    
+    var uiImage: UIImage {
         if let image = viewModel.image, let ui = UIImage(data: image) {
             return ui
         } else {
@@ -56,6 +64,11 @@ struct CreatedParametrElementView: View {
                         
                         // загрузка файла изображения
                         HStack {
+                            if isColor {
+                                Spacer()
+                            }
+                            
+                            ZStack {
                             Button {
                                 showFolder.toggle()
                             } label: {
@@ -67,7 +80,7 @@ struct CreatedParametrElementView: View {
                                         .frame(width: WIDTH * 0.3, height: WIDTH * 0.3)
                                         .clipShape(RoundedRectangle(cornerRadius: 5))
                                 } else {
-                                    Text("Загрузить изображение.")
+                                    Text(isColor ? "Загрузить текстуру." : "Загрузить изображение.")
                                         .font(.callout)
                                         .foregroundColor(.accentColor)
                                         .lineLimit(2)
@@ -76,28 +89,43 @@ struct CreatedParametrElementView: View {
                                         .frame(width: WIDTH * 0.3, height: WIDTH * 0.3)
                                 }
                             }
+                                Button {
+                                    viewModel.isDeleteImage.toggle()
+                                } label: {
+                                    Image(systemName: "trash")
+                                        .foregroundColor(.accentColor)
+                                        .padding(.all, 3)
+                                        .background(
+                                            Circle().foregroundColor(.white)
+                                        )
+                                }
+                                .offset(x: WIDTH * 0.1 , y: -WIDTH * 0.1)
+
+                            }
                             .frame(width: WIDTH * 0.3, height: WIDTH * 0.3, alignment: .center)
                             .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 1))
-//                            .fileImporter(isPresented: $showFolder, allowedContentTypes: [.item], allowsMultipleSelection: false, onCompletion: { results in
-//                                switch results {
-//                                case .success(let fileurl):
-//                                    if let url = fileurl.first {
-//                                        if url.startAccessingSecurityScopedResource() {
-//                                            print(url)
-//                                            image = viewModel.loadFileImage(to: url)
-//                                        }
-//                                    }
-//                                case .failure(let error):
-//                                    print(error)
-//                                }
-//                            })
+
                             Spacer()
+
+                        }
+                        
+                        if isColor {
+                                ColorPicker(selection: $viewModel.color, supportsOpacity: true) {
+                                    Text("Выбрать цвет вручную:")
+                                        .font(.callout)
+                                        .foregroundColor(.accentColor)
+                                }
+                                .disabled(isImage)
+                                .opacity(isImage ? 0.3 : 1)
                         }
                         
                         TextFieldView(subtitle: "Наименование",
                                       tipeTextField: .simple, text: $viewModel.name)
+                        
                         TextFieldView(subtitle: subtitle,
                                       tipeTextField: .simple, text: $viewModel.description)
+                        .disabled(isColor)
+                        .opacity(isColor ? 0.3 : 1)
                         
                         
                         VStack {
@@ -108,6 +136,8 @@ struct CreatedParametrElementView: View {
                                     viewModel.isAddElement.toggle()
                                 }
                             }
+                            .disabled(isDisable)
+                            .opacity(isDisable ? 0 : 1)
                             HorizontalDividerLabelView(label: "или")
                             TextButton(text: "Закрыть") {
                                 if isEditing {
@@ -146,12 +176,15 @@ struct CreatedParametrElementView: View {
         .onChange(of: viewModel.name) { newValue in
             viewModel.isChangeElement = true
         }
-        .onChange(of: viewModel.label) { newValue in
+        .onChange(of: viewModel.description) { newValue in
             viewModel.isChangeElement = true
         }
         .onChange(of: viewModel.image) { newValue in
             viewModel.isChangeElement = true
         }
+        .onChange(of: viewModel.color, perform: { newValue in
+            viewModel.description = newValue.hexDescription()
+        })
         .sheet(isPresented: $showFolder) {
             AvatarPhotoView(imageData: $viewModel.image, showAvatarPhotoView: $showFolder, filter: false)
         }

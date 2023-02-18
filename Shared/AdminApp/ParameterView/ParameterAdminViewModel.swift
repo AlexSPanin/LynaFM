@@ -6,13 +6,30 @@
 //
 
 import Foundation
-import UIKit
+import SwiftUI
 
 class ParameterAdminViewModel: ObservableObject {
     //MARK: - отработка загрузки изображения
     @Published var sourceType: UIImagePickerController.SourceType = .photoLibrary
     @Published var isImagePickerDisplay = false
-    @Published var image: Data?
+    @Published var image: Data? {
+        didSet {
+            if image != nil {
+                color = .white
+            }
+        }
+    }
+    @Published var color: Color = .white
+    @Published var isDeleteImage = false {
+        didSet {
+            image = nil
+            if let card = card, let element = element {
+                if cards[card].elements[element].images.first != nil {
+                    cards[card].elements[element].images.removeAll()
+                }
+            }
+        }
+    }
     
     @Published var label = "Справочник параметров материалов и продуктов"
     @Published var cards = [ParameterAPP]()
@@ -121,6 +138,7 @@ class ParameterAdminViewModel: ObservableObject {
                 name = ""
                 description = ""
                 image = nil
+                color = Color(uiColor: UIColor(hex: description))
             } else {
                 if let card = card {
                     name = cards[card].parameter.name
@@ -142,7 +160,9 @@ class ParameterAdminViewModel: ObservableObject {
                     label = "Редактировать: \(collection) / \(name)"
                     loadImage(to: card, element: element, index: 0) { data in
                         self.image = data
+                        self.description = ""
                     }
+                    color = Color(uiColor: UIColor(hex: description))
                     
                 }
             } else {
@@ -223,6 +243,7 @@ class ParameterAdminViewModel: ObservableObject {
             element.name = name
             element.value = description
             cards[card].elements.append(element)
+            cards[card].parameter.countUse += 1
            saveImage(to: card, element: index, file: nil, data: image)
             ParameterDataManager.shared.createSubCard(to: cards[card].parameter.id, card: element) { _ in
                 self.isEmptyElements = false
@@ -386,6 +407,11 @@ class ParameterAdminViewModel: ObservableObject {
     func inActiveElement(to card: Int?, element: Int?) {
         if let card = card, let element = element {
             cards[card].elements[element].isActive.toggle()
+            if cards[card].elements[element].isActive {
+                cards[card].parameter.countUse += 1
+            } else {
+                cards[card].parameter.countUse -= 1
+            }
             isChangeElement = true
         }
     }

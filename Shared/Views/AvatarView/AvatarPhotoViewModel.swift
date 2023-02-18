@@ -80,9 +80,9 @@ class AvatarPhotoViewModel: ObservableObject {
         }
     }
     
-    func savePhoto() -> Data {
+    func savePhoto() -> Data? {
        var imageData = Data()
-        guard var photo = photo else { return Data() }
+        guard var photo = photo else { return nil }
         let cgRect = frameCGRect
         
         let orientation = photo.imageOrientation

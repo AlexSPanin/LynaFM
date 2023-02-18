@@ -139,21 +139,27 @@ extension String {
 
 //MARK: - #FFFFFFFF отработка установки и получения цвета
 extension UIColor {
-    convenience init(_ hex: String) {
-        var cString = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-        if cString.hasPrefix("#") { cString.removeFirst() }
-        if cString.count != 8 {
-            self.init("00000000")
-            return }
-        var rgbaValue:UInt64 = 0
-            Scanner(string: cString).scanHexInt64(&rgbaValue)
+    public convenience init (hex: String) {
+        let r, g, b, a: CGFloat
         
-        self.init(
-            red: CGFloat((rgbaValue & 0xFF000000) >> 24) / 255.0,
-            green: CGFloat((rgbaValue & 0x00FF0000) >> 16) / 255.0,
-            blue: CGFloat((rgbaValue & 0x0000FF00) >> 8) / 255.0,
-            alpha: CGFloat((rgbaValue & 0x000000FF)) / 255.0
-        )
+   //     let start = hex.index(hex.startIndex, offsetBy: 1)
+        let hexColor = hex.lowercased()
+        
+        if hexColor.count == 8 {
+            let scanner = Scanner(string: hexColor)
+            var hexNumber: UInt64 = 0
+            
+            if scanner.scanHexInt64(&hexNumber) {
+                r = CGFloat((hexNumber & 0xff000000) >> 24) / 255
+                g = CGFloat((hexNumber & 0x00ff0000) >> 16) / 255
+                b = CGFloat((hexNumber & 0x0000ff00) >> 8) / 255
+                a = CGFloat(hexNumber & 0x000000ff) / 255
+                self.init(red: r, green: g, blue: b, alpha: a)
+                return
+            }
+        }
+        self.init(red: 0, green: 0, blue: 0, alpha: 0)
+        return
     }
     
     func hexDescription() -> String {
@@ -161,19 +167,31 @@ extension UIColor {
         let blue = String(Int(self.ciColor.blue * 255), radix: 16)
         let green = String(Int(self.ciColor.green * 255), radix: 16)
         let alpha = String(Int(self.ciColor.alpha * 255), radix: 16)
-        return String("#\(red + blue + green + alpha)")
+        return String("\(red + blue + green + alpha)")
     }
     
 }
 //MARK: - #FFFFFFFF отработка установки и получения цвета
 extension Color {
     func hex(hex: String) -> Color {
-        let uiColor = UIColor.init(hex)
+        let uiColor = UIColor.init(hex: hex) 
         return Color(uiColor: uiColor)
     }
     
     func hexDescription() -> String {
-        return self.description.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var r: CGFloat = 0
+        var g: CGFloat = 0
+        var b: CGFloat = 0
+        var a: CGFloat = 0
+        let ui = UIColor(self)
+        ui.getRed(&r, green: &g, blue: &b, alpha: &a)
+        return String(
+            format: "%02X%02X%02X%02X",
+            Int(r * 0xff),
+            Int(g * 0xff),
+            Int(b * 0xff),
+            Int(a * 0xff)
+        )
     }
 
 }

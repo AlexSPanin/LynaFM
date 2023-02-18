@@ -25,6 +25,8 @@ struct ParameterTabView: View {
                         viewModel.showEdit.toggle()
                     } label: {
                         let status = viewModel.cards[index].parameter.isActive
+                        let description = viewModel.cards[index].parameter.label.isEmpty ? "" : " - " + viewModel.cards[index].parameter.label
+                        let label = viewModel.cards[index].parameter.name + description
                         HStack(spacing: 2) {
                             Image(systemName: "circle.fill")
                                 .resizable()
@@ -32,17 +34,12 @@ struct ParameterTabView: View {
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: WIDTH * 0.03, alignment: .center)
                                 .foregroundColor(status ? .cyan.opacity(0.8) : .red.opacity(0.8))
-                            Text(viewModel.cards[index].parameter.name)
+                            Text(label)
                                 .font(.body)
-                                .lineLimit(2)
-                                .minimumScaleFactor(scaleFactor)
-                                .frame(width: viewModel.isMove ? WIDTH * 0.3 : WIDTH * 0.42, height: HEIGHT * 0.05, alignment: .leading)
-                                .padding(.leading, 5)
-                            Text(viewModel.cards[index].parameter.label)
-                                .font(.footnote)
                                 .lineLimit(3)
                                 .minimumScaleFactor(scaleFactor)
-                                .frame(width: viewModel.isMove ? WIDTH * 0.35 : WIDTH * 0.45, height: HEIGHT * 0.05, alignment: .leading)
+                                .frame(width: viewModel.isMove ? WIDTH * 0.65 : WIDTH * 0.85, height: HEIGHT * 0.05, alignment: .leading)
+                                .padding(.leading, 5)
                         }
                         .foregroundColor(.accentColor)
                     }
