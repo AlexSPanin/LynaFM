@@ -19,7 +19,7 @@ class NetworkManager {
         let collection = NetworkCollection.product.collection
         let id = id != nil ? id : Firestore.firestore().collection(collection).document().documentID
         if let product = product, let id = id {
-            let data = ["id:" : id,
+            let data = ["id" : id,
                         "date" : product.date,
                         "idUser" : product.idUser,
                         "idGroup" : product.idGroup,
@@ -40,59 +40,7 @@ class NetworkManager {
             completion(false)
         }
     }
-    //MARK: - методы работы с типом материалы
-    // сохранение карточки материалов
-    func upLoadMaterial(to id: String?, material: Material?, completion: @escaping (Bool) -> Void) {
-        let collection = NetworkCollection.material.collection
-        let id = id != nil ? id : Firestore.firestore().collection(collection).document().documentID
-        if let material = material, let id = id {
-        let data = ["id:" : id,
-                    "date" : material.date,
-                    "idUser" : material.idUser,
-                    "idGroup" : material.idGroup,
-                    "isActive" : material.isActive,
-                    "countUse" : material.countUse,
-                    
-                    "sort" : material.sort,
-                    "article" : material.article,
-                    "name" : material.name,
-                    "label" : material.label,
-                    "file" : material.file,
-                    "images" : material.images] as [String : Any]
-        upLoadElementCollection(to: .material, name: id, data: data) { status in
-            completion(status)
-        }
-        } else {
-            completion(false)
-        }
-    }
-    //MARK: - методы работы с продуктовой группы
-    // сохранение карточки продуктовой группы
-    func upLoadGroup(to id: String?, group: Group?, completion: @escaping (Bool) -> Void) {
-        let collection = NetworkCollection.group.collection
-        let id = id != nil ? id : Firestore.firestore().collection(collection).document().documentID
-        if let group = group, let id = id {
-        let data = ["id:" : id,
-                    "date" : group.date,
-                    "idUser" : group.idUser,
-                    "idType" : group.idType,
-                    "isActive" : group.isActive,
-                    "countUse" : group.countUse,
-                    
-                    "sort" : group.sort,
-                    "name" : group.name,
-                    "label" : group.label,
-                    "file" : group.file] as [String : Any]
-            upLoadElementCollection(to: .group, name: id, data: data) { status in
-                completion(status)
-            }
-        } else {
-            completion(false)
-        }
-    }
     
-    
-
     
     // MARK: -  работа с хранилищем загрузка и выгрузка файлов ввиде Data
     // сохранение файла с автоматическим uuid - возвращает путь к файлу

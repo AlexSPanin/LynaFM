@@ -1,18 +1,29 @@
 //
-//  CreatedParameterView.swift
+//  CreatedGroupView.swift
 //  LynaFM (iOS)
 //
-//  Created by Александр Панин on 13.02.2023.
+//  Created by Александр Панин on 18.02.2023.
 //
 
 import SwiftUI
 
-struct CreatedParameterView: View {
+struct CreatedGroupView: View {
     @Environment(\.editMode) private var editMode
-    @ObservedObject var viewModel: ParameterAdminViewModel
+    @ObservedObject var viewModel: GroupAdminViewModel
+    @State private var showFolder = false
     let isEditing: Bool
+    var isImage: Bool {
+        viewModel.image != nil
+    }
+    var uiImage: UIImage {
+        if let image = viewModel.image, let ui = UIImage(data: image) {
+            return ui
+        } else {
+            return UIImage()
+        }
+    }
     var isDisable: Bool {
-        editMode?.wrappedValue == .active || viewModel.type == "Не выбран" || viewModel.name.isEmpty
+        editMode?.wrappedValue == .active || viewModel.type == "" || viewModel.name.isEmpty
     }
     
     var body: some View {
@@ -31,15 +42,57 @@ struct CreatedParameterView: View {
                                 user: viewModel.nameUser,
                                 isEditing: isEditing)
                     
+                    // загрузка файла изображения
                     HStack {
-                        Text("Тип параметра:")
+                        ZStack {
+                        Button {
+                            showFolder.toggle()
+                        } label: {
+                            if isImage {
+                                Image(uiImage: uiImage)
+                                    .resizable()
+                                    .interpolation(.medium)
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: WIDTH * 0.3, height: WIDTH * 0.3)
+                                    .clipShape(RoundedRectangle(cornerRadius: 5))
+                            } else {
+                                Text("Загрузить изображение.")
+                                    .font(.callout)
+                                    .foregroundColor(.accentColor)
+                                    .lineLimit(2)
+                                    .multilineTextAlignment(.center)
+                                    .minimumScaleFactor(0.9)
+                                    .frame(width: WIDTH * 0.3, height: WIDTH * 0.3)
+                            }
+                        }
+                            Button {
+                                viewModel.isDeleteImage.toggle()
+                            } label: {
+                                Image(systemName: "trash")
+                                    .foregroundColor(.accentColor)
+                                    .padding(.all, 3)
+                                    .background(
+                                        Circle().foregroundColor(.white)
+                                    )
+                            }
+                            .offset(x: WIDTH * 0.1 , y: -WIDTH * 0.1)
+
+                        }
+                        .frame(width: WIDTH * 0.3, height: WIDTH * 0.3, alignment: .center)
+                        .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 1))
+                        Spacer()
+                    }
+                    
+                    
+                    HStack {
+                        Text("Тип товарной группы:")
                             .font(.body)
                             .lineLimit(1)
                             .minimumScaleFactor(scaleFactor)
                             .foregroundColor(.accentColor)
                         
                         Menu {
-                            ForEach(TypeField.allCases.sorted(by: {$0.label < $1.label}), id: \.self) { type in
+                            ForEach(TypeGroup.allCases.sorted(by: {$0.label < $1.label}), id: \.self) { type in
                                 Button {
                                     viewModel.type = type.label
                                 } label: {
@@ -55,7 +108,7 @@ struct CreatedParameterView: View {
                                 Image(systemName: "plus.circle")
                                     .opacity(isEditing ? 0 : 1)
                             }
-                            .foregroundColor( viewModel.type != "Не выбран" ? .cyan.opacity(0.8) : .accentColor)
+                            .foregroundColor( viewModel.type != "" ? .cyan.opacity(0.8) : .accentColor)
                         }
                         Spacer()
                     }
@@ -68,31 +121,12 @@ struct CreatedParameterView: View {
                                   tipeTextField: .simple, text: $viewModel.description)
                 }
                 
-                
-                if !viewModel.cards.isEmpty, viewModel.card != nil {
-                    HStack {
-                        Text("Справочник элементов параметра")
-                            .frame(width: WIDTH * 0.9, alignment: .leading)
-                            .font(.body)
-                            .lineLimit(1)
-                            .minimumScaleFactor(scaleFactor)
-                        Spacer()
-                    }
-                    .foregroundColor(.accentColor)
-                    .padding(.top, hPadding)
-                    
-                    ParameterElementTabView(viewModel: viewModel)
-                }
                 Spacer()
                 CustomButton(text: "Сохранить", width: WIDTH * 0.4) {
                     if isEditing {
                         viewModel.isEdit.toggle()
                     } else {
-                        if viewModel.isEmptyElements {
-                            viewModel.isAdd.toggle()
-                        } else {
-                            viewModel.showAdd.toggle()
-                        }
+                        viewModel.isAdd.toggle()
                     }
                 }
                 .disabled(isDisable)
@@ -137,6 +171,12 @@ struct CreatedParameterView: View {
         }
         .onChange(of: viewModel.description) { newValue in
             viewModel.isChange = true
+        }
+        .onChange(of: viewModel.image) { newValue in
+            viewModel.isChange = true
+        }
+        .sheet(isPresented: $showFolder) {
+            AvatarPhotoView(imageData: $viewModel.image, showAvatarPhotoView: $showFolder, filter: false)
         }
     }
 }

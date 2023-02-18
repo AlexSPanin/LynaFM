@@ -6,186 +6,159 @@
 //
 
 import Foundation
+import Firebase
+import FirebaseFirestoreSwift
 
 class GroupDataManager {
     static let shared = GroupDataManager()
     private init() {}
     
     //MARK: - загрузка всех карточк
-    func loadCollection(completion: @escaping(Result<[GroupAPP], NetworkError>) -> Void) {
-        let myGroup = DispatchGroup()
+    func loadCollection(completion: @escaping([Group]?) -> Void) {
         NetworkManager.shared.fetchCollection(to: .group, model: Group.self) { cards in
             if let cards = cards {
                 print("Коллекция из сети загружена")
-                var cardsAPP = [GroupAPP]()
-                cards.forEach { card in
-                    myGroup.enter()
-                    self.loadCard(to: card.id) { result in
-                        switch result {
-                        case .success(let cardAPP):
-                            cardsAPP.append(cardAPP)
-                            myGroup.leave()
-                        case .failure(_):
-                            print("Ошибка загрузки карточки \(card.name)")
-                            myGroup.leave()
-                        }
-                    }
-                }
-                myGroup.notify(queue: .main) {
-                    completion(.success(cardsAPP))
-                }
+                    completion(cards)
             } else {
                 print("Ошибка: сбой обнавления коллекции.")
-                completion(.failure(.fetchCollection))
+                completion(nil)
             }
         }
     }
     
     //MARK: - загрузка карточки
-    func loadCard(to id: String?, completion: @escaping(Result<GroupAPP, NetworkError>) -> Void) {
-        if let id = id {
-            NetworkManager.shared.fetchElementCollection(to: .group, doc: id, model: Group.self) { card in
+    func loadCard(to doc: String?, completion: @escaping(Group?) -> Void) {
+        if let doc = doc {
+            NetworkManager.shared.fetchElementCollection(to: .group, doc: doc, model: Group.self) { card in
                 if let card = card {
-                    self.convertCardToCardAPP(card: card) { cardAPP in
-                        completion(.success(cardAPP))
-                    }
+                    completion(card)
                 } else {
-                    print("Ошибка загрузки карточки из сети \(id)")
-                    completion(.failure(.fetchUser))
+                    print("Ошибка загрузки карточки из сети \(doc)")
+                    completion(nil)
                 }
             }
         }
     }
-    
-    //MARK: - обновление карточки
-    func updateCard(to cardAPP: GroupAPP, completion: @escaping(Bool) -> Void) {
+    //MARK: - обновление всех карточek коллекции
+    func updateCards(to cards: [Group], completion: @escaping(Bool) -> Void) {
         let myGroup = DispatchGroup()
-        let cardID = cardAPP.id
-        print("Обновление карточки пользователя \(cardAPP.name)")
-        NetworkManager.shared.fetchElementCollection(to: .group, doc: cardID, model: Group.self) { card in
-            if let card = card {
-                myGroup.enter()
-                NetworkManager.shared.upLoadFile(to: card.file, type: .data, data: cardAPP.file) { _ in
-                    print("Сохранен файл userData \(cardAPP.name)")
-                    myGroup.leave()
-                }
-                var cardExport = self.convertToCard(cardAPP: cardAPP)
-                cardExport.file = card.file
-                myGroup.notify(queue: .main) {
-                    print("Сохранение обновленной карточки пользователя \(cardAPP.name)")
-                    NetworkManager.shared.upLoadGroup (to: cardID, group: cardExport) { status in
-                        completion(status)
-                    }
-                }
-            } else {
-                print("Ошибка загрузки карточки пользователя из сети \(cardAPP.name)")
-                completion(false)
+        cards.forEach { card in
+            myGroup.enter()
+            upLoadGroup(group: card) { _ in
+                NetworkManager.shared.updateTimeStamp(to: .group, doc: card.id, sub: nil)
+                myGroup.leave()
             }
+        }
+        myGroup.notify(queue: .main) {
+           completion(true)
+        }
+    }
+    //MARK: - обновление карточки
+    func updateCard(to card: Group, completion: @escaping(Bool) -> Void) {
+        print("Обновление карточки пользователя \(card.name)")
+        upLoadGroup (group: card) { status in
+            NetworkManager.shared.updateTimeStamp(to: .group, doc: card.id, sub: nil)
+            completion(status)
         }
     }
     
     //MARK: - создать новую карточку
-    func createNewCard(to cardAPP: GroupAPP, completion: @escaping(Bool) -> Void) {
-        print("Создание новой карточки \(cardAPP.name)")
+    func createCard(to card: Group, completion: @escaping(Bool) -> Void) {
+        print("Создание новой карточки \(card.name)")
         let myGroup = DispatchGroup()
-        let data = cardAPP.file
-        var card = convertToCard(cardAPP: cardAPP)
 
         myGroup.enter()
-        NetworkManager.shared.upLoadFile(to: nil, type: .data, data: data) { file in
-            print("Сохранен файл \(card.name)")
-            card.file = file
+        saveFileImage(to: card.image, doc: card.id) { _ in
             myGroup.leave()
         }
+        
         myGroup.notify(queue: .main) {
             print("Сохранена карточка \(card.name)")
-            NetworkManager.shared.upLoadGroup(to: nil, group: card) { status in
+            self.upLoadGroup(group: card) { status in
                 completion(status)
             }
         }
     }
     
     //MARK: - удалить карточку
-    func deleteCard(to cardAPP: GroupAPP, completion: @escaping(String, Bool) -> Void) {
-        if cardAPP.countUse != 0 {
-            let errorText = "Карточка используется в \(cardAPP.countUse) документах."
-            let error = true
-            completion(errorText,error)
-        } else {
-            NetworkManager.shared.fetchElementCollection(to: .group, doc: cardAPP.id, model: Group.self) { card in
-                if let card = card {
-                    NetworkManager.shared.deleteFile(type: .data, name: card.file) { status in
-                        if !status {
-                            print("Ошибка удаления файла \(card.file)")
-                        }
-                    }
-                } else {
-                    print("Ошибка загрузки карточки \(cardAPP.name)")
-                }
-            }
-            NetworkManager.shared.deleteElement(to: .group, document: cardAPP.id) { status in
-                if status {
-                    self.updateTimeStamp()
-                    completion("", false)
-                } else {
-                    let errorText = "Ошибка удаление карточки \(cardAPP.countUse)."
-                    let error = true
-                    completion(errorText,error)
-                }
-            }
-        }
-    }
-    
-    //MARK: - конвертации
-    private func convertCardToCardAPP(card: Group, completion: @escaping(GroupAPP) -> Void) {
+    func deleteCard(to card: Group, completion: @escaping(Bool) -> Void) {
         let myGroup = DispatchGroup()
-        var current = GroupAPP()
-        current.id = card.id
-        current.date = card.date
-        current.idUser = card.idUser
-        current.idType = card.idType
-        current.isActive = card.isActive
-        current.countUse = card.countUse
-        
-        current.sort = card.sort
-        current.name = card.name
-        current.label = card.label
-        
         myGroup.enter()
-        NetworkManager.shared.loadFile(type: .data, name: card.file) { data in
-            if let data = data {
-               current.file = data
-                myGroup.leave()
-            } else {
-                print("Ошибка загрузки файла \(card.name)")
-                myGroup.leave()
-            }
+        NetworkManager.shared.deleteFile(type: .image, name: card.image) { _ in
+            myGroup.leave()
         }
         myGroup.notify(queue: .main) {
-            print("Сохранение обновленной карточки пользователя \(card.name)")
-           completion(current)
+            NetworkManager.shared.deleteElement(to: .group, document: card.id) { status in
+                completion(status)
+            }
         }
     }
     
-    private func convertToCard(cardAPP: GroupAPP) -> Group {
-        var card = Group()
-        card.id = cardAPP.id
-        card.date = cardAPP.date
-        card.idUser = cardAPP.idUser
-        card.idType = cardAPP.idType
-        card.isActive = cardAPP.isActive
-        card.countUse = cardAPP.countUse
-        
-        card.sort = cardAPP.sort
-        card.name = cardAPP.name
-        card.label = cardAPP.label
-        return card
+    //MARK: - сохранение файла
+    func saveFileImage(to file: String?, doc: String, completion: @escaping(Bool) -> Void)  {
+        if let file = file {
+            print("Сохранение файла \(file)")
+            FileAppManager.shared.loadFileData(to: file, type: .assets) { data in
+                if let data = data {
+                    NetworkManager.shared.upLoadFile(to: file, type: .image, data: data) { _ in
+                        print("Сохранен файл \(file)")
+                        NetworkManager.shared.updateTimeStamp(to: .group, doc: doc, sub: nil)
+                        completion(true)
+                    }
+                } else {
+                    print("Файл не найден \(file)")
+                    completion(false)
+                }
+            }
+        }
     }
     
-    private func updateTimeStamp() {
+    //MARK: - загрузка файла
+    func loadFileImage(to file: String, completion: @escaping(Data?) -> Void) {
+        print("Сохранение файла \(file)")
+        FileAppManager.shared.loadFileData(to: file, type: .assets) { data in
+            if let data = data {
+                completion(data)
+            } else {
+                NetworkManager.shared.loadFile(type: .image, name: file) { data in
+                    if let data = data {
+                        FileAppManager.shared.saveFileData(to: file, type: .assets, data: data)
+                    }
+                    completion(data)
+                }
+            }
+        }
+    }
+    
+    //MARK: - методы работы с продуктовой группы
+    // сохранение карточки продуктовой группы
+    private func upLoadGroup(group: Group?, completion: @escaping (Bool) -> Void) {
         let collection = NetworkCollection.group.collection
-        let time = Date().timeStamp()
-        let system = NetworkCollection.system.collection
-        NetworkManager.shared.updateValueElement(to: .system, document: system, key: collection, value: time)
+        if let group = group {
+            var id = group.id
+            if group.id.isEmpty {
+                id = Firestore.firestore().collection(collection).document().documentID
+            }
+            let data = ["id" : id,
+                        "date" : group.date,
+                        "idUser" : group.idUser,
+                        "isActive" : group.isActive,
+                        "countUse" : group.countUse,
+                        
+                        "type" : group.type,
+                        "preGroup" : group.preGroup,
+                        "afterGroup" : group.afterGroup,
+                        
+                        "sort" : group.sort,
+                        "name" : group.name,
+                        "label" : group.label,
+                        "image" : group.image
+            ] as [String : Any]
+            NetworkManager.shared.upLoadElementCollection(to: .group, name: id, data: data) { status in
+                completion(status)
+            }
+        } else {
+            completion(false)
+        }
     }
 }

@@ -12,26 +12,15 @@ struct Group: Codable {
     var id: String = ""
     var date: String = ""
     var idUser: String = ""
-    var idType: String = ""
     var isActive: Bool = true
     var countUse: Int = 0
     
-    var sort: String = ""
-    var name: String = ""
-    var label: String = ""
-    var file: String = ""
-}
-
-struct GroupAPP: Codable {
-    var id: String = ""
-    var date: String = ""
-    var idUser: String = ""
-    var idType: String = ""
-    var isActive: Bool = true
-    var countUse: Int = 0
+    var type: String = ""
+    var preGroup: String = ""
+    var afterGroup: [String] = []
     
-    var sort: String = ""
+    var sort: Int = 0
     var name: String = ""
     var label: String = ""
-    var file = Data()
+    var image: String = ""
 }

@@ -10,7 +10,6 @@ import Foundation
 class StorageManager {
     
     static let shared = StorageManager()
-    
     private init() {}
     
     // MARK: - проверка и установка Bool ключей

@@ -5,7 +5,6 @@
 //  Created by Александр Панин on 13.02.2023.
 //
 
-import Foundation
 import SwiftUI
 
 class ParameterAdminViewModel: ObservableObject {
@@ -31,6 +30,7 @@ class ParameterAdminViewModel: ObservableObject {
         }
     }
     
+    //MARK: -  общие переменные
     @Published var label = "Справочник параметров материалов и продуктов"
     @Published var cards = [ParameterAPP]()
     @Published var name: String = ""
@@ -318,7 +318,7 @@ class ParameterAdminViewModel: ObservableObject {
                         }
                         myGroup.notify(queue: .main) {
                             collection.append(parameterAPP)
-                            if index == parameters.count - 1 {
+                            if  index == parameters.count - 1 {
                                 self.cards = collection.sorted(by: {$0.parameter.sort < $1.parameter.sort})
                                 self.showTabCollection.toggle()
                             }
@@ -419,13 +419,13 @@ class ParameterAdminViewModel: ObservableObject {
     //MARK: -  сортировка карточек
     private func reSorting(to card: Int?) {
         if let card = card {
-            for index in 0..<cards[card].elements.count {
+            for index in cards[card].elements.indices {
                 cards[card].elements[index].sort = index + 1
                 cards[card].elements[index].date = Date().timeStamp()
                 cards[card].elements[index].idUser = idUser
             }
         } else {
-            for index in 0 ..< cards.count {
+            for index in cards.indices {
                 cards[index].parameter.sort = index + 1
                 cards[index].parameter.date = Date().timeStamp()
                 cards[index].parameter.idUser = idUser
@@ -458,17 +458,17 @@ class ParameterAdminViewModel: ObservableObject {
     //MARK: -  записывает файл изображения, если имя nil создает новую запись
     private func saveImage(to card: Int, element: Int, file: String?, data: Data?) {
         if let data = data {
-        let doc = cards[card].parameter.id
-        let elem = cards[card].elements[element].id
-        var nameFile = UUID().uuidString
-        if let file = file {
-            nameFile = file
-        } else {
-            cards[card].elements[element].images.append(nameFile)
-        }
-        FileAppManager.shared.saveFileData(to: nameFile, type: .assets, data: data)
-        ParameterDataManager.shared.saveFileImage(to: nameFile, doc: doc, element: elem) { _ in
-        }
+            let doc = cards[card].parameter.id
+            let elem = cards[card].elements[element].id
+            var nameFile = UUID().uuidString + ".png"
+            if let file = file {
+                nameFile = file
+            } else {
+                cards[card].elements[element].images.append(nameFile)
+            }
+            FileAppManager.shared.saveFileData(to: nameFile, type: .assets, data: data)
+            ParameterDataManager.shared.saveFileImage(to: nameFile, doc: doc, element: elem) { _ in
+            }
         }
     }
 }

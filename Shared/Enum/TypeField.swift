@@ -5,7 +5,6 @@
 //  Created by Александр Панин on 17.02.2023.
 //
 
-import Foundation
 import SwiftUI
 
 enum TypeField: Codable, CaseIterable {

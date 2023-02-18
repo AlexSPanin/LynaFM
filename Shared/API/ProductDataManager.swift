@@ -159,7 +159,7 @@ class ProductDataManager {
             completion(errorText,error)
         } else {
             
-            NetworkManager.shared.fetchElementCollection(to: .product, doc: cardAPP.id, model: Material.self) { card in
+            NetworkManager.shared.fetchElementCollection(to: .product, doc: cardAPP.id, model: Product.self) { card in
                 if let card = card {
                     NetworkManager.shared.deleteFile(type: .data, name: card.file) { status in
                         if !status {

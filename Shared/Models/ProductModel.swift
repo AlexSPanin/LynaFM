@@ -16,7 +16,7 @@ struct Product: Codable {
     var isActive: Bool = true
     var countUse: Int = 0
     
-    var sort: String = ""
+    var sort: Int = 0
     var article: String = ""
     var name: String = ""
     var label: String = ""
@@ -33,7 +33,7 @@ struct ProductAPP: Codable {
     var isActive: Bool = true
     var countUse: Int = 0
     
-    var sort: String = ""
+    var sort: Int = 0
     var article: String = ""
     var name: String = ""
     var label: String = ""

@@ -75,7 +75,7 @@ class ParameterDataManager {
         cards.forEach { card in
             myGroup.enter()
             upLoadParameter(param: card) { _ in
-                NetworkManager.shared.updateTimeStamp(to: .stage, doc: card.id, sub: .elements)
+                NetworkManager.shared.updateTimeStamp(to: .parameter, doc: card.id, sub: .elements)
                 myGroup.leave()
             }
         }
@@ -90,7 +90,7 @@ class ParameterDataManager {
         cards.forEach { card in
             myGroup.enter()
             upLoadParameterElement(to: doc, param: card) { _ in
-                NetworkManager.shared.updateTimeStamp(to: .stage, doc: doc, sub: .elements, element: card.id)
+                NetworkManager.shared.updateTimeStamp(to: .parameter, doc: doc, sub: .elements, element: card.id)
                 myGroup.leave()
             }
         }
@@ -142,9 +142,11 @@ class ParameterDataManager {
                     NetworkManager.shared.upLoadFile(to: file, type: .image, data: data) { _ in
                         print("Сохранен файл \(file)")
                         NetworkManager.shared.updateTimeStamp(to: .parameter, doc: doc, sub: .elements, element: element)
+                        completion(true)
                     }
                 } else {
                     print("Файл не найден \(file)")
+                    completion(false)
                 }
             }
         }
@@ -157,9 +159,11 @@ class ParameterDataManager {
                 NetworkManager.shared.upLoadFile(to: file, type: .data, data: data) { _ in
                     print("Сохранен файл \(file)")
                     NetworkManager.shared.updateTimeStamp(to: .parameter, doc: doc, sub: .elements, element: element)
+                    completion(true)
                 }
             } else {
                 print("Файл не найден \(file)")
+                completion(false)
             }
         }
     }
@@ -221,65 +225,63 @@ class ParameterDataManager {
     }
     //MARK: - удалить карточку коллекции
     func deleteCard(to card: Parameter, completion: @escaping(Bool) -> Void) {
-        if card.countUse == 0 {
-            let myGroup = DispatchGroup()
-            card.images.forEach { image in
+        let myGroup = DispatchGroup()
+        card.images.forEach { image in
+            myGroup.enter()
+            NetworkManager.shared.deleteFile(type: .image, name: image) { _ in
+                myGroup.leave()
+            }
+        }
+        card.files.forEach { file in
+            myGroup.enter()
+            NetworkManager.shared.deleteFile(type: .data, name: file) { _ in
+                myGroup.leave()
+            }
+        }
+        
+        NetworkManager.shared.fetchSubCollection(to: .parameter, doc: card.id, sub: .elements, model: ParameterElement.self) { elements in
+            elements?.forEach({ element in
                 myGroup.enter()
-                NetworkManager.shared.deleteFile(type: .image, name: image) { _ in
+                self.deleteSubCard(to: element) { _ in
                     myGroup.leave()
                 }
-            }
-            card.files.forEach { file in
-                myGroup.enter()
-                NetworkManager.shared.deleteFile(type: .data, name: file) { _ in
-                    myGroup.leave()
-                }
-            }
-            
-            NetworkManager.shared.fetchSubCollection(to: .parameter, doc: card.id, sub: .elements, model: ParameterElement.self) { elements in
-                elements?.forEach({ element in
-                    myGroup.enter()
-                    self.deleteSubCard(to: element) { _ in
-                        myGroup.leave()
-                    }
-                })
-            }
-            
-            myGroup.notify(queue: .main) {
-                NetworkManager.shared.deleteElement(to: .parameter, document: card.id) { status in
-                    completion(status)
-                }
+            })
+        }
+        
+        myGroup.notify(queue: .main) {
+            NetworkManager.shared.deleteElement(to: .parameter, document: card.id) { status in
+                completion(status)
             }
         }
     }
     
+
     //MARK: - удалить карточку коллекции
     func deleteSubCard(to card: ParameterElement, completion: @escaping(Bool) -> Void) {
-        if card.countUse == 0 {
-            let myGroup = DispatchGroup()
-            card.images.forEach { image in
-                myGroup.enter()
-                NetworkManager.shared.deleteFile(type: .image, name: image) { _ in
-                    myGroup.leave()
-                }
+        let myGroup = DispatchGroup()
+        card.images.forEach { image in
+            myGroup.enter()
+            NetworkManager.shared.deleteFile(type: .image, name: image) { _ in
+                myGroup.leave()
             }
-            
-            card.files.forEach { file in
-                myGroup.enter()
-                NetworkManager.shared.deleteFile(type: .data, name: file) { _ in
-                    myGroup.leave()
-                }
+        }
+        
+        card.files.forEach { file in
+            myGroup.enter()
+            NetworkManager.shared.deleteFile(type: .data, name: file) { _ in
+                myGroup.leave()
             }
-            
-            myGroup.notify(queue: .main) {
-                NetworkManager.shared.deleteSubElement(to: .parameter, document: card.idCollection,
-                                                       sub: .elements, element: card.id) { status in
-                    NetworkManager.shared.updateTimeStamp(to: .parameter, doc: card.idCollection, sub: .elements)
-                    completion(status)
-                }
+        }
+        
+        myGroup.notify(queue: .main) {
+            NetworkManager.shared.deleteSubElement(to: .parameter, document: card.idCollection,
+                                                   sub: .elements, element: card.id) { status in
+                NetworkManager.shared.updateTimeStamp(to: .parameter, doc: card.idCollection, sub: .elements)
+                completion(status)
             }
         }
     }
+    
     
     //MARK: - методы работы с параметрами товара
     // сохранение карточки параметров товара

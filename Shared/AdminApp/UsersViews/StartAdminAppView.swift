@@ -29,6 +29,9 @@ struct StartAdminAppView: View {
                 CustomButton(text: "Карточки Параметров", width: WIDTH * 0.7) {
                     viewModel.showView = .parameter
                 }
+                CustomButton(text: "Карточки Групп", width: WIDTH * 0.7) {
+                    viewModel.showView = .group
+                }
                 HorizontalDividerLabelView(label: "или")
                 HStack(alignment: .center, spacing: 20) {
                     TextButton(text: "Сменить профиль") {

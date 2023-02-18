@@ -20,6 +20,8 @@ struct AdminAppView: View {
                 StageAdminView(viewModelAdmin: viewModel)
             case .parameter:
                 ParameterAdminView(viewModelAdmin: viewModel)
+            case .group:
+                GroupAdminView(viewModelAdmin: viewModel)
             default:
                 UsersAdminAppView(viewModelAdmin: viewModel)
                 
