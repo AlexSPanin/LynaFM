@@ -65,7 +65,7 @@ class MaterialDataManager {
         NetworkManager.shared.fetchElementCollection(to: .material, doc: cardID, model: Material.self) { card in
             if let card = card {
                 myGroup.enter()
-                NetworkManager.shared.upLoadFile(to: card.file, type: .material_data, data: cardAPP.file) { _ in
+                NetworkManager.shared.upLoadFile(to: card.file, type: .data, data: cardAPP.file) { _ in
                     print("Сохранен файл userData \(cardAPP.name)")
                     myGroup.leave()
                 }
@@ -85,7 +85,7 @@ class MaterialDataManager {
     }
     //MARK: - обновить image
     func updateImage(to name: String, data: Data, completion: @escaping(Bool) -> Void) {
-        NetworkManager.shared.upLoadFile(to: name, type: .material_image, data: data) { [self] _ in
+        NetworkManager.shared.upLoadFile(to: name, type: .image, data: data) { [self] _ in
             self.updateTimeStamp()
             completion(true)
         }
@@ -96,7 +96,7 @@ class MaterialDataManager {
         images.removeValue(forKey: name)
         let collection = images as Any
         NetworkManager.shared.updateValueElement(to: .material, document: cardAPP.id, key: "images", value: collection)
-        NetworkManager.shared.deleteFile(type: .material_image, name: name) { status in
+        NetworkManager.shared.deleteFile(type: .image, name: name) { status in
             self.updateTimeStamp()
             completion(status)
         }
@@ -104,7 +104,7 @@ class MaterialDataManager {
     //MARK: - добавить image
     func addImage(to cardAPP: MaterialAPP, data: Data, sort: Int, completion: @escaping(Bool) -> Void) {
         var images = cardAPP.images
-        NetworkManager.shared.upLoadFile(type: .material_image, data: data) { file in
+        NetworkManager.shared.upLoadFile(type: .image, data: data) { file in
             images[file] = sort
             let collection = images as Any
             NetworkManager.shared.updateValueElement(to: .material, document: cardAPP.id, key: "images", value: collection)
@@ -128,7 +128,7 @@ class MaterialDataManager {
         var card = convertToCard(cardAPP: cardAPP)
         
         myGroup.enter()
-        NetworkManager.shared.upLoadFile(to: nil, type: .material, data: data) { file in
+        NetworkManager.shared.upLoadFile(to: nil, type: .data, data: data) { file in
             print("Сохранен файл \(card.name)")
             card.file = file
             myGroup.leave()
@@ -137,7 +137,7 @@ class MaterialDataManager {
         for index in 0..<images.count {
             myGroup.enter()
             let image = images[index]
-            NetworkManager.shared.upLoadFile(type: .material_image, data: image) { file in
+            NetworkManager.shared.upLoadFile(type: .image, data: image) { file in
                 card.images[file] = index
                 myGroup.leave()
             }
@@ -160,7 +160,7 @@ class MaterialDataManager {
             
             NetworkManager.shared.fetchElementCollection(to: .material, doc: cardAPP.id, model: Material.self) { card in
                 if let card = card {
-                    NetworkManager.shared.deleteFile(type: .material_data, name: card.file) { status in
+                    NetworkManager.shared.deleteFile(type: .data, name: card.file) { status in
                         if !status {
                             print("Ошибка удаления файла \(card.file)")
                         }
@@ -171,7 +171,7 @@ class MaterialDataManager {
             }
             
             cardAPP.images.forEach { image in
-                NetworkManager.shared.deleteFile(type: .material_image, name: image.key) { status in
+                NetworkManager.shared.deleteFile(type: .image, name: image.key) { status in
                     if !status {
                         print("Ошибка удаления файла \(image)")
                     }
@@ -210,7 +210,7 @@ class MaterialDataManager {
         current.images = card.images
         
         myGroup.enter()
-        NetworkManager.shared.loadFile(type: .material_data, name: card.file) { data in
+        NetworkManager.shared.loadFile(type: .data, name: card.file) { data in
             if let data = data {
                 current.file = data
                 myGroup.leave()

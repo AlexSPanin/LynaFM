@@ -47,7 +47,7 @@ struct UpdateUserView: View {
                 )
         )
         .sheet(isPresented: $viewModel.showAvatarPhotoView) {
-            AvatarPhotoView(imageData: $viewModel.photo, showAvatarPhotoView: $viewModel.showAvatarPhotoView)
+            AvatarPhotoView(imageData: $viewModel.photo, showAvatarPhotoView: $viewModel.showAvatarPhotoView, filter: true)
         }
     }
 }

@@ -65,7 +65,7 @@ class GroupDataManager {
         NetworkManager.shared.fetchElementCollection(to: .group, doc: cardID, model: Group.self) { card in
             if let card = card {
                 myGroup.enter()
-                NetworkManager.shared.upLoadFile(to: card.file, type: .group, data: cardAPP.file) { _ in
+                NetworkManager.shared.upLoadFile(to: card.file, type: .data, data: cardAPP.file) { _ in
                     print("Сохранен файл userData \(cardAPP.name)")
                     myGroup.leave()
                 }
@@ -92,7 +92,7 @@ class GroupDataManager {
         var card = convertToCard(cardAPP: cardAPP)
 
         myGroup.enter()
-        NetworkManager.shared.upLoadFile(to: nil, type: .group, data: data) { file in
+        NetworkManager.shared.upLoadFile(to: nil, type: .data, data: data) { file in
             print("Сохранен файл \(card.name)")
             card.file = file
             myGroup.leave()
@@ -114,7 +114,7 @@ class GroupDataManager {
         } else {
             NetworkManager.shared.fetchElementCollection(to: .group, doc: cardAPP.id, model: Group.self) { card in
                 if let card = card {
-                    NetworkManager.shared.deleteFile(type: .group, name: card.file) { status in
+                    NetworkManager.shared.deleteFile(type: .data, name: card.file) { status in
                         if !status {
                             print("Ошибка удаления файла \(card.file)")
                         }
@@ -152,7 +152,7 @@ class GroupDataManager {
         current.label = card.label
         
         myGroup.enter()
-        NetworkManager.shared.loadFile(type: .group, name: card.file) { data in
+        NetworkManager.shared.loadFile(type: .data, name: card.file) { data in
             if let data = data {
                current.file = data
                 myGroup.leave()

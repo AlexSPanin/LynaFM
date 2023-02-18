@@ -42,7 +42,7 @@ class AvatarPhotoViewModel: ObservableObject {
                 if let data = data {
                     completion(data)
                 } else {
-                    NetworkManager.shared.loadFile(type: .user, name: file) { data in
+                    NetworkManager.shared.loadFile(type: .image, name: file) { data in
                         if let data = data {
                             FileAppManager.shared.saveFileData(to: file, type: .assets, data: data)
                             completion(data)

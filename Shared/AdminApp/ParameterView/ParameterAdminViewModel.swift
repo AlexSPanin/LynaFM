@@ -9,15 +9,16 @@ import Foundation
 import UIKit
 
 class ParameterAdminViewModel: ObservableObject {
+    //MARK: - отработка загрузки изображения
+    @Published var sourceType: UIImagePickerController.SourceType = .photoLibrary
+    @Published var isImagePickerDisplay = false
+    @Published var image: Data?
+    
     @Published var label = "Справочник параметров материалов и продуктов"
     @Published var cards = [ParameterAPP]()
     @Published var name: String = ""
     @Published var description: String = ""
-    @Published var type: String = "Не выбран" {
-        didSet {
-            print(type)
-        }
-    }
+    @Published var type: String = "Не выбран"
     
     @Published var card: Int?
     @Published var element: Int?
@@ -119,6 +120,7 @@ class ParameterAdminViewModel: ObservableObject {
                 isActiveElement = true
                 name = ""
                 description = ""
+                image = nil
             } else {
                 if let card = card {
                     name = cards[card].parameter.name
@@ -138,6 +140,9 @@ class ParameterAdminViewModel: ObservableObject {
                     name = cards[card].elements[element].name
                     description = cards[card].elements[element].value
                     label = "Редактировать: \(collection) / \(name)"
+                    loadImage(to: card, element: element, index: 0) { data in
+                        self.image = data
+                    }
                     
                 }
             } else {
@@ -208,6 +213,7 @@ class ParameterAdminViewModel: ObservableObject {
     private func addElement(to card: Int?) {
         print("Создание карточки элемента коллекции")
         if let card = card {
+            let index = cards[card].elements.count
             var element = ParameterElement()
             element.id = UUID().uuidString
             element.idCollection = cards[card].parameter.id
@@ -217,6 +223,7 @@ class ParameterAdminViewModel: ObservableObject {
             element.name = name
             element.value = description
             cards[card].elements.append(element)
+           saveImage(to: card, element: index, file: nil, data: image)
             ParameterDataManager.shared.createSubCard(to: cards[card].parameter.id, card: element) { _ in
                 self.isEmptyElements = false
                 self.showAddElement.toggle()
@@ -252,6 +259,8 @@ class ParameterAdminViewModel: ObservableObject {
                 cards[card].elements[element].idUser = idUser
                 cards[card].elements[element].name = name
                 cards[card].elements[element].value = description
+                let file = cards[card].elements[element].images.first
+                saveImage(to: card, element: element, file: file, data: image)
                 let elements = cards[card].elements[element]
                 ParameterDataManager.shared.updateSubCard(to: cards[card].parameter.id,
                                                           element: elements) { _ in
@@ -407,5 +416,33 @@ class ParameterAdminViewModel: ObservableObject {
             }
         }
         return image
+    }
+    
+    private func loadImage(to card: Int, element: Int, index: Int, completion: @escaping(Data?) -> Void) {
+        if cards[card].elements[element].images.isEmpty || index >= cards[card].elements[element].images.count {
+            completion(nil)
+        } else {
+        let file = cards[card].elements[element].images[index]
+            ParameterDataManager.shared.loadFileImage(to: file) { data in
+                completion(data)
+            }
+        }
+    }
+    
+    //MARK: -  записывает файл изображения, если имя nil создает новую запись
+    private func saveImage(to card: Int, element: Int, file: String?, data: Data?) {
+        if let data = data {
+        let doc = cards[card].parameter.id
+        let elem = cards[card].elements[element].id
+        var nameFile = UUID().uuidString
+        if let file = file {
+            nameFile = file
+        } else {
+            cards[card].elements[element].images.append(nameFile)
+        }
+        FileAppManager.shared.saveFileData(to: nameFile, type: .assets, data: data)
+        ParameterDataManager.shared.saveFileImage(to: nameFile, doc: doc, element: elem) { _ in
+        }
+        }
     }
 }

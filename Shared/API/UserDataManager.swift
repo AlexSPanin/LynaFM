@@ -77,7 +77,7 @@ class UserDataManager {
             print("Обновление фото пользователя \(userAPP.name) \(userID)")
             FileAppManager.shared.loadFileData(to: image, type: .assets) { data in
                 if let data = data {
-                    NetworkManager.shared.upLoadFile(to: image, type: .user, data: data) { _ in
+                    NetworkManager.shared.upLoadFile(to: image, type: .image, data: data) { _ in
                         print("Сохранен файл image \(userAPP.name)")
                         let image = image as Any
                         NetworkManager.shared.updateValueElement(to: .user, document: userID, key: "image", value: image)
@@ -102,7 +102,7 @@ class UserDataManager {
         myGroup.enter()
         FileAppManager.shared.loadFileData(to: image, type: .assets) { data in
             if let data = data {
-                NetworkManager.shared.upLoadFile(to: image, type: .user, data: data) { file in
+                NetworkManager.shared.upLoadFile(to: image, type: .image, data: data) { file in
                     print("Сохранен файл image \(user.name)")
                     user.image = file
                     myGroup.leave()

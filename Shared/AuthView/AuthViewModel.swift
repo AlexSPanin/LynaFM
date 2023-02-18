@@ -152,7 +152,7 @@ final class AuthViewModel: ObservableObject {
             if let user = user {
                 print("Карточка пользователя в памяти")
                 self.userAPP = user
-                self.photo = RemoteImageURL(file: self.userAPP.image, type: .user).data
+                self.photo = RemoteImageURL(file: self.userAPP.image, type: .image).data
                 self.showView = .starting
             } else {
                 print("Если карточки нет в памяти то это первый запуск и авторизация")
@@ -173,7 +173,7 @@ final class AuthViewModel: ObservableObject {
             if let image = image {
                 myGroup.enter()
                 if userAPP.image.isEmpty {
-                    NetworkManager.shared.upLoadFile(type: .user, data: image) { file in
+                    NetworkManager.shared.upLoadFile(type: .image, data: image) { file in
                         FileAppManager.shared.saveFileData(to: file, type: .assets, data: image)
                         self.userAPP.image = file
                         myGroup.leave()
@@ -241,7 +241,7 @@ final class AuthViewModel: ObservableObject {
                     UserDataManager.shared.loadUser(to: self.userAPP.id) { user in
                         if let user = user {
                             self.userAPP = user
-                            self.photo = RemoteImageURL(file: self.userAPP.image, type: .user).data
+                            self.photo = RemoteImageURL(file: self.userAPP.image, type: .image).data
                             let collection = user as Any
                             StorageManager.shared.save(type: .user, model: UserAPP.self, collection: collection)
                             self.showView = .starting

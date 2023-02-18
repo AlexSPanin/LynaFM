@@ -13,10 +13,12 @@ struct AvatarPhotoView: View {
     
     @Binding var image: Data?
     @Binding var showAvatarPhotoView: Bool
+    let filter: Bool
     
-    init(imageData: Binding<Data?>, showAvatarPhotoView: Binding<Bool>){
+    init(imageData: Binding<Data?>, showAvatarPhotoView: Binding<Bool>, filter: Bool){
         self._image = imageData
         self._showAvatarPhotoView = showAvatarPhotoView
+        self.filter = filter
     }
     
     var body: some View {
@@ -45,7 +47,7 @@ struct AvatarPhotoView: View {
             
             UpperButtonsPhotoView(viewModel: viewModel)
             
-            ScrollPhotoView(viewModel: viewModel)
+            ScrollPhotoView(viewModel: viewModel, filter: filter)
             if viewModel.photo != nil {
                 LowerButtonsPhotoView(viewModel: viewModel)
             }

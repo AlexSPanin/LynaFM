@@ -116,18 +116,36 @@ class ParameterDataManager {
             completion(status)
         }
     }
-    
-    //MARK: - сохранение файла
-    func saveFileImage(to file: String, doc: String, element: String? = nil, completion: @escaping(Bool) -> Void) {
+    //MARK: - загрузка файла
+    func loadFileImage(to file: String, completion: @escaping(Data?) -> Void) {
         print("Сохранение файла \(file)")
         FileAppManager.shared.loadFileData(to: file, type: .assets) { data in
             if let data = data {
-                NetworkManager.shared.upLoadFile(to: file, type: .parameter, data: data) { _ in
-                    print("Сохранен файл \(file)")
-                    NetworkManager.shared.updateTimeStamp(to: .parameter, doc: doc, sub: .elements, element: element)
-                }
+                completion(data)
             } else {
-                print("Файл не найден \(file)")
+                NetworkManager.shared.loadFile(type: .image, name: file) { data in
+                    if let data = data {
+                        FileAppManager.shared.saveFileData(to: file, type: .assets, data: data)
+                    }
+                    completion(data)
+                }
+            }
+        }
+    }
+    
+    //MARK: - сохранение файла
+    func saveFileImage(to file: String?, doc: String, element: String? = nil, completion: @escaping(Bool) -> Void) {
+        if let file = file {
+            print("Сохранение файла \(file)")
+            FileAppManager.shared.loadFileData(to: file, type: .assets) { data in
+                if let data = data {
+                    NetworkManager.shared.upLoadFile(to: file, type: .image, data: data) { _ in
+                        print("Сохранен файл \(file)")
+                        NetworkManager.shared.updateTimeStamp(to: .parameter, doc: doc, sub: .elements, element: element)
+                    }
+                } else {
+                    print("Файл не найден \(file)")
+                }
             }
         }
     }
@@ -136,7 +154,7 @@ class ParameterDataManager {
         print("Сохранение файла \(file)")
         FileAppManager.shared.loadFileData(to: file, type: .temp) { data in
             if let data = data {
-                NetworkManager.shared.upLoadFile(to: file, type: .parameter, data: data) { _ in
+                NetworkManager.shared.upLoadFile(to: file, type: .data, data: data) { _ in
                     print("Сохранен файл \(file)")
                     NetworkManager.shared.updateTimeStamp(to: .parameter, doc: doc, sub: .elements, element: element)
                 }
@@ -207,13 +225,13 @@ class ParameterDataManager {
             let myGroup = DispatchGroup()
             card.images.forEach { image in
                 myGroup.enter()
-                NetworkManager.shared.deleteFile(type: .parameter, name: image) { _ in
+                NetworkManager.shared.deleteFile(type: .image, name: image) { _ in
                     myGroup.leave()
                 }
             }
             card.files.forEach { file in
                 myGroup.enter()
-                NetworkManager.shared.deleteFile(type: .parameter, name: file) { _ in
+                NetworkManager.shared.deleteFile(type: .data, name: file) { _ in
                     myGroup.leave()
                 }
             }
@@ -241,14 +259,14 @@ class ParameterDataManager {
             let myGroup = DispatchGroup()
             card.images.forEach { image in
                 myGroup.enter()
-                NetworkManager.shared.deleteFile(type: .parameter, name: image) { _ in
+                NetworkManager.shared.deleteFile(type: .image, name: image) { _ in
                     myGroup.leave()
                 }
             }
             
             card.files.forEach { file in
                 myGroup.enter()
-                NetworkManager.shared.deleteFile(type: .parameter, name: file) { _ in
+                NetworkManager.shared.deleteFile(type: .data, name: file) { _ in
                     myGroup.leave()
                 }
             }

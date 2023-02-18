@@ -9,25 +9,9 @@ import Foundation
 import FirebaseStorage
 
 enum UploadType: String {
-    case system = "/system/"
-    case user = "/user/"
-    
-    case product = "/product/"
-    case product_image = "/product/image/"
-    case product_process = "/product/process/"
-    case product_data = "/product/data/"
-    
-    case material = "/material/"
-    case material_data = "/material/data/"
-    case material_image = "/material/image/"
-    
-    case bundle = "/bundle/"
-    
-    case group = "/group/"
-    case parameter = "/parameter/"
-    case stage = "/stage/"
-    
-    case order = "/order/"
+    case temp = "/temp/"
+    case data = "/data/"
+    case image = "/image/"
     
     var filePath: StorageReference {
         return Storage.storage().reference(withPath: self.rawValue)

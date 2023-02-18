@@ -41,6 +41,8 @@ struct ParameterElementTabView: View {
                             viewModel.showEditElement.toggle()
                         } label: {
                             let status = viewModel.cards[card].elements[index].isActive
+                            let image = viewModel.cards[card].elements[index].images.first
+                            
                             HStack(spacing: 2) {
                                 Image(systemName: "circle.fill")
                                     .resizable()
@@ -48,17 +50,23 @@ struct ParameterElementTabView: View {
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: WIDTH * 0.03, alignment: .center)
                                     .foregroundColor(status ? .cyan.opacity(0.8) : .red.opacity(0.8))
+                                if let image = image {
+                                    RemoteImage(file: image, type: .image)
+                                        .frame(width: HEIGHT * 0.045, height: HEIGHT * 0.045, alignment: .center)
+                                        .overlay(RoundedRectangle(cornerRadius: 2).stroke(Color.accentColor, lineWidth: 1))
+                                        .padding(.leading, 3)
+                                }
                                 Text(viewModel.cards[card].elements[index].name)
                                     .font(.body)
                                     .lineLimit(2)
                                     .minimumScaleFactor(scaleFactor)
                                     .frame(width: viewModel.isMoveElement ? WIDTH * 0.3 : WIDTH * 0.42, height: HEIGHT * 0.05, alignment: .leading)
-                                    .padding(.leading, 5)
+                                    .padding(.leading, 3)
                                 Text(viewModel.cards[card].elements[index].value)
                                     .font(.footnote)
                                     .lineLimit(3)
                                     .minimumScaleFactor(scaleFactor)
-                                    .frame(width: viewModel.isMoveElement ? WIDTH * 0.35 : WIDTH * 0.45, height: HEIGHT * 0.05, alignment: .leading)
+                                    .frame(width: viewModel.isMoveElement ? WIDTH * 0.3 : WIDTH * 0.45, height: HEIGHT * 0.05, alignment: .leading)
                             }
                             .foregroundColor(.accentColor)
                         }

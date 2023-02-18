@@ -10,14 +10,9 @@ import SwiftUI
 struct CreatedParametrElementView: View {
     @ObservedObject var viewModel: ParameterAdminViewModel
     @State private var showFolder = false
-    @State private var image = UIImage()
     let isEditing: Bool
     var isImage: Bool {
-        if let card = viewModel.card, let element = viewModel.element {
-            return !viewModel.cards[card].elements[element].images.isEmpty
-        } else {
-            return false
-        }
+        viewModel.image != nil
     }
     var subtitle: String {
         switch viewModel.type {
@@ -29,6 +24,14 @@ struct CreatedParametrElementView: View {
             return "Описание"
         default:
             return "Параметр"
+        }
+    }
+    
+    private var uiImage: UIImage {
+        if let image = viewModel.image, let ui = UIImage(data: image) {
+            return ui
+        } else {
+            return UIImage()
         }
     }
     var body: some View {
@@ -57,7 +60,7 @@ struct CreatedParametrElementView: View {
                                 showFolder.toggle()
                             } label: {
                                 if isImage {
-                                    Image(uiImage: image)
+                                    Image(uiImage: uiImage)
                                         .resizable()
                                         .interpolation(.medium)
                                         .aspectRatio(contentMode: .fit)
@@ -75,19 +78,19 @@ struct CreatedParametrElementView: View {
                             }
                             .frame(width: WIDTH * 0.3, height: WIDTH * 0.3, alignment: .center)
                             .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 1))
-                            .fileImporter(isPresented: $showFolder, allowedContentTypes: [.item], allowsMultipleSelection: false, onCompletion: { results in
-                                switch results {
-                                case .success(let fileurl):
-                                    if let url = fileurl.first {
-                                        if url.startAccessingSecurityScopedResource() {
-                                            print(url)
-                                            image = viewModel.loadFileImage(to: url)
-                                        }
-                                    }
-                                case .failure(let error):
-                                    print(error)
-                                }
-                            })
+//                            .fileImporter(isPresented: $showFolder, allowedContentTypes: [.item], allowsMultipleSelection: false, onCompletion: { results in
+//                                switch results {
+//                                case .success(let fileurl):
+//                                    if let url = fileurl.first {
+//                                        if url.startAccessingSecurityScopedResource() {
+//                                            print(url)
+//                                            image = viewModel.loadFileImage(to: url)
+//                                        }
+//                                    }
+//                                case .failure(let error):
+//                                    print(error)
+//                                }
+//                            })
                             Spacer()
                         }
                         
@@ -145,6 +148,12 @@ struct CreatedParametrElementView: View {
         }
         .onChange(of: viewModel.label) { newValue in
             viewModel.isChangeElement = true
+        }
+        .onChange(of: viewModel.image) { newValue in
+            viewModel.isChangeElement = true
+        }
+        .sheet(isPresented: $showFolder) {
+            AvatarPhotoView(imageData: $viewModel.image, showAvatarPhotoView: $showFolder, filter: false)
         }
     }
 }

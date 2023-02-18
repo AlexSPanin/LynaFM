@@ -100,8 +100,8 @@ class FileAppManager {
     }
     
     // сохранение DATA файла в директории с определенным видом
-    func saveFileData (to name: String, type: DirectoryType, data: Data) {
-        if let directory = type.url {
+    func saveFileData (to name: String?, type: DirectoryType, data: Data) {
+        if let name = name, let directory = type.url {
             let url = directory.appendingPathComponent(name)
             do {
                 try data.write(to: url)

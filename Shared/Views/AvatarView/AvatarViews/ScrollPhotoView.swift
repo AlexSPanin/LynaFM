@@ -11,6 +11,7 @@ struct ScrollPhotoView: View {
     
     @ObservedObject var viewModel: AvatarPhotoViewModel
     @State private var selectedImage: UIImage?
+    let filter: Bool
     var scrollSize: CGSize {
          CGSize(width: WIDTH * 0.8, height: WIDTH * 0.8)
     }
@@ -48,7 +49,11 @@ struct ScrollPhotoView: View {
 extension ScrollPhotoView {
     private func chagePhoto() {
         guard let image = selectedImage else { return }
-        viewModel.photo = viewModel.imageFilter(image)
+        if filter {
+            viewModel.photo = viewModel.imageFilter(image)
+        } else {
+            viewModel.photo = image
+        }
         viewModel.isChange = true
         viewModel.frameCGRect = CGRect(origin: CGPoint.zero, size: image.size)
     }
