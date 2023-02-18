@@ -154,7 +154,7 @@ class ParameterDataManager {
         
         card.images.forEach { image in
             myGroup.enter()
-            saveFileImage(to: image.key, doc: card.id) { _ in
+            saveFileImage(to: image, doc: card.id) { _ in
                 myGroup.leave()
             }
         }
@@ -181,7 +181,7 @@ class ParameterDataManager {
         
         card.images.forEach { image in
             myGroup.enter()
-            saveFileImage(to: image.key, doc: doc, element: card.id) { _ in
+            saveFileImage(to: image, doc: doc, element: card.id) { _ in
                 myGroup.leave()
             }
         }
@@ -207,7 +207,7 @@ class ParameterDataManager {
             let myGroup = DispatchGroup()
             card.images.forEach { image in
                 myGroup.enter()
-                NetworkManager.shared.deleteFile(type: .parameter, name: image.key) { _ in
+                NetworkManager.shared.deleteFile(type: .parameter, name: image) { _ in
                     myGroup.leave()
                 }
             }
@@ -241,7 +241,7 @@ class ParameterDataManager {
             let myGroup = DispatchGroup()
             card.images.forEach { image in
                 myGroup.enter()
-                NetworkManager.shared.deleteFile(type: .parameter, name: image.key) { _ in
+                NetworkManager.shared.deleteFile(type: .parameter, name: image) { _ in
                     myGroup.leave()
                 }
             }

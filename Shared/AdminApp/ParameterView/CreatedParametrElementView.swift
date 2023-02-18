@@ -9,7 +9,16 @@ import SwiftUI
 
 struct CreatedParametrElementView: View {
     @ObservedObject var viewModel: ParameterAdminViewModel
+    @State private var showFolder = false
+    @State private var image = UIImage()
     let isEditing: Bool
+    var isImage: Bool {
+        if let card = viewModel.card, let element = viewModel.element {
+            return !viewModel.cards[card].elements[element].images.isEmpty
+        } else {
+            return false
+        }
+    }
     var subtitle: String {
         switch viewModel.type {
         case TypeField.number.label:
@@ -38,13 +47,55 @@ struct CreatedParametrElementView: View {
                                 date: viewModel.date,
                                 user: viewModel.nameUser,
                                 isEditing: isEditing)
-
+                    
                     // добавить признак активности
                     VStack {
+                        
+                        // загрузка файла изображения
+                        HStack {
+                            Button {
+                                showFolder.toggle()
+                            } label: {
+                                if isImage {
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .interpolation(.medium)
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: WIDTH * 0.3, height: WIDTH * 0.3)
+                                        .clipShape(RoundedRectangle(cornerRadius: 5))
+                                } else {
+                                    Text("Загрузить изображение.")
+                                        .font(.callout)
+                                        .foregroundColor(.accentColor)
+                                        .lineLimit(2)
+                                        .multilineTextAlignment(.center)
+                                        .minimumScaleFactor(0.9)
+                                        .frame(width: WIDTH * 0.3, height: WIDTH * 0.3)
+                                }
+                            }
+                            .frame(width: WIDTH * 0.3, height: WIDTH * 0.3, alignment: .center)
+                            .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 1))
+                            .fileImporter(isPresented: $showFolder, allowedContentTypes: [.item], allowsMultipleSelection: false, onCompletion: { results in
+                                switch results {
+                                case .success(let fileurl):
+                                    if let url = fileurl.first {
+                                        if url.startAccessingSecurityScopedResource() {
+                                            print(url)
+                                            image = viewModel.loadFileImage(to: url)
+                                        }
+                                    }
+                                case .failure(let error):
+                                    print(error)
+                                }
+                            })
+                            Spacer()
+                        }
+                        
                         TextFieldView(subtitle: "Наименование",
                                       tipeTextField: .simple, text: $viewModel.name)
                         TextFieldView(subtitle: subtitle,
                                       tipeTextField: .simple, text: $viewModel.description)
+                        
                         
                         VStack {
                             CustomButton(text: "Сохранить", width: WIDTH * 0.4) {

@@ -24,7 +24,7 @@ struct Parameter: Codable {
     var type: String = ""
     var name: String = ""
     var label: String = ""
-    var images: [String: String] = [:]
+    var images: [String] = []
     var files: [String] = []
 }
 
@@ -39,6 +39,6 @@ struct ParameterElement: Codable {
     var sort: Int = 0
     var name: String = ""
     var value: String = ""
-    var images: [String: String] = [:]
+    var images: [String] = []
     var files: [String] = []
 }

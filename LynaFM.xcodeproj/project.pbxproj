@@ -114,6 +114,8 @@
 		E2F070A72997E4A2001F9676 /* CreatedStageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F070A62997E4A2001F9676 /* CreatedStageView.swift */; };
 		E2F070A92997E630001F9676 /* TextEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F070A82997E630001F9676 /* TextEditorView.swift */; };
 		E2F070AB2997FF13001F9676 /* StageTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F070AA2997FF13001F9676 /* StageTabView.swift */; };
+		E2F5360B29A0AD530024A75D /* GroupAdminViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F5360A29A0AD530024A75D /* GroupAdminViewModel.swift */; };
+		E2F5360D29A0AD760024A75D /* GroupAdminView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F5360C29A0AD760024A75D /* GroupAdminView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -202,6 +204,8 @@
 		E2F070A62997E4A2001F9676 /* CreatedStageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatedStageView.swift; sourceTree = "<group>"; };
 		E2F070A82997E630001F9676 /* TextEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEditorView.swift; sourceTree = "<group>"; };
 		E2F070AA2997FF13001F9676 /* StageTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StageTabView.swift; sourceTree = "<group>"; };
+		E2F5360A29A0AD530024A75D /* GroupAdminViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupAdminViewModel.swift; sourceTree = "<group>"; };
+		E2F5360C29A0AD760024A75D /* GroupAdminView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupAdminView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -440,6 +444,7 @@
 				E2ECEAE82984FC9400261A33 /* UsersViews */,
 				E202EFF7298FBCA800CADCF2 /* StageView */,
 				E2BE6D35299A5A9500EEA18D /* ParameterView */,
+				E2F5360929A0AD2A0024A75D /* ProductGroupView */,
 				E2ECEAE02984ED6A00261A33 /* Views */,
 			);
 			path = AdminApp;
@@ -479,6 +484,15 @@
 				E2ECEAE42984F05E00261A33 /* StartAdminAppView.swift */,
 			);
 			path = UsersViews;
+			sourceTree = "<group>";
+		};
+		E2F5360929A0AD2A0024A75D /* ProductGroupView */ = {
+			isa = PBXGroup;
+			children = (
+				E2F5360A29A0AD530024A75D /* GroupAdminViewModel.swift */,
+				E2F5360C29A0AD760024A75D /* GroupAdminView.swift */,
+			);
+			path = ProductGroupView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -619,6 +633,7 @@
 				E202EFFD298FE07500CADCF2 /* GroupDataManager.swift in Sources */,
 				E202EFFF298FE22800CADCF2 /* MaterialDataManager.swift in Sources */,
 				E202F001298FF43700CADCF2 /* ProductDataManager.swift in Sources */,
+				E2F5360B29A0AD530024A75D /* GroupAdminViewModel.swift in Sources */,
 				E211110F2981735A002552C7 /* LoadView.swift in Sources */,
 				E21BBA5D299E4A96006FF428 /* NetworkError.swift in Sources */,
 				E2B60E7F2979638F001E710D /* ButtonsPhotoDataManager.swift in Sources */,
@@ -660,6 +675,7 @@
 				E22B5EA92978510D00836E92 /* ExtensionsUIImage.swift in Sources */,
 				E23278ED2981522E0099642C /* FileAppManager.swift in Sources */,
 				E2ECEAEC2984FFE000261A33 /* CreateUserView.swift in Sources */,
+				E2F5360D29A0AD760024A75D /* GroupAdminView.swift in Sources */,
 				E2ECEAEE2985295D00261A33 /* UserLineView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -67,17 +67,20 @@ class FileAppManager {
     }
     
     // загружаем файл из директории определенной ее видом и возвращаем DATA
+    func loadFileURL(to url: URL, complition: @escaping(Data?) -> Void) {
+        do {
+            let data = fileManager.contents(atPath: url.path)
+            complition(data)
+        }
+    }
+    
+    // загружаем файл из директории определенной ее видом и возвращаем DATA
     func loadFileData(to name: String, type: DirectoryType, complition: @escaping(Data?) -> Void) {
         if let directory = type.url {
             let url = directory.appendingPathComponent(name)
             do {
                 let data = fileManager.contents(atPath: url.path)
-                if let data = data {
-                    complition(data)
-                } else {
-                    print("ERROR: load File from file manager NO DATA \(name)")
-                    complition(nil)
-                }
+                complition(data)
             }
         }
     }

@@ -27,8 +27,8 @@ struct ParameterElementTabView: View {
             ButtonMoveAdd(isMove: $viewModel.isMoveElement, showAdd: $viewModel.showAddElement)
                 .padding(.horizontal, hPadding)
                 .padding(.bottom, 5)
-                .disabled(viewModel.isEmptyElements)
-                .opacity(viewModel.isEmptyElements ? 0.1 : 1)
+//                .disabled(viewModel.isEmptyElements)
+//                .opacity(viewModel.isEmptyElements ? 0.1 : 1)
             
             Divider()
                 .frame(height: 1, alignment: .leading)

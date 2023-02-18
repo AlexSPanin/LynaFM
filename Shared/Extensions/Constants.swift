@@ -18,7 +18,7 @@ let userDefaults = UserDefaults.standard
 let fileManager = FileManager.default
 let nameLogo = "Lyna_1024"
 
-// коофициент для пересчета элементов при малой ширине экрана
+//MARK: - коофициент для пересчета элементов при малой ширине экрана
 let isSmallWIDTH: Bool = WIDTH < 340
 let isSmallHEIGHT: Bool = HEIGHT < 690
 let scaleFactor = 0.9

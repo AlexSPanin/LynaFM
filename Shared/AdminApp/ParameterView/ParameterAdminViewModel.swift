@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 class ParameterAdminViewModel: ObservableObject {
     @Published var label = "Справочник параметров материалов и продуктов"
@@ -163,6 +164,8 @@ class ParameterAdminViewModel: ObservableObject {
         }
     }
     
+    
+    
     //MARK: -  отработка экрана ошибки
     @Published var errorText = ""
     @Published var errorOccured = false
@@ -198,7 +201,7 @@ class ParameterAdminViewModel: ObservableObject {
         ParameterDataManager.shared.createCard(to: parameter) { _ in
             self.cards.append(ParameterAPP(parameter: parameter))
             self.card = parameter.sort - 1
-            self.showAddElement.toggle()
+   //         self.showAddElement.toggle()
         }
     }
     //MARK: - создание карточки элемента коллекции
@@ -267,23 +270,28 @@ class ParameterAdminViewModel: ObservableObject {
         var collection = [ParameterAPP]()
         ParameterDataManager.shared.loadCollection { parameters in
             if let parameters = parameters {
-                for index in parameters.indices {
-                    var parameterAPP = ParameterAPP(parameter: parameters[index])
-                    myGroup.enter()
-                    ParameterDataManager.shared.loadSubCollection(to: parameters[index].id) { elements in
-                        if let elements = elements {
-                            let elements = elements.sorted(by: {$0.sort < $1.sort})
-                            parameterAPP.elements = elements
-                            myGroup.leave()
-                        } else {
-                            myGroup.leave()
+                if parameters.isEmpty {
+                    self.showTabCollection.toggle()
+      //              self.showAdd.toggle()
+                } else {
+                    for index in parameters.indices {
+                        var parameterAPP = ParameterAPP(parameter: parameters[index])
+                        myGroup.enter()
+                        ParameterDataManager.shared.loadSubCollection(to: parameters[index].id) { elements in
+                            if let elements = elements {
+                                let elements = elements.sorted(by: {$0.sort < $1.sort})
+                                parameterAPP.elements = elements
+                                myGroup.leave()
+                            } else {
+                                myGroup.leave()
+                            }
                         }
-                    }
-                    myGroup.notify(queue: .main) {
-                        collection.append(parameterAPP)
-                        if index == parameters.count - 1 {
-                            self.cards = collection.sorted(by: {$0.parameter.sort < $1.parameter.sort})
-                            self.showTabCollection.toggle()
+                        myGroup.notify(queue: .main) {
+                            collection.append(parameterAPP)
+                            if index == parameters.count - 1 {
+                                self.cards = collection.sorted(by: {$0.parameter.sort < $1.parameter.sort})
+                                self.showTabCollection.toggle()
+                            }
                         }
                     }
                 }
@@ -373,10 +381,7 @@ class ParameterAdminViewModel: ObservableObject {
         }
     }
     
-    
-    
-    
-    
+    //MARK: -  сортировка карточек
     private func reSorting(to card: Int?) {
         if let card = card {
             for index in 0..<cards[card].elements.count {
@@ -393,4 +398,14 @@ class ParameterAdminViewModel: ObservableObject {
         }
     }
     
+    //MARK: - загрузка или сохранение файлов изображения
+    func loadFileImage(to url: URL) -> UIImage {
+        var image = UIImage()
+        FileAppManager.shared.loadFileURL(to: url) { data in
+            if let data = data, let uiImage = UIImage(data: data) {
+               image = uiImage
+            }
+        }
+        return image
+    }
 }

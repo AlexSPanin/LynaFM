@@ -100,7 +100,6 @@ class StageAdminViewModel: ObservableObject {
     
     private func closeViews() {
         label = "Справочник производственных этапов"
-        fethStorage()
     }
     
     //MARK: -  получение актуального массива  из сети
@@ -183,15 +182,6 @@ class StageAdminViewModel: ObservableObject {
                 self.closeViews()
             }
         }
-    }
-    
-    private func fethStorage() {
-//        print("Получение коллекции карточек  из памяти")
-//        StorageManager.shared.load(type: .stages, model: [ProductionStage].self) { cards in
-//            if let cards = cards {
-//                self.cards = cards.sorted(by: {$0.sort < $1.sort})
-//            }
-//        }
     }
     
     private func saveStorage() {
