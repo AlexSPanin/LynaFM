@@ -22,7 +22,7 @@ struct AvatarPhotoView: View {
     }
     
     var body: some View {
-        VStack {            
+        VStack(spacing: hPadding) {            
             HStack{
                 Button {
                     showAvatarPhotoView.toggle()
@@ -42,9 +42,7 @@ struct AvatarPhotoView: View {
             .font(.body)
             .padding(.horizontal, hPadding)
             .padding(.top, hPadding)
-            
-            Spacer()
-            
+
             UpperButtonsPhotoView(viewModel: viewModel)
             
             ScrollPhotoView(viewModel: viewModel, filter: filter)

@@ -157,7 +157,7 @@ struct CreatedGroupView: View {
                     } action2: { }
                 } else {
                     NotificationView(text: viewModel.errorText, button: "Продолжить", button2: "Отменить") {
-                        viewModel.inActive(to: viewModel.card)
+                        viewModel.inActive(to: viewModel.index)
                         viewModel.errorOccured.toggle()
                     } action2: {
                         viewModel.isActive.toggle()

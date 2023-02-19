@@ -13,7 +13,7 @@ struct ScrollPhotoView: View {
     @State private var selectedImage: UIImage?
     let filter: Bool
     var scrollSize: CGSize {
-         CGSize(width: WIDTH * 0.8, height: WIDTH * 0.8)
+         CGSize(width: WIDTH * 0.9, height: WIDTH * 0.9)
     }
     
     var body: some View {

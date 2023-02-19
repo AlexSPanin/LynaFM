@@ -15,7 +15,14 @@ class GroupAdminViewModel: ObservableObject {
     @Published var description: String = ""
     @Published var type: String = ""
     
-    @Published var card: Int?
+    @Published var card: Group? {
+        didSet {
+            if let card = card {
+                index = cards.firstIndex(where: { card.id == $0.id } )
+            }
+        }
+    }
+    @Published var index: Int?
     
     @Published var nameUser = ""
     @Published var date = ""
@@ -27,7 +34,7 @@ class GroupAdminViewModel: ObservableObject {
     @Published var isDeleteImage = false {
         didSet {
             image = nil
-            if let card = card {
+            if let card = index {
             cards[card].image = ""
             }
         }
@@ -41,7 +48,7 @@ class GroupAdminViewModel: ObservableObject {
     }
     @Published var isEdit = false {
         didSet {
-            edit(to: card)
+            edit(to: index)
         }
     }
     @Published var isMove = false {
@@ -70,7 +77,7 @@ class GroupAdminViewModel: ObservableObject {
     @Published var showEdit = false {
         didSet {
             if showEdit {
-                if let card = card {
+                if let card = index {
                     label = "Редактировать: \(name)"
                     date = Date().timeStamp().croppingLastRigthSimbols(" ")
                     isActive = cards[card].isActive
@@ -91,7 +98,7 @@ class GroupAdminViewModel: ObservableObject {
     @Published var isChange = false
     @Published var isActive = false {
         didSet {
-            if let card = card {
+            if let card = index {
                 if isActive != cards[card].isActive {
                 checkActive(to: card)
                 }
@@ -126,12 +133,12 @@ class GroupAdminViewModel: ObservableObject {
         group.id = UUID().uuidString
         group.idUser = idUser
         group.date = Date().timeStamp()
-        group.sort = cards.count + 1
+        group.sort = cards.filter({$0.type == type}).count + 1
         group.name = name
         group.label = description
         group.type = type
         cards.append(group)
-        card = index
+        self.index = index
         saveImage(to: index, file: nil, data: image)
         GroupDataManager.shared.createCard(to: group) { _ in
             self.showAdd.toggle()
@@ -240,6 +247,8 @@ class GroupAdminViewModel: ObservableObject {
     }
     //MARK: -  методы по сортировке коллекций
     func move(from source: IndexSet, to dest: Int) {
+        print(source)
+        print(dest)
         cards.move(fromOffsets: source, toOffset: dest)
         isChange = true
     }
