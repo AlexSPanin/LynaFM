@@ -193,14 +193,17 @@ class NetworkManager {
         }
     }
     //MARK: - изменение времени обновления карточки коллекции
-    func updateTimeStamp(to collection: NetworkCollection, doc: String, sub: NetworkCollection?, element: String? = nil) {
+    func updateTimeStamp(to collection: NetworkCollection, doc: String, sub: NetworkCollection? = .elements, element: String? = nil) {
         let time = Date().timeStamp() as Any
         if let sub = sub, let element = element {
-            NetworkManager.shared.updateValueSubElement(to: collection, document: doc,
-                                                        sub: sub, element: element,
-                                                        key: "date", value: time)
+            updateValueSubElement(to: collection,
+                                  document: doc,
+                                  sub: sub,
+                                  element: element,
+                                  key: "date",
+                                  value: time)
         } else {
-            NetworkManager.shared.updateValueElement(to: collection, document: doc, key: "date", value: time)
+            updateValueElement(to: collection, document: doc, key: "date", value: time)
         }
     }
 }

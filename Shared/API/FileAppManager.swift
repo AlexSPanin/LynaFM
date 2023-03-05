@@ -15,7 +15,6 @@ class FileAppManager {
     // проверяем содержание директории в зависимости от ее типа
     func checkDirectory(to type: DirectoryType) -> [String]? {
         if let directory = type.url {
-   //         print("Check Diretory: \(directory)")
             do {
                 let filesInDirectory = try fileManager.contentsOfDirectory(atPath: directory.path)
                 return filesInDirectory
@@ -27,7 +26,7 @@ class FileAppManager {
     }
     
     // удаляем файл в директории определенной ее ттипом
-    func deleteFileProject(to file: String, type: DirectoryType) {
+    func deleteFile(to file: String, type: DirectoryType) {
         if let directory = type.url {
             let url = directory.appendingPathComponent(file)
             do {

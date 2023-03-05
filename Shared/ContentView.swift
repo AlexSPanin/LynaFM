@@ -8,24 +8,25 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var auth: AuthViewModel
     @EnvironmentObject var navigation: NavigationViewModel
     
     var body: some View {
         
         ZStack {
-            switch navigation.view {
+            switch navigation.showView {
             case .auth:
-                AuthView(checkList: navigation.checkList) 
+                AuthView(systemAPP: navigation.systemStorage)
             case .load:
-                LoadView(label: navigation.label)
+                LoadView(label: navigation.title)
             case .error:
-                ErrorView(label: navigation.label)
+                ErrorView(label: navigation.title)
             case .admin:
                 AdminAppView()
             case .order:
-                ErrorView(label: navigation.label)
+                ErrorView(label: navigation.title)
             case .stage:
-                ErrorView(label: navigation.label)
+                ErrorView(label: navigation.title)
             }
         }
     }

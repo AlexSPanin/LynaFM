@@ -56,15 +56,13 @@ struct EditUserView: View {
                     .frame(height: HEIGHT * 0.25)
                     .padding(.vertical, hPadding)
                     
-                    VStack {
-                        CustomButton(text: "Сохранить", width: WIDTH * 0.4) {
-                            viewModel.isEditUser.toggle()
-                        }
-                        HorizontalDividerLabelView(label: "или")
-                        TextButton(text: "Закрыть") {
-                            viewModel.showEditUser.toggle()
-                        }
+                    ReturnAndSaveButton(disableSave: false,
+                                        disableBack: false) {
+                        viewModel.isEditUser.toggle()
+                    } actionBack: {
+                        viewModel.showEditUser.toggle()
                     }
+
                     .padding(.bottom, hPadding)
                 }
             }

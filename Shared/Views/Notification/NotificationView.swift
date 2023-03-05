@@ -15,20 +15,19 @@ struct NotificationView: View {
     let action2: (() -> Void)
     var body: some View {
         ZStack {
-            Color.accentColor.opacity(0.1)
+            mainLigth
                 .ignoresSafeArea()
-            
             VStack(alignment: .center){
                 
                 Image(systemName: "info.circle")
                     .resizable()
-                    .foregroundColor(.orange)
-                    .frame(width: 30, height: 30)
-                    .padding(.vertical, 20)
+                    .foregroundColor(mainBack)
+                    .frame(width: imageS, height: imageS)
+                    .padding(.vertical, hPadding)
                 Text(text)
                     .multilineTextAlignment(.center)
-                    .font(.footnote)
-                    .minimumScaleFactor(0.9)
+                    .font(fontSm)
+                    .minimumScaleFactor(scale)
                     .lineLimit(3)
                 HStack(alignment: .center, spacing: 30) {
                     
@@ -37,12 +36,12 @@ struct NotificationView: View {
                             action2()
                         }, label: {
                             Text(button2)
-                                .font(.footnote)
-                                .foregroundColor(Color.cyan.opacity(0.8))
+                                .font(fontSm)
+                                .foregroundColor(mainRigth)
                         })
-                        .frame(width: WIDTH * 0.25, height: WIDTH * 0.07)
+                        .frame(width: screen * 0.25, height: screen * 0.07)
                         .overlay(
-                            RoundedRectangle(cornerRadius: 5).stroke(Color.cyan.opacity(0.8), lineWidth: 1)
+                            RoundedRectangle(cornerRadius: 5).stroke(mainRigth, lineWidth: 1)
                         )
                     }
                     
@@ -50,19 +49,19 @@ struct NotificationView: View {
                         action()
                     }, label: {
                         Text(button)
-                            .font(.footnote)
-                            .foregroundColor(Color.orange.opacity(0.8))
+                            .font(fontSm)
+                            .foregroundColor(mainBack)
                     })
-                    .frame(width: WIDTH * 0.25, height: WIDTH * 0.07)
+                    .frame(width: screen * 0.25, height: screen * 0.07)
                     .overlay(
-                        RoundedRectangle(cornerRadius: 5).stroke(Color.orange.opacity(0.8), lineWidth: 1)
+                        RoundedRectangle(cornerRadius: 5).stroke(mainBack, lineWidth: 1)
                     )
 
                 }
                 .padding(.vertical, 10)
             }
             .padding(.all, 15)
-            .frame(minWidth: WIDTH * 0.8)
+            .frame(minWidth: screen * 0.8)
             .background(Color.white
                 .cornerRadius(10)
                 .shadow(color: .black.opacity(0.3),

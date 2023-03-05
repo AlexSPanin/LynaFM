@@ -28,12 +28,12 @@ struct CreatedStageView: View {
                             .frame(width: WIDTH * 0.9, alignment: .leading)
                             .font(.body)
                             .lineLimit(1)
-                            .minimumScaleFactor(scaleFactor)
+                            .minimumScaleFactor(scale)
                         Text("Ответственный: \(viewModel.nameUser)")
                             .frame(width: WIDTH * 0.9, alignment: .leading)
                             .font(.body)
                             .lineLimit(1)
-                            .minimumScaleFactor(scaleFactor)
+                            .minimumScaleFactor(scale)
                     }
                     .foregroundColor(.accentColor)
                     .padding(.top, hPadding)
@@ -44,7 +44,7 @@ struct CreatedStageView: View {
                         Text(viewModel.isActive ? "Активировано" : "Архив")
                             .font(.body)
                             .lineLimit(1)
-                            .minimumScaleFactor(scaleFactor)
+                            .minimumScaleFactor(scale)
                             .foregroundColor(viewModel.isActive ? .cyan.opacity(0.8) : .orange.opacity(0.8))
                     }
                     .disabled(!isEditing)
@@ -55,29 +55,19 @@ struct CreatedStageView: View {
                                       tipeTextField: .simple, text: $viewModel.card.name)
                         TextEditorView(subtitle: "Примечание", height: HEIGHT * 0.3, text: $viewModel.card.label)
                         
-                        VStack {
-                            CustomButton(text: "Сохранить", width: WIDTH * 0.4) {
-                                if isEditing {
-                                    viewModel.isEdit.toggle()
-                                } else {
-                                    viewModel.isAdd.toggle()
-                                }
+                        ReturnAndSaveButton(disableSave: editMode?.wrappedValue == .active,
+                                            disableBack: editMode?.wrappedValue == .active) {
+                            if isEditing {
+                                viewModel.isEdit.toggle()
+                            } else {
+                                viewModel.isAdd.toggle()
                             }
-                            .disabled(editMode?.wrappedValue == .active)
-                            .opacity(editMode?.wrappedValue == .active ? 0 : 1)
-                            
-                            HorizontalDividerLabelView(label: "или")
-                            
-                            TextButton(text: "Закрыть") {
-                                if isEditing {
-                                    viewModel.showEdit.toggle()
-                                } else {
-                                    viewModel.showAdd.toggle()
-                                }
+                        } actionBack: {
+                            if isEditing {
+                                viewModel.showEdit.toggle()
+                            } else {
+                                viewModel.showAdd.toggle()
                             }
-                            .foregroundColor(.cyan.opacity(0.8))
-                            .disabled(editMode?.wrappedValue == .active)
-                            .opacity(editMode?.wrappedValue == .active ? 0 : 1)
                         }
                     }
                     .padding(.all, hPadding)

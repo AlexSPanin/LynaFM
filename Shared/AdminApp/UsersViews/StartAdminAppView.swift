@@ -34,10 +34,14 @@ struct StartAdminAppView: View {
                 }
                 HorizontalDividerLabelView(label: "или")
                 HStack(alignment: .center, spacing: 20) {
-                    TextButton(text: "Сменить профиль") {
+                    TextButton(text: "Сменить профиль",
+                               size: screen * 0.35,
+                               color: mainColor) {
                         viewModel.isExit.toggle()
                     }
-                    TextButton(text: "Пользователи") {
+                    TextButton(text: "Пользователи",
+                               size: screen * 0.35,
+                               color: mainColor) {
                         viewModel.showView = .property
                     }
                 }
@@ -45,7 +49,7 @@ struct StartAdminAppView: View {
         }
         .onChange(of: viewModel.isExit) { newValue in
             if newValue {
-                navigation.view = .auth
+                navigation.showView = .auth
             }
         }
     }

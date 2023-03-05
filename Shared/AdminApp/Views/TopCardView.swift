@@ -20,12 +20,12 @@ struct TopCardView: View {
                     .frame(width: WIDTH * 0.9, alignment: .leading)
                     .font(.footnote)
                     .lineLimit(1)
-                    .minimumScaleFactor(scaleFactor)
+                    .minimumScaleFactor(scale)
                 Text("Ответственный: \(user)")
                     .frame(width: WIDTH * 0.9, alignment: .leading)
                     .font(.footnote)
                     .lineLimit(1)
-                    .minimumScaleFactor(scaleFactor)
+                    .minimumScaleFactor(scale)
             }
             .foregroundColor(.accentColor)
             .padding(.top, hPadding)
@@ -34,7 +34,7 @@ struct TopCardView: View {
                     Text(isActive ? "Активна" : "Архив")
                         .font(.callout)
                         .lineLimit(1)
-                        .minimumScaleFactor(scaleFactor)
+                        .minimumScaleFactor(scale)
                         .foregroundColor(isActive ? .cyan.opacity(0.8) : .orange.opacity(0.8))
                     
                 }

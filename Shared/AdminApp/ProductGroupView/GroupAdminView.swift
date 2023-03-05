@@ -22,12 +22,11 @@ struct GroupAdminView: View {
             .padding(.top, 60)
             VStack {
                 Spacer()
-                HorizontalDividerLabelView(label: "или")
-                HStack(alignment: .center, spacing: 20) {
-                    TextButton(text: "Вернуться") {
-                        viewModelAdmin.showView = .start
-                    }
-                    .foregroundColor(.cyan.opacity(0.8))
+                HorizontalDividerLabelView(label: TypeMessage.or.label)
+                TextButton(text: TypeMessage.back.label ,
+                           size: screen * 0.35,
+                           color: mainRigth) {
+                    viewModelAdmin.showView = .start
                 }
             }
             .padding(.vertical, hPadding)

@@ -12,34 +12,29 @@ struct ScrollPhotoView: View {
     @ObservedObject var viewModel: AvatarPhotoViewModel
     @State private var selectedImage: UIImage?
     let filter: Bool
-    var scrollSize: CGSize {
-         CGSize(width: WIDTH * 0.9, height: WIDTH * 0.9)
-    }
+    let scrollSize: CGSize
     
     var body: some View {
-        ZStack {
-            if viewModel.photo != nil {
-                ZStack {
+        VStack {
+            Divider()
+                .frame(width: screen * 0.9, height: 1, alignment: .center)
+            ZStack {
+                if viewModel.photo != nil {
                     ImageScrollView(viewModel: viewModel, scrollSize: scrollSize)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 5).stroke( viewModel.colorButton, lineWidth: 2)
-                        )
-            }
-            } else {
-                ZStack {
-                    Image(systemName: "camera.on.rectangle")
+                } else {
+                    Image(systemName: "camera.viewfinder")
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(width: scrollSize.width/3, height: scrollSize.width/3)
+                        .frame(width: imageS, height: imageS)
                         .foregroundColor(viewModel.colorButton)
                 }
             }
+            .frame(width: scrollSize.width, height: scrollSize.height)
+            .background(Color.white)
+            
+            Divider()
+                .frame(width: screen * 0.9, height: 1, alignment: .center)
         }
-        .frame(width: scrollSize.width, height: scrollSize.height)
-        .background(Color.white)
-        .overlay(
-            RoundedRectangle(cornerRadius: buttonCorner).stroke( viewModel.colorButton, lineWidth: 1)
-        )
         .sheet(isPresented: $viewModel.isImagePickerDisplay, onDismiss: chagePhoto) {
             ImagePickerView(selectedImage: self.$selectedImage, sourceType: viewModel.sourceType)
         }

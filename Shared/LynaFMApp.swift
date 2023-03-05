@@ -44,13 +44,14 @@ class AppState: ObservableObject {
 @main
 struct LynaFMApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    
+    @StateObject var auth = AuthViewModel()
     @StateObject var navigation = NavigationViewModel()
     
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .preferredColorScheme(.light)
+                .environmentObject(auth)
                 .environmentObject(navigation)
                 .environmentObject(AppState())
                 .onAppear {

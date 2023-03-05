@@ -14,8 +14,8 @@ struct ParameterAPP: Codable {
 }
 
 struct Parameter: Codable {
-    var id: String = ""
-    var date: String = ""
+    var id: String = UUID().uuidString
+    var date: String = Date().timeStamp()
     var idUser: String = ""
     var isActive: Bool = true
     var countUse: Int = 0
@@ -29,9 +29,9 @@ struct Parameter: Codable {
 }
 
 struct ParameterElement: Codable {
-    var id: String = ""
+    var id: String = UUID().uuidString
     var idCollection: String = ""
-    var date: String = ""
+    var date: String = Date().timeStamp()
     var idUser: String = ""
     var isActive: Bool = true
     var countUse: Int = 0

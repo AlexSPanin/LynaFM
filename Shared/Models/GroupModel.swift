@@ -9,8 +9,8 @@
 import Foundation
 
 struct Group: Codable {
-    var id: String = ""
-    var date: String = ""
+    var id: String = UUID().uuidString
+    var date: String = Date().timeStamp()
     var idUser: String = ""
     var isActive: Bool = true
     var countUse: Int = 0

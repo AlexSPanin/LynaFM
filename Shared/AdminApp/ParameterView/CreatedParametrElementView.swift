@@ -10,6 +10,7 @@ import SwiftUI
 struct CreatedParametrElementView: View {
     @ObservedObject var viewModel: ParameterAdminViewModel
     @State private var showFolder = false
+    @State private var isChange = false
     let isEditing: Bool
     var isImage: Bool {
         viewModel.image != nil
@@ -42,6 +43,7 @@ struct CreatedParametrElementView: View {
             return UIImage()
         }
     }
+    private let size = CGSize(width: WIDTH, height: WIDTH * 3 / 4)
     var body: some View {
         ZStack {
             TopLabelButtonView(label: viewModel.label) {
@@ -127,26 +129,19 @@ struct CreatedParametrElementView: View {
                         .disabled(isColor)
                         .opacity(isColor ? 0.3 : 1)
                         
-                        
-                        VStack {
-                            CustomButton(text: "Сохранить", width: WIDTH * 0.4) {
-                                if isEditing {
-                                    viewModel.isEditElement.toggle()
-                                } else {
-                                    viewModel.isAddElement.toggle()
-                                }
+                        ReturnAndSaveButton(disableSave: isDisable,
+                                            disableBack: false) {
+                            if isEditing {
+                                viewModel.isEditElement.toggle()
+                            } else {
+                                viewModel.isAddElement.toggle()
                             }
-                            .disabled(isDisable)
-                            .opacity(isDisable ? 0 : 1)
-                            HorizontalDividerLabelView(label: "или")
-                            TextButton(text: "Закрыть") {
-                                if isEditing {
-                                    viewModel.showEditElement.toggle()
-                                } else {
-                                    viewModel.showAddElement.toggle()
-                                }
+                        } actionBack: {
+                            if isEditing {
+                                viewModel.showEditElement.toggle()
+                            } else {
+                                viewModel.showAddElement.toggle()
                             }
-                            .foregroundColor(.cyan.opacity(0.8))
                         }
                     }
                 }
@@ -163,7 +158,9 @@ struct CreatedParametrElementView: View {
                         viewModel.errorOccured.toggle()
                     } action2: { }
                 } else {
-                    NotificationView(text: viewModel.errorText, button: "Продолжить", button2: "Отменить") {
+                    NotificationView(text: viewModel.errorText,
+                                     button: TypeMessage.enter.label,
+                                     button2: TypeMessage.back.label) {
                         viewModel.inActiveElement(to: viewModel.card, element: viewModel.element)
                         viewModel.errorOccured.toggle()
                     } action2: {
@@ -186,7 +183,10 @@ struct CreatedParametrElementView: View {
             viewModel.description = newValue.hexDescription()
         })
         .sheet(isPresented: $showFolder) {
-            AvatarPhotoView(imageData: $viewModel.image, showAvatarPhotoView: $showFolder, filter: false)
+            AvatarPhotoView(imageData: $viewModel.image,
+                            isChange: $isChange,
+                            showAvatarPhotoView: $showFolder,
+                            size: size, filter: false)
         }
     }
 }

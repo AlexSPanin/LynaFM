@@ -6,73 +6,12 @@
 //
 
 import Foundation
-import FirebaseFirestoreSwift
 
-// роли пользователей
-enum UserRole: CaseIterable, Codable {
-    case owner, app, order, stage, admin
-    
-    var role: String {
-        switch self {
-        case .owner:
-            return "owner"
-        case .app:
-            return "app"
-        case .order:
-            return "order"
-        case .stage:
-            return "stage"
-        case .admin:
-            return "admin"
-        }
-    }
-    var label: String {
-        switch self {
-        case .owner:
-            return "Владелец"
-        case .app:
-            return "Администратор Приложения"
-        case .order:
-            return "Администратор Заказов"
-        case .stage:
-            return "Администратор Участка"
-        case .admin:
-            return "Администратор"
-        }
-    }
-}
-
-// модель пользователя для внешнего хранения
-struct User: Identifiable,  Codable {
-  @DocumentID var id: String?
-    var date = Date().timeStamp()
-    var isActive = true
-   
-    var email: String
-    var phone: String
-    var name: String
-    var surname: String
-    
-    var image = ""
-    var role = ""
-    var roles = [String]()
-    var stages = [String]()
-    
-    var profile = ""
-    
-    static func getUser(email: String, phone: String, name: String, surname: String) -> User {
-       return  User(email: email, phone: phone, name: name, surname: surname)
-    }
-    
-    static func getEmptyUser() -> User {
-       return  User(email: "", phone: "", name: "", surname: "")
-    }
-}
-
-// модель пользователя для внешнего хранения
+// модель пользователя
 struct UserAPP: Codable {
-    var id: String?
-    var date = ""
+    var id = UUID().uuidString
+    var date = Date().timeStamp()
+    var idUser = ""
     
     var isActive = true
    

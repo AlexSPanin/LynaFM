@@ -8,6 +8,8 @@
 import SwiftUI
 
 class ParameterAdminViewModel: ObservableObject {
+    
+    
     //MARK: - отработка загрузки изображения
     @Published var sourceType: UIImagePickerController.SourceType = .photoLibrary
     @Published var isImagePickerDisplay = false
@@ -200,10 +202,10 @@ class ParameterAdminViewModel: ObservableObject {
     
     init() {
         print("START: ParameterAdminViewModel")
-        idUser = AuthUserManager.shared.currentUserID()
-        UserDataManager.shared.getNameUser(to: idUser) { name in
-            if let name = name {
-                self.nameUser = name
+        StorageManager.shared.load(type: .user, model: UserAPP.self) { card in
+            if let card = card {
+                self.idUser = card.id
+                self.nameUser = card.name + " " + card.surname
             }
         }
         fethNetwork()

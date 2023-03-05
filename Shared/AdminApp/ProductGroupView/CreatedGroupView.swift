@@ -11,6 +11,8 @@ struct CreatedGroupView: View {
     @Environment(\.editMode) private var editMode
     @ObservedObject var viewModel: GroupAdminViewModel
     @State private var showFolder = false
+    @State private var isChange = false
+   
     let isEditing: Bool
     var isImage: Bool {
         viewModel.image != nil
@@ -25,7 +27,7 @@ struct CreatedGroupView: View {
     var isDisable: Bool {
         editMode?.wrappedValue == .active || viewModel.type == "" || viewModel.name.isEmpty
     }
-    
+    private let size = CGSize(width: WIDTH, height: WIDTH * 3 / 4)
     var body: some View {
         ZStack {
             TopLabelButtonView(label: viewModel.label) {
@@ -88,7 +90,7 @@ struct CreatedGroupView: View {
                         Text("Тип товарной группы:")
                             .font(.body)
                             .lineLimit(1)
-                            .minimumScaleFactor(scaleFactor)
+                            .minimumScaleFactor(scale)
                             .foregroundColor(.accentColor)
                         
                         Menu {
@@ -122,28 +124,21 @@ struct CreatedGroupView: View {
                 }
                 
                 Spacer()
-                CustomButton(text: "Сохранить", width: WIDTH * 0.4) {
+                
+                ReturnAndSaveButton(disableSave: isDisable,
+                                    disableBack: editMode?.wrappedValue == .active) {
                     if isEditing {
                         viewModel.isEdit.toggle()
                     } else {
                         viewModel.isAdd.toggle()
                     }
-                }
-                .disabled(isDisable)
-                .opacity(isDisable ? 0 : 1)
-                
-                HorizontalDividerLabelView(label: "или")
-                
-                TextButton(text: "Закрыть") {
+                } actionBack: {
                     if isEditing {
                         viewModel.showEdit.toggle()
                     } else {
                         viewModel.showAdd.toggle()
                     }
                 }
-                .foregroundColor(.cyan.opacity(0.8))
-                .disabled(editMode?.wrappedValue == .active)
-                .opacity(editMode?.wrappedValue == .active ? 0 : 1)
             }
             .padding(.top, 60)
             .padding(.horizontal, hPadding)
@@ -176,7 +171,10 @@ struct CreatedGroupView: View {
             viewModel.isChange = true
         }
         .sheet(isPresented: $showFolder) {
-            AvatarPhotoView(imageData: $viewModel.image, showAvatarPhotoView: $showFolder, filter: false)
+            AvatarPhotoView(imageData: $viewModel.image,
+                            isChange: $isChange,
+                            showAvatarPhotoView: $showFolder,
+                            size: size, filter: false)
         }
     }
 }

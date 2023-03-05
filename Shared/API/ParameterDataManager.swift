@@ -286,7 +286,7 @@ class ParameterDataManager {
     //MARK: - методы работы с параметрами товара
     // сохранение карточки параметров товара
     func upLoadParameter(param: Parameter?, completion: @escaping (Bool) -> Void) {
-        let collection = NetworkCollection.stage.collection
+        let collection = NetworkCollection.parameter.collection
         if let param = param {
             var id = param.id
             if param.id.isEmpty {
@@ -314,7 +314,7 @@ class ParameterDataManager {
     
     // сохранение карточки параметров товара
     func upLoadParameterElement(to doc: String, param: ParameterElement?, completion: @escaping (Bool) -> Void) {
-        let collection = NetworkCollection.stage.collection
+        let collection = NetworkCollection.parameter.collection
         if let param = param {
             var id = param.id
             if param.id.isEmpty {

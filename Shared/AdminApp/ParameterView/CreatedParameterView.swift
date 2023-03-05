@@ -35,7 +35,7 @@ struct CreatedParameterView: View {
                         Text("Тип параметра:")
                             .font(.body)
                             .lineLimit(1)
-                            .minimumScaleFactor(scaleFactor)
+                            .minimumScaleFactor(scale)
                             .foregroundColor(.accentColor)
                         
                         Menu {
@@ -75,7 +75,7 @@ struct CreatedParameterView: View {
                             .frame(width: WIDTH * 0.9, alignment: .leading)
                             .font(.body)
                             .lineLimit(1)
-                            .minimumScaleFactor(scaleFactor)
+                            .minimumScaleFactor(scale)
                         Spacer()
                     }
                     .foregroundColor(.accentColor)
@@ -84,7 +84,9 @@ struct CreatedParameterView: View {
                     ParameterElementTabView(viewModel: viewModel)
                 }
                 Spacer()
-                CustomButton(text: "Сохранить", width: WIDTH * 0.4) {
+                
+                ReturnAndSaveButton(disableSave: isDisable,
+                                    disableBack: editMode?.wrappedValue == .active) {
                     if isEditing {
                         viewModel.isEdit.toggle()
                     } else {
@@ -94,22 +96,13 @@ struct CreatedParameterView: View {
                             viewModel.showAdd.toggle()
                         }
                     }
-                }
-                .disabled(isDisable)
-                .opacity(isDisable ? 0 : 1)
-                
-                HorizontalDividerLabelView(label: "или")
-                
-                TextButton(text: "Закрыть") {
+                } actionBack: {
                     if isEditing {
                         viewModel.showEdit.toggle()
                     } else {
                         viewModel.showAdd.toggle()
                     }
                 }
-                .foregroundColor(.cyan.opacity(0.8))
-                .disabled(editMode?.wrappedValue == .active)
-                .opacity(editMode?.wrappedValue == .active ? 0 : 1)
             }
             .padding(.top, 60)
             .padding(.horizontal, hPadding)
@@ -137,6 +130,12 @@ struct CreatedParameterView: View {
         }
         .onChange(of: viewModel.description) { newValue in
             viewModel.isChange = true
+        }
+        .sheet(isPresented: $viewModel.showAddElement) {
+            CreatedParametrElementView(viewModel: viewModel, isEditing: false)
+        }
+        .sheet(isPresented: $viewModel.showEditElement) {
+            CreatedParametrElementView(viewModel: viewModel, isEditing: true)
         }
     }
 }

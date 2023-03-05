@@ -9,8 +9,8 @@
 import Foundation
 
 struct Product: Codable {
-    var id: String = ""
-    var date: String = ""
+    var id: String = UUID().uuidString
+    var date: String = Date().timeStamp()
     var idUser: String = ""
     var idGroup: String = ""
     var isActive: Bool = true
@@ -26,8 +26,8 @@ struct Product: Codable {
 }
 
 struct ProductAPP: Codable {
-    var id: String = ""
-    var date: String = ""
+    var id: String = UUID().uuidString
+    var date: String = Date().timeStamp()
     var idUser: String = ""
     var idGroup: String = ""
     var isActive: Bool = true

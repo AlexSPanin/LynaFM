@@ -14,12 +14,12 @@ class AuthUserManager {
     
     private init() {}
     
-    func currentUserID() -> String {
-        return Auth.auth().currentUser?.uid ?? ""
+    func currentUserID() -> String? {
+        return Auth.auth().currentUser?.uid
     }
     
-    func currentUserEmail() -> String {
-        return Auth.auth().currentUser?.email ?? ""
+    func currentUserEmail() -> String? {
+        return Auth.auth().currentUser?.email
     }
     
     

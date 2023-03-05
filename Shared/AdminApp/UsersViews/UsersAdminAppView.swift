@@ -30,7 +30,7 @@ struct UsersAdminAppView: View {
                     Spacer()
                     
                 }
-                .frame(width: WIDTH * 0.95, height: WIDTH * 0.6)
+                .frame(width: screen * 0.95, height: screen * 0.6)
                 .background(
                     Color.accentColor.opacity(0.05).cornerRadius(5)
                         .overlay(
@@ -39,14 +39,9 @@ struct UsersAdminAppView: View {
                 )
                 
                 VStack {
-                    HorizontalDividerLabelView(label: "или")
-                    HStack(alignment: .center, spacing: 20) {
-                        TextButton(text: "Вернуться") {
-                            viewModelAdmin.showView = .start
-                        }
-//                        TextButton(text: "Добавить пользователя") {
-//                            viewModel.showAddUser.toggle()
-//                        }
+                    HorizontalDividerLabelView(label: TypeMessage.or.label)
+                    TextButton(text: TypeMessage.back.label, size: screen * 0.35, color: mainRigth) {
+                        viewModelAdmin.showView = .start
                     }
                 }
                 .padding(.top, hPadding)

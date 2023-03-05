@@ -6,7 +6,7 @@
 //
 //MARK: -  модель системных баз
 import Foundation
-struct SystemApp: Codable {
+struct SystemApp: Codable, Hashable {
     var ver = ""
     var user = ""
     var product = ""

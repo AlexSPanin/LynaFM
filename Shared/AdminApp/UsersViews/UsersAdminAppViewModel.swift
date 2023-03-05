@@ -11,7 +11,6 @@ class UsersAdminAppViewModel: ObservableObject {
     @Published var label = "Справочник пользователей"
     @Published var users = [UserAPP]()
     @Published var user = UserAPP()
-    @Published var password = ""
     @Published var stages = [ProductionStage]()
 
     @Published var isAddUser = false {
@@ -35,7 +34,7 @@ class UsersAdminAppViewModel: ObservableObject {
             if showAddUser {
                 label = "Добавить нового пользователя"
                 user = UserAPP()
-                password = ""
+                user.idUser = idCurrentUser
             } else {
                 label = "Справочник пользователей"
                 isAddUser = false
@@ -48,6 +47,8 @@ class UsersAdminAppViewModel: ObservableObject {
         didSet {
             if showEditUser {
                 label = "Изменить данные пользователя"
+                user.idUser = idCurrentUser
+                user.date = Date().timeStamp()
             } else {
                 label = "Справочник пользователей"
                 isEditUser = false
@@ -60,6 +61,8 @@ class UsersAdminAppViewModel: ObservableObject {
     @Published var errorText = ""
     @Published var errorOccured = false
     
+    var idCurrentUser = ""
+    
     init() {
         print("START: UsersAdminAppViewModel")
        StageDataManager.shared.loadCollection(completion: { stages in
@@ -67,6 +70,11 @@ class UsersAdminAppViewModel: ObservableObject {
                 self.stages = stages
             }
         })
+        StorageManager.shared.load(type: .user, model: UserAPP.self) { card in
+            if let card = card {
+                self.idCurrentUser = card.id
+            }
+        }
         fethUsersAPP()
         
     }
@@ -97,7 +105,7 @@ class UsersAdminAppViewModel: ObservableObject {
     
     //MARK: -  получение актуального массива пользователей из сети
     private func fethUsersAPP() {
-        UserDataManager.shared.loadUsers { usersAPP in
+        UserDataManager.shared.loadCollection { usersAPP in
             if let usersAPP = usersAPP {
                 let collection = usersAPP as Any
                 StorageManager.shared.save(type: .users, model: [UserAPP].self, collection: collection)
@@ -109,40 +117,22 @@ class UsersAdminAppViewModel: ObservableObject {
     }
     
     
+    
     //MARK: - добавляем карточку пользователя
     private func editUser() {
-        print("Сохранение изменений профиля")
-        UserDataManager.shared.updateUser(to: user) { status in
-            if status {
-                let currentID = AuthUserManager.shared.currentUserID()
-                print("ID авторизованного пользователя \(currentID)")
-   //             print("ID редактируемого пользователя \(self.user.id)")
-                if let userID = self.user.id, currentID == userID {
-                    print("Сохранение изменений авторизированного профиля")
-                    let collection = self.user as Any
-                    StorageManager.shared.save(type: .user, model: UserAPP.self, collection: collection)
-                }
-                self.showEditUser.toggle()
+        UserDataManager.shared.createCard (to: user) { _ in
+            if let index = self.users.firstIndex(where: {$0.id == self.user.id}) {
+                self.users[index] = self.user
             }
+            self.showEditUser.toggle()
         }
     }
     
     //MARK: - добавляем нового пользователя
     private func addUser() {
-       
-        AuthUserManager.shared.registrationPassword(email: user.email, password: password) { text, error in
-            if error {
-                self.errorText = text
-                self.errorOccured = error
-                self.password = ""
-                self.user.email = ""
-                return
-            } else {
-                self.user.id = text
-                UserDataManager.shared.createNewUser(to: self.user) { status in
-                    self.showAddUser.toggle()
-                }
-            }
+        UserDataManager.shared.createCard(to: user) { _ in
+            self.users.append(self.user)
+            self.showAddUser.toggle()
         }
     }
 }

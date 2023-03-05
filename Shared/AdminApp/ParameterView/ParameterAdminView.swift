@@ -22,12 +22,13 @@ struct ParameterAdminView: View {
             .padding(.top, 60)
             VStack {
                 Spacer()
-                HorizontalDividerLabelView(label: "или")
+                HorizontalDividerLabelView(label: TypeMessage.or.label)
                 HStack(alignment: .center, spacing: 20) {
-                    TextButton(text: "Вернуться") {
+                    TextButton(text: TypeMessage.back.label ,
+                               size: screen * 0.35,
+                               color: mainRigth) {
                         viewModelAdmin.showView = .start
                     }
-                    .foregroundColor(.cyan.opacity(0.8))
                 }
             }
             .padding(.vertical, hPadding)

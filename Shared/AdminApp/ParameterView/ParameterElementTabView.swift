@@ -85,7 +85,7 @@ struct ParameterElementTabView: View {
                                 Text(label)
                                     .font(.body)
                                     .lineLimit(3)
-                                    .minimumScaleFactor(scaleFactor)
+                                    .minimumScaleFactor(scale)
                                     .frame(width: viewModel.isMoveElement ? WIDTH * 0.6 : WIDTH * 0.85, height: HEIGHT * 0.05, alignment: .leading)
                                     .padding(.leading, 5)
                             }
@@ -102,11 +102,6 @@ struct ParameterElementTabView: View {
         }
         .padding(.top, hPadding)
         
-        .sheet(isPresented: $viewModel.showAddElement) {
-            CreatedParametrElementView(viewModel: viewModel, isEditing: false)
-        }
-        .sheet(isPresented: $viewModel.showEditElement) {
-            CreatedParametrElementView(viewModel: viewModel, isEditing: true)
-        }
+
     }
 }

@@ -10,42 +10,47 @@ import SwiftUI
 struct AvatarPhotoView: View {
     
     @StateObject var viewModel = AvatarPhotoViewModel()
-    
+    @Binding var isChange: Bool
     @Binding var image: Data?
     @Binding var showAvatarPhotoView: Bool
+    let size: CGSize
     let filter: Bool
     
-    init(imageData: Binding<Data?>, showAvatarPhotoView: Binding<Bool>, filter: Bool){
+    init(imageData: Binding<Data?>, isChange: Binding<Bool>, showAvatarPhotoView: Binding<Bool>, size: CGSize, filter: Bool){
+        self._isChange = isChange
         self._image = imageData
         self._showAvatarPhotoView = showAvatarPhotoView
+        self.size = size
         self.filter = filter
     }
     
     var body: some View {
-        VStack(spacing: hPadding) {            
+        VStack(spacing: hPadding) {
             HStack{
                 Button {
+                    isChange = false
                     showAvatarPhotoView.toggle()
                 } label: {
-                    Text("Отмена")
-                        .foregroundColor(.orange).opacity(0.8)
+                    Text(TypeMessage.back.label)
+                        .foregroundColor(mainBack)
                 }
                 Spacer()
                 Button {
                     image = viewModel.savePhoto()
+                    isChange = true
                     showAvatarPhotoView.toggle()
                 } label: {
-                    Text("Добавить")
-                        .foregroundColor(.cyan).opacity(0.8)
+                    Text(TypeMessage.add.label)
+                        .foregroundColor(mainRigth)
                 }
             }
-            .font(.body)
+            .font(fontN)
             .padding(.horizontal, hPadding)
             .padding(.top, hPadding)
 
             UpperButtonsPhotoView(viewModel: viewModel)
             
-            ScrollPhotoView(viewModel: viewModel, filter: filter)
+            ScrollPhotoView(viewModel: viewModel, filter: filter, scrollSize: size)
             if viewModel.photo != nil {
                 LowerButtonsPhotoView(viewModel: viewModel)
             }
@@ -58,4 +63,5 @@ struct AvatarPhotoView: View {
         }
     }
 }
+
 

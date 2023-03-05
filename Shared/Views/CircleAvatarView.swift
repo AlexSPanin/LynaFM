@@ -28,17 +28,17 @@ struct CircleAvatarView: View {
                     .resizable()
                     .interpolation(.medium)
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: WIDTH * 0.3, height: WIDTH * 0.3)
+                    .frame(width: imageL, height: imageL)
                     .clipShape(Circle())
-                    .overlay(Circle().stroke(Color.accentColor, lineWidth: 1))
+                    .overlay(Circle().stroke(mainColor, lineWidth: 1))
             }
             .disabled(disable)
         } else {
             ZStack {
-                Color.accentColor.opacity(0.1)
-                    .frame(width: WIDTH * 0.3, height: WIDTH * 0.3)
+                mainLigth
+                    .frame(width: imageL, height: imageL)
                     .clipShape(Circle())
-                    .overlay(Circle().stroke(Color.accentColor, lineWidth: 1))
+                    .overlay(Circle().stroke(mainColor, lineWidth: 1))
                 Button  {
                     action()
                 } label: {
@@ -46,13 +46,13 @@ struct CircleAvatarView: View {
                         Image(systemName: "camera")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: WIDTH * 0.05)
+                            .frame(width: pickerL)
                         Text(disable ? "нет фото" : "Добавьте фото")
                             .font(.caption)
                             .lineLimit(1)
-                            .minimumScaleFactor(0.9)
+                            .minimumScaleFactor(scale)
                     }
-                    .foregroundColor(.accentColor)
+                    .foregroundColor(mainColor)
                 }
                 .disabled(disable)
             }

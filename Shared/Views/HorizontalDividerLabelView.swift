@@ -9,26 +9,26 @@ import SwiftUI
 
 struct HorizontalDividerLabelView: View {
     let label: String
-    let color: Color = .accentColor
+    let color: Color = mainColor
     var body: some View {
         ZStack {
             if label.isEmpty {
                 Divider()
-                    .frame(width: WIDTH * 0.7, height: 1, alignment: .leading)
-                    .background(color)
+                    .frame(width: screen, height: 1, alignment: .leading)
+                    .foregroundColor(color)
             } else {
                 HStack {
                     Spacer()
                     Divider()
-                        .frame(width: WIDTH / 3, height: 1, alignment: .leading)
-                        .background(color)
+                        .frame(width: screen / 3, height: 1, alignment: .leading)
+                        .foregroundColor(color)
                     Spacer()
                     Text(label)
-                        .font(.caption)
+                        .font(fontSx)
                     Spacer()
                     Divider()
-                        .frame(width: WIDTH / 3, height: 1, alignment: .trailing)
-                        .background(color)
+                        .frame(width: screen / 3, height: 1, alignment: .trailing)
+                        .foregroundColor(color)
                     Spacer()
                 }
             }

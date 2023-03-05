@@ -16,14 +16,14 @@ struct StageAdminView: View {
             TopLabelView(label: viewModel.label)
             VStack {
                 if viewModel.showTab {
-                StageTabView(viewModel: viewModel)
+                    StageTabView(viewModel: viewModel)
                 }
                 VStack {
-                    HorizontalDividerLabelView(label: "или")
-                    HStack(alignment: .center, spacing: 20) {
-                        TextButton(text: "Вернуться") {
-                            viewModelAdmin.showView = .start
-                        }
+                    HorizontalDividerLabelView(label: TypeMessage.or.label)
+                    TextButton(text: TypeMessage.back.label ,
+                               size: screen * 0.35,
+                               color: mainRigth) {
+                        viewModelAdmin.showView = .start
                     }
                 }
                 .padding(.top, hPadding)

@@ -8,39 +8,39 @@
 import SwiftUI
 
 struct LoginAuthView: View {
-    @ObservedObject var viewModel: AuthViewModel
-    
+    @EnvironmentObject var viewModel: AuthViewModel
+    private let title = language == "RUS" ? "Введите email и пароль" : "Enter Email and Password"
+    private let password = language == "RUS" ? "Введите пароль" : "Enter Password"
+   
     var body: some View {
+        ZStack {
         VStack(alignment: .center, spacing: 10) {
-            Text("Введите email и пароль")
-                .font(.body)
+            Text(title)
+                .font(fontN)
                 .lineLimit(1)
-                .minimumScaleFactor(scaleFactor)
+                .minimumScaleFactor(scale)
                 .multilineTextAlignment(.leading)
             
             TextFieldView(subtitle: "Email",
-                          tipeTextField: .login, text: $viewModel.userAPP.email)
-            TextFieldView(subtitle: "Введите пароль",
-                          tipeTextField: .password, text: $viewModel.passwordEnter)
+                          tipeTextField: .login, text: $viewModel.email)
+            TextFieldView(subtitle: password,
+                          tipeTextField: .password, text: $viewModel.password)
             
-            VStack {
-                CustomButton(text: "Войти", width: WIDTH * 0.4) {
-                    viewModel.isAuth.toggle()
-                }
-                HorizontalDividerLabelView(label: "или")
-                TextButton(text: "Забыли пароль") {
-                    viewModel.showView = .repair
-                }
-            }
-            .padding(.top, hPadding)
         }
         .padding(.all, hPadding)
-        .frame(width: WIDTH * 0.95)
+        .frame(width: screen)
         .background(
             Color.accentColor.opacity(0.1).cornerRadius(10)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 10).stroke(Color.accentColor, lineWidth: 1)
+                    RoundedRectangle(cornerRadius: 10).stroke(mainColor, lineWidth: 1)
                 )
         )
+            ReturnAndSaveButton(disableSave: false,
+                                disableBack: false) {
+                viewModel.isAuth.toggle()
+            } actionBack: {
+                viewModel.showView = .repair
+            }
+        }
     }
 }

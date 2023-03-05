@@ -8,26 +8,23 @@
 import SwiftUI
 
 struct AuthView: View {
-    
-    @StateObject var viewModel = AuthViewModel()
-    let checkList: [NetworkCollection: CheckLine]
+    @EnvironmentObject var viewModel: AuthViewModel
+    var systemAPP: SystemApp?
     var body: some View {
         ZStack {
             switch viewModel.showView {
             case .auth:
-                LoginAuthView(viewModel: viewModel)
+                LoginAuthView()
             case .edit:
-                ProfileUserView(viewModel: viewModel)
+                EditProfileUserView()
             case .repair:
-                RecoveryUserView(viewModel: viewModel)
+                RecoveryUserView()
             case .error:
-                ErrorView(label: viewModel.label)
+                ErrorView(label: viewModel.title)
             case .starting:
-                StartingView(viewModel: viewModel)
+                StartingView()
             case .exit:
-                ErrorView(label: viewModel.label)
-            case .create:
-                UpdateUserView(viewModel: viewModel)
+                ErrorView(label: viewModel.title)
             }
 
             // отработка сообщений об ошибках
@@ -38,7 +35,7 @@ struct AuthView: View {
             }
         }
         .onAppear {
-            viewModel.checkList = checkList
+            viewModel.systemAPP = systemAPP
             viewModel.isStart.toggle()
         }
     }

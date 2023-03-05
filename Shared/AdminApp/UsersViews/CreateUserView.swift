@@ -24,14 +24,12 @@ struct CreateUserView: View {
                                   tipeTextField: .userName, text: $viewModel.user.phone)
                     TextFieldView(subtitle: "Email",
                                   tipeTextField: .userName, text: $viewModel.user.email)
-                    TextFieldView(subtitle: "Пароль",
-                                  tipeTextField: .password, text: $viewModel.password)
                     
                     HStack {
                     Text("Роли пользователя:")
                         .font(.footnote)
-                        .foregroundColor(.accentColor)
-                        .minimumScaleFactor(0.9)
+                        .foregroundColor(mainColor)
+                        .minimumScaleFactor(scale)
                         .lineLimit(1)
                         Spacer()
                     }
@@ -44,15 +42,10 @@ struct CreateUserView: View {
                             }
                         }
                     }
-
-                    VStack {
-                        CustomButton(text: "Сохранить", width: WIDTH * 0.4) {
-                            viewModel.isAddUser.toggle()
-                        }
-                        HorizontalDividerLabelView(label: "или")
-                        TextButton(text: "Закрыть") {
-                            viewModel.showAddUser.toggle()
-                        }
+                    ReturnAndSaveButton(disableSave: false, disableBack: false) {
+                        viewModel.isAddUser.toggle()
+                    } actionBack: {
+                        viewModel.showAddUser.toggle()
                     }
                     .padding(.top, hPadding)
                 }

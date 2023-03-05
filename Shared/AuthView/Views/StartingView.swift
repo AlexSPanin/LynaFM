@@ -9,12 +9,18 @@ import SwiftUI
 
 struct StartingView: View {
     @EnvironmentObject var navigation: NavigationViewModel
-    @ObservedObject var viewModel: AuthViewModel
+    @EnvironmentObject var viewModel: AuthViewModel
+    @State private var isFinish = false
+    @State private var roles = ""
+    
+    private var user: UserAPP {
+        return viewModel.currentUser ?? UserAPP()
+    }
     private var name: String {
-        viewModel.userAPP.name
+        viewModel.currentUser?.name ?? ""
     }
     private var surname: String {
-        viewModel.userAPP.surname
+        viewModel.currentUser?.surname ?? ""
     }
 
     var body: some View {
@@ -26,27 +32,31 @@ struct StartingView: View {
             Text("Здравствуйте, \(name) \(surname)!")
                 .font(.body)
                 .lineLimit(2)
-                .minimumScaleFactor(scaleFactor)
+                .minimumScaleFactor(scale)
                 .multilineTextAlignment(.leading)
                 .padding(.bottom, 10)
 
             VStack(alignment: .center, spacing: 5) {
-                if viewModel.userAPP.roles.count > 1 {
-                    UserRoleView(select: $viewModel.userAPP.role, roles: viewModel.userAPP.roles)
+                if user.roles.count > 1 {
+                    UserRoleView(select: $roles, roles: user.roles)
                         .padding(.vertical, hPadding)
                 }
                 
-                CustomButton(text: "Продолжить", width: WIDTH * 0.4) {
-                    viewModel.isFinish.toggle()
+                CustomButton(text: TypeMessage.enter.label, width: screen * 0.4) {
+                    isFinish.toggle()
                 }
-                HorizontalDividerLabelView(label: "или")
+                HorizontalDividerLabelView(label: TypeMessage.or.label)
                 HStack {
                     Spacer()
-                    TextButton(text: "Сменить пользователя") {
+                    TextButton(text: "Сменить пользователя",
+                               size: screen * 0.35,
+                               color: mainColor) {
                         viewModel.isExit.toggle()
                     }
                     Spacer()
-                    TextButton(text: "Редактировать") {
+                    TextButton(text: "Редактировать",
+                               size: screen * 0.35,
+                               color: mainColor) {
                         viewModel.showView = .edit
                     }
                     Spacer()
@@ -56,30 +66,38 @@ struct StartingView: View {
             .padding(.top, hPadding)
         }
         .padding(.all, hPadding)
-        .frame(width: WIDTH * 0.98)
+        .frame(width: screen)
         .background(
-            Color.accentColor.opacity(0.1).cornerRadius(10)
+            mainLigth.cornerRadius(10)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 10).stroke(Color.accentColor, lineWidth: 1)
+                    RoundedRectangle(cornerRadius: 10).stroke(mainColor, lineWidth: 1)
                 )
         )
-        .onChange(of: viewModel.isFinish) { newValue in
-            if newValue, let role = UserRole.allCases.first(where: {$0.role == viewModel.userAPP.role}) {
+        .onChange(of: isFinish) { newValue in
+            if newValue, let role = UserRole.allCases.first(where: {$0.role == user.role}) {
                 switch role {
                 case .owner:
-                    navigation.view = .error
+                    navigation.showView = .error
                 case .app:
-                    navigation.view = .admin
+                    navigation.showView = .admin
                 case .order:
-                    navigation.view = .error
+                    navigation.showView = .error
                 case .stage:
-                    navigation.view = .error
+                    navigation.showView = .error
                 case .admin:
-                    navigation.view = .admin
+                    navigation.showView = .admin
                 }
                 
             }
         }
+        .onChange(of: roles) { newValue in
+            viewModel.currentUser?.role = roles
+            viewModel.isChange = true
+        }
+        .onAppear{
+            roles = user.role
+        }
+        
     }
 }
 

@@ -8,37 +8,33 @@
 import SwiftUI
 
 struct RecoveryUserView: View {
-    @ObservedObject var viewModel: AuthViewModel
-    
+    @EnvironmentObject var viewModel: AuthViewModel
     var body: some View {
+        ZStack {
         VStack(alignment: .center, spacing: 10) {
-            Text("Введите email")
-                .font(.body)
+            Text(TypeMessage.enterEmail.label)
+                .font(fontN)
                 .lineLimit(1)
-                .minimumScaleFactor(scaleFactor)
+                .minimumScaleFactor(scale)
                 .multilineTextAlignment(.leading)
             
             TextFieldView(subtitle: "Email",
-                          tipeTextField: .login, text: $viewModel.userAPP.email)
-            
-            VStack {
-                CustomButton(text: "Отправить", width: WIDTH * 0.4) {
-                    viewModel.isSendRecovery.toggle()
-                }
-                HorizontalDividerLabelView(label: "или")
-                TextButton(text: "Выйти") {
-                    viewModel.showView = .auth
-                }
-            }
-            .padding(.top, hPadding)
+                          tipeTextField: .login, text: $viewModel.email)
         }
         .padding(.all, hPadding)
-        .frame(width: WIDTH * 0.95)
+        .frame(width: screen)
         .background(
-            Color.accentColor.opacity(0.1).cornerRadius(10)
+            mainLigth.cornerRadius(10)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 10).stroke(Color.accentColor, lineWidth: 1)
+                    RoundedRectangle(cornerRadius: 10).stroke(mainColor, lineWidth: 1)
                 )
         )
+            ReturnAndSaveButton(disableSave: false,
+                                disableBack: false) {
+                viewModel.isSendRecovery.toggle()
+            } actionBack: {
+                viewModel.showView = .auth
+            }
+        }
     }
 }

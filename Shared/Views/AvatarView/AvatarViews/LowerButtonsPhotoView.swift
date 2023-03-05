@@ -15,7 +15,7 @@ struct LowerButtonsPhotoView: View {
             return 0
         } else {
             let size = viewModel.sizeButton * CGFloat(count)
-            return ((WIDTH * 0.8) - size) / CGFloat(count - 1)
+            return ((screen * 0.8) - size) / CGFloat(count - 1)
         }
     }
     var body: some View {
@@ -32,6 +32,6 @@ struct LowerButtonsPhotoView: View {
                 }
             }
         }
-        .frame(width: WIDTH * 0.8)
+        .frame(width: screen * 0.8)
     }
 }
